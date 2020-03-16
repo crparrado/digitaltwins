@@ -19,6 +19,15 @@ model ReceiverSimple
   parameter SI.Efficiency em=1 "Coating Emitance"
                                                  annotation(Dialog(group="Technical data"));
 
+  Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
+                                          final unit = "K", displayUnit = "degC", min=0) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={94,0}), iconTransformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={30,0})));
+
   SI.HeatFlowRate Q_loss;
   SI.HeatFlowRate Q_rcv;
   Modelica.Blocks.Interfaces.RealInput Tamb annotation (Placement(
