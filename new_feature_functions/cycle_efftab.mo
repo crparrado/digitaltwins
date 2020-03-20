@@ -2,7 +2,7 @@ model cycle_efftab
 
   import SI = Modelica.SIunits;
   
-  parameter String file "File where optical data matrix is stored";
+  parameter String file "File where generator turbine efficiency data matrix is stored";
   
   input Modelica.Blocks.RealInput t_amb;
   input Modelica.Blocks.RealInput load_perc; 
