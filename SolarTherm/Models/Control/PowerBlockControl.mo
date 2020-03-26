@@ -10,21 +10,12 @@ model PowerBlockControl
   parameter Real L_df_off = 96 "Level of stop defocus";
   parameter SI.SpecificEnergy k_loss = 0.55e3 "Hot tank parasitic power coefficient";
   SI.Power W_loss;
-  //Zeb Ramping
-  parameter SI.Time t_ramp_delay = 7200 "Half hour startup delay";
-  SI.Time t_ramp_start(start = 0.0) "current time of simulation when ramping starts";
-  SI.Time t_ramp_end(start = t_ramp_delay) "current time of simulation when ramping starts";
-  Modelica.Blocks.Interfaces.RealOutput PB_ramp_fraction annotation(
-    Placement(visible = true, transformation(origin = {112, -50}, extent = {{20, 20}, {-20, -20}}, rotation = 180), iconTransformation(origin = {112, -50}, extent = {{20, 20}, {-20, -20}}, rotation = 180)));
-  //End Zeb ramping
   // Level measurement
   Modelica.Blocks.Interfaces.RealInput L_mea annotation(
     Placement(transformation(extent = {{-128, -70}, {-88, -30}})));
   Modelica.Blocks.Interfaces.RealInput L_mea2 annotation(
     Placement(transformation(extent = {{-128, -18}, {-88, 22}}, rotation = 0), iconTransformation(extent = {{-128, -18}, {-88, 22}}, rotation = 0)));
   // Flow measurement
-  Modelica.Blocks.Interfaces.RealOutput m_flow annotation(
-    Placement(transformation(extent = {{92, -20}, {132, 20}})));
   SolarTherm.Models.Control.Level2Logic defocus_logic(y(start = false), level_max = L_df_on, level_min = L_df_off) annotation(
     Placement(transformation(extent = {{-17, -10}, {17, 10}}, rotation = -90, origin = {-3.55271e-015, -51})));
   Modelica.Blocks.Interfaces.BooleanOutput defocus annotation(
@@ -33,33 +24,32 @@ model PowerBlockControl
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 0, origin = {-108, 50})));
   SolarTherm.Models.Control.StartUpLogic5 logic(m_flow_max = m_flow_on, m_flow_startup = m_flow_on / 2, level_on = L_on, level_off = L_off, m_flow_standby = 0) annotation(
     Placement(visible = true, transformation(extent = {{-10, -12}, {10, 8}}, rotation = 0)));
-algorithm
-//Zeb Ramping
-  when logic.m_flow > 1e-6 then
-    t_ramp_start := time;
-    t_ramp_end := time + t_ramp_delay;
-  end when;
-//ramp up starts
-//End Zeb Ramping
+  Modelica.Blocks.Interfaces.RealOutput m_flow2 annotation(
+    Placement(visible = true, transformation(extent = {{92, 32}, {132, 72}}, rotation = 0), iconTransformation(extent = {{92, 32}, {132, 72}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealOutput m_flow annotation(
+    Placement(visible = true, transformation(extent = {{92, -20}, {132, 20}}, rotation = 0), iconTransformation(extent = {{92, -20}, {132, 20}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealOutput m_flow_tank annotation(
+    Placement(visible = true, transformation(extent = {{92, -75}, {132, -35}}, rotation = 0), iconTransformation(extent = {{92, -75}, {132, -35}}, rotation = 0)));
 equation
   W_loss = (abs(m_flow_in - m_flow) + m_flow) * k_loss;
-  connect(defocus_logic.level_ref, L_mea) annotation(
-    Line(points = {{-4.44089e-016, -34}, {0, -34}, {0, -20}, {-38, -20}, {-38, -50}, {-108, -50}}, color = {0, 0, 127}));
   connect(defocus_logic.y, defocus) annotation(
     Line(points = {{-2.22045e-015, -69.36}, {-2.22045e-015, -69.36}, {-2.22045e-015, -82}, {0, -82}, {0, -114}}, color = {255, 0, 255}));
-  connect(logic.level, L_mea) annotation(
+  connect(logic.level1, L_mea) annotation(
     Line(points = {{-11, -2}, {-38, -2}, {-38, -50}, {-108, -50}}, color = {0, 0, 127}));
   connect(logic.m_flow_in, m_flow_in) annotation(
     Line(points = {{0, 8}, {0, 50}, {-108, 50}}, color = {0, 0, 127}));
-//  connect(logic.m_flow, m_flow)
-//    annotation (Line(points={{11,0},{52,0},{112,0}}, color={0,0,127}));
-//Zeb Ramping
-  PB_ramp_fraction = min(1.0, (time - t_ramp_start) / (t_ramp_end - t_ramp_start));
-//Ramp fraction cannot exceed 1;
-  m_flow = logic.m_flow * PB_ramp_fraction;
+  connect(logic.m_flow, m_flow)
+    annotation (Line(points={{11,0},{52,0},{112,0}}, color={0,0,127}));
+  connect(logic.m_flow2, m_flow2)
+    annotation (Line(points={{11,4},{52,4},{52,53},{98,53}}, color={0,0,127}));
+  connect(logic.m_flow_tank, m_flow_tank)
+    annotation (Line(points={{11,-8},{52,-8},{52,-53},{98,-53}}, color={0,0,127}));
   connect(L_mea2, logic.level2) annotation(
     Line(points = {{-108, 2}, {-12, 2}, {-12, 4}, {-10, 4}}, color = {0, 0, 127}));
-//End Zeb Ramping
+  connect(defocus_logic.level_ref_tk1, L_mea) annotation(
+    Line(points = {{-4, -34}, {-4, -34}, {-4, -20}, {-38, -20}, {-38, -50}, {-108, -50}, {-108, -50}}, color = {0, 0, 127}));
+  connect(defocus_logic.level_ref_tk2, L_mea2) annotation(
+    Line(points = {{4, -34}, {4, -34}, {4, -16}, {-60, -16}, {-60, 2}, {-108, 2}, {-108, 2}}, color = {0, 0, 127}));
   annotation(
     Documentation(revisions = "<html>
 <ul>
