@@ -5,19 +5,18 @@ model ReceiverSimple
   SI.SpecificEnthalpy h_in;
   SI.SpecificEnthalpy h_out( start=h_0);
   //SI.MassFlowRate m_flow;
-  parameter SI.Length H_rcv=1 "Receiver height"
-                                               annotation(Dialog(group="Technical data"));
-  parameter SI.Diameter D_rcv=1 "Receiver diameter"
-                                                   annotation(Dialog(group="Technical data"));
+  parameter SI.Length H_rcv=1 "Receiver height" annotation(Dialog(group="Technical data"));
+  parameter SI.Diameter D_rcv=1 "Receiver diameter" annotation(Dialog(group="Technical data"));
   parameter Integer N_pa = 1 "Number of panels" annotation(Dialog(group="Technical data"));
-  parameter SI.Diameter D_tb=1 "Tube outer diameter"
-                                                    annotation(Dialog(group="Technical data"));
-  parameter SI.Thickness t_tb=1 "Tube wall thickness"
-                                                     annotation(Dialog(group="Technical data"));
-  parameter SI.Efficiency ab=1 "Coating absortance"
-                                                   annotation(Dialog(group="Technical data"));
-  parameter SI.Efficiency em=1 "Coating Emitance"
-                                                 annotation(Dialog(group="Technical data"));
+  parameter SI.Diameter D_tb=1 "Tube outer diameter" annotation(Dialog(group="Technical data"));
+  parameter SI.Thickness t_tb=1 "Tube wall thickness" annotation(Dialog(group="Technical data"));
+  parameter SI.Efficiency ab=1 "Coating absortance" annotation(Dialog(group="Technical data"));
+  parameter SI.Efficiency em=1 "Coating Emitance" annotation(Dialog(group="Technical data"));
+
+  SI.Temperature T_in=Medium.temperature(state_in) "Temperature at inlet";
+  SI.Temperature T_out=Medium.temperature(state_out) "Temperature at outlet";
+  Medium.ThermodynamicState state_in=Medium.setState_phX(fluid_a.p,h_in);
+  Medium.ThermodynamicState state_out=Medium.setState_phX(fluid_b.p,h_out);
 
   Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
                                           final unit = "K", displayUnit = "degC", min=0) annotation (Placement(transformation(
@@ -51,6 +50,7 @@ equation
   h_in=inStream(fluid_a.h_outflow);
   fluid_b.h_outflow=max(h_0,h_out);
   fluid_a.h_outflow=0;
+  T = T_out;
 
   heat.T=medium.T;
   fluid_b.m_flow=-fluid_a.m_flow;
