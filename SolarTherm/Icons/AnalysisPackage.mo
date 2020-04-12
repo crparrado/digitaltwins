@@ -3,8 +3,9 @@ partial class AnalysisPackage
   extends Modelica.Icons.Package;
 
   annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={Text(
-          extent={{-18,-16},{50,4}},
+          extent={{-40,-40},{40,40}},
           lineColor={0,0,0},
-          textString="$")}),                                     Diagram(
+          textString="$",
+          fontSize=144)}),                                     Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end AnalysisPackage;
