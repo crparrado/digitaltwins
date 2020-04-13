@@ -67,7 +67,7 @@ model Tank
         rotation=-90,
         origin={-41,97})));
 
-protected
+//protected
   parameter SI.Volume V_t=(H*pi*D^2)/4;
   Modelica.Blocks.Interfaces.RealOutput L_internal;
   Modelica.Blocks.Interfaces.RealInput p_top_internal;
