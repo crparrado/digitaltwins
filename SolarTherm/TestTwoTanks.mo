@@ -1,6 +1,7 @@
 within SolarTherm;
 
 model TestTwoTanks
+  extends Modelica.Icons.Example;
   import SolarTherm.{Models,Media};
   import SI = Modelica.SIunits;
   import Modelica.SIunits.Conversions.*;
