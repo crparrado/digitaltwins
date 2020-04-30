@@ -13,20 +13,21 @@ args = parser.parse_args()
 
 from re import sub
 
-def csv_OM_format(data_str,table_name):
+def csv_OM_format_2d(data_str,table_name,sep=','):
     # recibe un string con  el contenido del csv
     row_list = data_str.split('\n')
     motab_str = ''
     for ii in range(len(row_list)):
         
         row = row_list[ii]
-        row = row.split(',')
+        row = row.split(sep)
         if ii == 0:
             row[0] = '0.0'
-            u1dim = len(row_list[1:]) # u[1]  dim
-            u2dim = len(row[1:])# u[2] dim
+            u1dim = len(row_list)-1 # u[1]  dim
+            u2dim = len(row)# u[2] dim
         row_alnum = sub(r'\W+', '', "".join(row))
         if not row_alnum.isalnum():
+            u1dim = u1dim - 1 # remueve la fila "no alfanumerica" de la cuenta de filas 
             continue
         
         row = ','.join(row).replace('%','')
@@ -45,7 +46,7 @@ csv_name_out = '/bop_aux_load.motab'
 with open(f_in, 'r') as file:
     data_str = file.read()#.replace('\n', '')
 
-motab_str = csv_OM_format(data_str,tname)
+motab_str = csv_OM_format_2d(data_str,tname)
 
 with open(f_out, "w") as file:
     file.write(motab_str)
