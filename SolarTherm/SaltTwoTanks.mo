@@ -23,10 +23,10 @@ model SaltTwoTanks
   // Weather data
   parameter String wea_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Weather/example_TMY3.motab");
   parameter Real wdelay[8] = {0, 0, 0, 0, 0, 0, 0, 0} "Weather file delays";
-  parameter nSI.Angle_deg lon = 133.889 "Longitude (+ve East)";
-  parameter nSI.Angle_deg lat = -23.795 "Latitude (+ve North)";
-  parameter nSI.Time_hour t_zone = 9.5 "Local time zone (UCT=0)";
-  parameter Integer year = 1996 "Meteorological year";
+  parameter nSI.Angle_deg lon = -22.77510 "Longitude (+ve East)";
+  parameter nSI.Angle_deg lat = -69.46620 "Latitude (+ve North)";
+  parameter nSI.Time_hour t_zone = -3 "Local time zone (UCT=0)";
+  parameter Integer year = 2016 "Meteorological year";
   // Field
   parameter String opt_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Optics/example_optics.motab");
   parameter Solar_angles angles = Solar_angles.elo_hra "Angles used in the lookup table file";
@@ -364,7 +364,7 @@ equation
   annotation(
     Diagram(coordinateSystem(extent = {{-140, -120}, {160, 140}}, initialScale = 0.1), graphics = {Text(lineColor = {217, 67, 180}, extent = {{-96, 92}, {-60, 90}}, textString = "defocus strategy", fontSize = 9), Text(lineColor = {217, 67, 180}, extent = {{-50, -40}, {-14, -40}}, textString = "on/off strategy", fontSize = 9), Text(origin = {2, 2}, extent = {{-52, 8}, {-4, -12}}, textString = "Receiver", fontSize = 9), Text(origin = {12, 4}, extent = {{-110, 4}, {-62, -16}}, textString = "Heliostats Field", fontSize = 9), Text(origin = {4, -8}, extent = {{-80, 86}, {-32, 66}}, textString = "Sun", fontSize = 9), Text(origin = {20, 50}, extent = {{-10, -5}, {10, 5}}, textString = "Hot Tank", fontSize = 9), Text(extent = {{30, -24}, {78, -44}}, textString = "Cold Tank", fontSize = 9), Text(origin = {4, -2}, extent = {{80, 12}, {128, -8}}, textString = "Power Block", fontSize = 9), Text(origin = {6, 0}, extent = {{112, 16}, {160, -4}}, textString = "Market", fontSize = 9), Text(origin = {2, 4}, extent = {{-6, 20}, {42, 0}}, textString = "Rec Control", fontSize = 9), Text(origin = {55, 55}, extent = {{-15, -5}, {15, 5}}, textString = "PB Control", fontSize = 9), Text(origin = {8, -26}, extent = {{-146, -26}, {-98, -46}}, textString = "Data Source", fontSize = 9)}),
     Icon(coordinateSystem(extent = {{-140, -120}, {160, 140}})),
-    experiment(StopTime = 86400, StartTime = 0, Tolerance = 0.0001, Interval = 60),
+    experiment(StopTime = 86400, StartTime = 0, Tolerance = 0.0001, Interval = 1),
     __Dymola_experimentSetupOutput,
     Documentation(revisions = "<html>
 	<ul>
