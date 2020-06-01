@@ -95,7 +95,7 @@ model SaltTwoTanks
   parameter SI.Velocity Wspd_max = 15 if use_wind "Wind stow speed";
   parameter SI.HeatFlowRate Q_flow_defocus = 330 / 294.18 * Q_flow_des "Solar field thermal power at defocused state";
   // This only works if const_dispatch=true. TODO for variable disptach Q_flow_defocus should be turned into an input variable to match the field production rate to the dispatch rate to the power block.
-  parameter Real nu_start = 0.6 "Minimum energy start-up fraction to start the receiver";
+  parameter Real nu_start = 0.25/*0.6*/ "Minimum energy start-up fraction to start the receiver";
   parameter Real nu_min_sf = 0.3 "Minimum turn-down energy fraction to stop the receiver";
   parameter Real nu_defocus = 1 "Energy fraction to the receiver at defocus state";
   parameter Real hot_tnk_empty_lb = 5 "Hot tank empty trigger lower bound";
@@ -214,7 +214,7 @@ model SaltTwoTanks
   SolarTherm.Models.CSP.CRS.HeliostatsField.HeliostatsField heliostatsField(n_h = n_heliostat, lon = data.lon, lat = data.lat, ele_min(displayUnit = "deg") = ele_min, use_wind = use_wind, Wspd_max = Wspd_max, he_av = he_av_design, use_on = true, use_defocus = true, A_h = A_heliostat, nu_defocus = nu_defocus, nu_min = nu_min_sf, Q_design = Q_flow_defocus, nu_start = nu_start, redeclare model Optical = Models.CSP.CRS.HeliostatsField.Optical.Table(angles = angles, file = opt_file)) annotation(
     Placement(transformation(extent = {{-88, 2}, {-56, 36}})));
   // Receiver
-  SolarTherm.Models.CSP.CRS.Receivers.ReceiverSimple receiver(em = em_rec, redeclare package Medium = Medium, H_rcv = H_receiver, D_rcv = D_receiver, N_pa = N_pa_rec, t_tb = t_tb_rec, D_tb = D_tb_rec, ab = ab_rec) annotation(
+  SolarTherm.Models.CSP.CRS.Receivers.ReceiverTransient receiver(em = em_rec, redeclare package Medium = Medium, H_rcv = H_receiver, D_rcv = D_receiver, N_pa = N_pa_rec, t_tb = t_tb_rec, D_tb = D_tb_rec, ab = ab_rec) annotation(
     Placement(transformation(extent = {{-46, 4}, {-10, 40}})));
   // Three-way Valve
   SolarTherm.Models.Fluid.Valves.ValveControl Valve1(redeclare package Medium = Medium) annotation(
@@ -277,6 +277,8 @@ equation
 //Connections from data
   connect(DNI_input.y, sun.dni) annotation(
     Line(points = {{-119, 70}, {-102, 70}, {-102, 69.8}, {-82.6, 69.8}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
+  connect(Wspd_input.y, receiver.Wspd) annotation(
+    Line(points = {{-112.7, 29.54}, {-100, 29.54}, {-100, 40}, {-31, 40}, {-21, 37}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
   connect(Wspd_input.y, heliostatsField.Wspd) annotation(
     Line(points = {{-112.7, 29.54}, {-87.68, 29.54}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
   connect(Pres_input.y, tankCold.p_top) annotation(
@@ -362,7 +364,7 @@ equation
   annotation(
     Diagram(coordinateSystem(extent = {{-140, -120}, {160, 140}}, initialScale = 0.1), graphics = {Text(lineColor = {217, 67, 180}, extent = {{-96, 92}, {-60, 90}}, textString = "defocus strategy", fontSize = 9), Text(lineColor = {217, 67, 180}, extent = {{-50, -40}, {-14, -40}}, textString = "on/off strategy", fontSize = 9), Text(origin = {2, 2}, extent = {{-52, 8}, {-4, -12}}, textString = "Receiver", fontSize = 9), Text(origin = {12, 4}, extent = {{-110, 4}, {-62, -16}}, textString = "Heliostats Field", fontSize = 9), Text(origin = {4, -8}, extent = {{-80, 86}, {-32, 66}}, textString = "Sun", fontSize = 9), Text(origin = {20, 50}, extent = {{-10, -5}, {10, 5}}, textString = "Hot Tank", fontSize = 9), Text(extent = {{30, -24}, {78, -44}}, textString = "Cold Tank", fontSize = 9), Text(origin = {4, -2}, extent = {{80, 12}, {128, -8}}, textString = "Power Block", fontSize = 9), Text(origin = {6, 0}, extent = {{112, 16}, {160, -4}}, textString = "Market", fontSize = 9), Text(origin = {2, 4}, extent = {{-6, 20}, {42, 0}}, textString = "Rec Control", fontSize = 9), Text(origin = {55, 55}, extent = {{-15, -5}, {15, 5}}, textString = "PB Control", fontSize = 9), Text(origin = {8, -26}, extent = {{-146, -26}, {-98, -46}}, textString = "Data Source", fontSize = 9)}),
     Icon(coordinateSystem(extent = {{-140, -120}, {160, 140}})),
-    experiment(StopTime = 86400, StartTime = 0, Tolerance = 0.0001, Interval = 300),
+    experiment(StopTime = 86400, StartTime = 0, Tolerance = 0.0001, Interval = 60),
     __Dymola_experimentSetupOutput,
     Documentation(revisions = "<html>
 	<ul>
