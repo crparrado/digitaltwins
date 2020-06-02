@@ -10,48 +10,60 @@ model SaltTwoTanks
   import SolarTherm.Types.Solar_angles;
   import SolarTherm.Types.Currency;
   extends Modelica.Icons.Example;
+
   // Input Parameters
   // *********************
-  parameter Boolean match_sam = false "Configure to match SAM output";
-  parameter Boolean fixed_field = false "true if the size of the solar field is fixed";
   replaceable package Medium = Media.MoltenSalt.MoltenSalt_ph "Medium props for molten salt";
   parameter String pri_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Prices/aemo_vic_2014.motab") "Electricity price file";
   parameter Currency currency = Currency.USD "Currency used for cost analysis";
   parameter Boolean const_dispatch = true "Constant dispatch of energy";
   parameter String sch_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/daily_sch_0.motab") if not const_dispatch "Discharging schedule from a file";
+
   // Weather data
   parameter String wea_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Weather/tmy_acc_mod.motab");
   parameter Real wdelay[8] = {0, 0, 0, 0, 0, 0, 0, 0} "Weather file delays";
-  parameter nSI.Angle_deg lon = -22.77510 "Longitude (+ve East)";
-  parameter nSI.Angle_deg lat = -69.46620 "Latitude (+ve North)";
+  parameter nSI.Angle_deg lon = -69.46620 "Longitude (+ve East)";
+  parameter nSI.Angle_deg lat = -22.77510 "Latitude (+ve North)";
   parameter nSI.Time_hour t_zone = -3 "Local time zone (UCT=0)";
   parameter Integer year = 2016 "Meteorological year";
+
   // Field
   parameter String opt_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/field_opt_eff_4ms.motab");
   parameter Solar_angles angles = Solar_angles.ele_azi "Angles used in the lookup table file";
-  parameter Real SM = 700/(113.9/0.43) "Solar multiple";
+  parameter Real SM = R_des/Q_flow_des "Solar multiple";
   parameter Real land_mult = 6.16783860571 "Land area multiplier";
-  parameter Boolean polar = false "True for polar field layout, otherwise surrounded";
   parameter SI.Area A_heliostat = 141.8 "Heliostat module reflective area";
   parameter Real he_av_design = 0.99 "Helisotats availability";
-  parameter SI.Efficiency eff_opt = 0.6389 "Field optical efficiency at design point";
-  parameter SI.Irradiance dni_des = 950 "DNI at design point";
-  parameter Real C = 1046.460400794 "Concentration ratio";
-  parameter Real gnd_cvge = 0.26648 "Ground coverage";
-  parameter Real excl_fac = 0.97 "Exclusion factor";
-  parameter Real twr_ht_const = if polar then 2.25 else 1.25 "Constant for tower height calculation";
+  parameter SI.Area A_field = n_heliostat*A_heliostat "Heliostat field reflective area";
+  parameter Integer n_heliostat = 10600 "Number of heliostats";
+  parameter SI.Length H_tower = 220 "Tower height";
+  parameter SI.Area A_land = land_mult * A_field + 197434.207385281 "Land area";
+
   // Receiver
+  parameter SI.HeatFlowRate R_des = 700e6 "Receiver design thermal power (with heat losses)";
+  parameter SI.Diameter D_receiver = 20.59 "Receiver diameter";
+  parameter SI.Length H_receiver = 18.4 "Receiver height";
+  parameter SI.Area A_receiver = CN.pi*D_receiver*H_receiver "Receiver aperture area";
   parameter Integer N_pa_rec = 22 "Number of panels in receiver";
   parameter SI.Thickness t_tb_rec = 1.25e-3 "Receiver tube wall thickness";
   parameter SI.Diameter D_tb_rec = 50e-3 "Receiver tube outer diameter";
   parameter Real ar_rec = 18.67 / 15 "Height to diameter aspect ratio of receiver aperture";
   parameter SI.Efficiency ab_rec = 0.94 "Receiver coating absorptance";
   parameter SI.Efficiency em_rec = 0.88 "Receiver coating emissivity";
-  parameter SI.RadiantPower R_des(fixed = if fixed_field then true else false) "Input power to receiver at design point";
   parameter Real rec_fr = 1.0 - 0.9569597659257708 "Receiver loss fraction of radiance at design point";
   parameter SI.Temperature rec_T_amb_des = 298.15 "Ambient temperature at design point";
+
   // Storage
   parameter Real t_storage(unit = "h") = 16 "Hours of storage";
+  parameter SI.Energy E_max = t_storage * 3600 * Q_flow_des "Maximum tank stored energy";
+  parameter SI.Mass m_max = E_max / (h_hot_set - h_cold_set) "Max salt mass in tanks";
+  parameter SI.SpecificEnthalpy h_cold_set = Medium.specificEnthalpy(state_cold_set) "Cold salt specific enthalpy at design";
+  parameter SI.SpecificEnthalpy h_hot_set = Medium.specificEnthalpy(state_hot_set) "Hot salt specific enthalpy at design";
+  parameter SI.Density rho_cold_set = Medium.density(state_cold_set) "Cold salt density at design";
+  parameter SI.Density rho_hot_set = Medium.density(state_hot_set) "Hot salt density at design";
+  parameter SI.Volume V_max = m_max / ((rho_hot_set + rho_cold_set) / 2) "Max salt volume in tanks";
+  parameter SI.Length H_storage = ceil((4 * V_max * tank_ar ^ 2 / CN.pi) ^ (1 / 3)) "Storage tank height";
+  parameter SI.Diameter D_storage = H_storage / tank_ar "Storage tank diameter";
   parameter SI.Temperature T_cold_set = CV.from_degC(290) "Cold tank target temperature";
   parameter SI.Temperature T_hot_set = CV.from_degC(565) "Hot tank target temperature";
   parameter SI.Temperature T_cold_start = CV.from_degC(290) "Cold tank starting temperature";
@@ -71,10 +83,11 @@ model SaltTwoTanks
   parameter SI.Power W_heater_hot = 30e8 "Hot tank heater capacity";
   parameter SI.Power W_heater_cold = 30e8 "Cold tank heater capacity";
   parameter Real tank_ar = 20 / 18.667 "storage aspect ratio";
+
   // Power block
   replaceable model Cycle = Models.PowerBlocks.Correlation.Rankine "Rankine cycle regression model";
   replaceable model Cooling = Models.PowerBlocks.Cooling.SAM "PB cooling model";
-  parameter SI.Power P_gross(fixed = if fixed_field then false else true) = 113.9e6 "Power block gross rating at design point";
+  parameter SI.Power P_gross = 113.9e6 "Power block gross rating at design point";
   parameter SI.Efficiency eff_blk = 0.43 "Power block efficiency at design point";
   parameter Real par_fr = 0.099099099 "Parasitics fraction of power block rating at design point";
   parameter Real par_fix_fr = 0.0055 "Fixed parasitics as fraction of gross rating";
@@ -88,101 +101,63 @@ model SaltTwoTanks
   parameter Real nu_net_blk = 0.9 "Gross to net power conversion factor at the power block";
   parameter SI.Temperature T_in_ref_blk = from_degC(565) "HTF inlet temperature to power block at design";
   parameter SI.Temperature T_out_ref_blk = from_degC(290) "HTF outlet temperature to power block at design";
+  parameter SI.HeatFlowRate Q_flow_des = P_gross / eff_blk "Heat to power block at design";
+  parameter SI.MassFlowRate m_flow_blk = Q_flow_des / (h_hot_set - h_cold_set) "Mass flow rate to power block at design point";
+  parameter SI.Power P_net = (1 - par_fr) * P_gross "Power block net rating at design point";
+  parameter SI.Power P_name = P_net "Nameplate rating of power block";
+
   // Control
   parameter SI.Angle ele_min = 0.13962634015955 "Heliostat stow deploy angle";
   parameter Boolean use_wind = true "true if using wind stopping strategy in the solar field";
   parameter SI.Velocity Wspd_max = 15 if use_wind "Wind stow speed";
-  parameter SI.HeatFlowRate Q_flow_defocus = 330 / 294.18 * Q_flow_des "Solar field thermal power at defocused state";
-  // This only works if const_dispatch=true. TODO for variable disptach Q_flow_defocus should be turned into an input variable to match the field production rate to the dispatch rate to the power block.
-  parameter Real nu_start = 0.6/*0.6*/ "Minimum energy start-up fraction to start the receiver";
-  parameter Real nu_min_sf = 0.3 "Minimum turn-down energy fraction to stop the receiver";
-  parameter Real nu_defocus = 1 "Energy fraction to the receiver at defocus state";
-  parameter Real hot_tnk_empty_lb = 5 "Hot tank empty trigger lower bound";
-  // Level (below which) to stop disptach
-  parameter Real hot_tnk_empty_ub = 10 "Hot tank empty trigger upper bound";
-  // Level (above which) to start disptach
+  parameter Real nu_start = 0.25 "Minimum energy start-up fraction to start the receiver";
+  parameter Real nu_min_sf = 0.125 "Minimum turn-down energy fraction to stop the receiver";
+  parameter Real nu_defocus = 0.3 "0.42Energy fraction to the receiver at defocus state";
+  parameter Real hot_tnk_empty_lb = 5 "Hot tank empty trigger lower bound (Level below which to stop disptach)";
+  parameter Real hot_tnk_empty_ub = 10 "Hot tank empty trigger upper bound (Level above which to start disptach)";
   parameter Real hot_tnk_full_lb = 123 "Hot tank full trigger lower bound";
   parameter Real hot_tnk_full_ub = 120 "Hot tank full trigger upper bound";
-  parameter Real cold_tnk_defocus_lb = 5 "Cold tank empty trigger lower bound";
-  // Level (below which) to stop disptach
-  parameter Real cold_tnk_defocus_ub = 7 "Cold tank empty trigger upper bound";
-  // Level (above which) to start disptach
-  parameter Real cold_tnk_crit_lb = 0 "Cold tank critically empty trigger lower bound";
-  // Level (below which) to stop disptach
-  parameter Real cold_tnk_crit_ub = 30 "Cold tank critically empty trigger upper bound";
-  // Level (above which) to start disptach
+  parameter Real cold_tnk_defocus_lb = 5 "Cold tank empty trigger lower bound (Level below which to stop disptach)";
+  parameter Real cold_tnk_defocus_ub = 7 "Cold tank empty trigger upper bound (Level above which to start disptach)";
+  parameter Real cold_tnk_crit_lb = 0 "Cold tank critically empty trigger lower bound (Level below which to stop disptach)";
+  parameter Real cold_tnk_crit_ub = 30 "Cold tank critically empty trigger upper bound (Level above which to start disptach)";
   parameter Real Ti = 0.1 "Time constant for integral component of receiver control";
   parameter Real Kp = -1000 "Gain of proportional component in receiver control";
-  // Calculated Parameters
-  parameter SI.HeatFlowRate Q_flow_des = if fixed_field then if match_sam then R_des / ((1 + rec_fr) * SM) else R_des * (1 - rec_fr) / SM else P_gross / eff_blk "Heat to power block at design";
-  parameter SI.Energy E_max = t_storage * 3600 * Q_flow_des "Maximum tank stored energy";
-  parameter SI.Area A_field = n_heliostat*A_heliostat "Heliostat field reflective area";
-  // parameter SI.Efficiency eff_rec = AQUI INSERTAR TABLA DE EFICIENCIA DEL RECEPTOR "Matrix of receiver optical efficiency";
-  // parameter SI.Energy E_rev = R_des*A_field*eff_opt*eff_rec "Energy in receiver";
-  parameter Integer n_heliostat = 10600 "Number of heliostats";
-  parameter SI.Area A_receiver = CN.pi*D_receiver*H_receiver "Receiver aperture area";
-  parameter SI.Diameter D_receiver = 20.59 "Receiver diameter";
-  parameter SI.Length H_receiver = 18.4 "Receiver height";
-  parameter SI.Area A_land = land_mult * A_field + 197434.207385281 "Land area";
-  parameter SI.SpecificEnthalpy h_cold_set = Medium.specificEnthalpy(state_cold_set) "Cold salt specific enthalpy at design";
-  parameter SI.SpecificEnthalpy h_hot_set = Medium.specificEnthalpy(state_hot_set) "Hot salt specific enthalpy at design";
-  parameter SI.Density rho_cold_set = Medium.density(state_cold_set) "Cold salt density at design";
-  parameter SI.Density rho_hot_set = Medium.density(state_hot_set) "Hot salt density at design";
-  parameter SI.Mass m_max = E_max / (h_hot_set - h_cold_set) "Max salt mass in tanks";
-  parameter SI.Volume V_max = m_max / ((rho_hot_set + rho_cold_set) / 2) "Max salt volume in tanks";
   parameter SI.MassFlowRate m_flow_fac = SM * Q_flow_des / (h_hot_set - h_cold_set) "Mass flow rate to receiver at design point";
-  parameter SI.MassFlowRate m_flow_rec_max = 1.13952693353 * m_flow_fac "Maximum mass flow rate to receiver";
-  parameter SI.MassFlowRate m_flow_rec_start = 0.81394780966 * m_flow_fac "Initial or guess value of mass flow rate to receiver in the feedback controller";
-  parameter SI.MassFlowRate m_flow_blk = Q_flow_des / (h_hot_set - h_cold_set) "Mass flow rate to power block at design point";
-  parameter SI.Power P_net = (1 - par_fr) * P_gross "Power block net rating at design point";
-  parameter SI.Power P_name = P_net "Nameplate rating of power block";
-  parameter SI.Length H_storage = ceil((4 * V_max * tank_ar ^ 2 / CN.pi) ^ (1 / 3)) "Storage tank height";
-  parameter SI.Diameter D_storage = H_storage / tank_ar "Storage tank diameter";
-  parameter SI.Length H_tower = 220 "Tower height";
-  // A_field/(gnd_cvge*excl_fac) is the field gross area
-  parameter SI.Diameter D_tower = D_receiver "Tower diameter";
-  // That's a fair estimate. An accurate H-to-D correlation may be used.
+  parameter SI.MassFlowRate m_flow_rec_max = 1.5 * m_flow_fac "Maximum mass flow rate to receiver";
+  parameter SI.MassFlowRate m_flow_rec_start = m_flow_fac "Initial or guess value of mass flow rate to receiver in the feedback controller";
+
   // Cost data in USD (default) or AUD
   parameter Real r_disc = 0.07 "Real discount rate";
   parameter Real r_i = 0.03 "Inflation rate";
   parameter Integer t_life(unit = "year") = 27 "Lifetime of plant";
   parameter Integer t_cons(unit = "year") = 3 "Years of construction";
   parameter Real r_cur = 0.71 "The currency rate from AUD to USD";
-  // Valid for 2019. See https://www.rba.gov.au/
   parameter Real f_Subs = 0 "Subsidies on initial investment costs";
   parameter FI.AreaPrice pri_field = if currency == Currency.USD then 180 else 180 / r_cur "Field cost per design aperture area";
-  // SAM 2018 cost data: 177*(603.1/525.4) in USD. Note that (603.1/525.4) is CEPCI index from 2007 to 2018
   parameter FI.AreaPrice pri_site = if currency == Currency.USD then 20 else 20 / r_cur "Site improvements cost per area";
-  // SAM 2018 cost data: 16
   parameter FI.EnergyPrice pri_storage = if currency == Currency.USD then 37 / (1e3 * 3600) else 37 / (1e3 * 3600) / r_cur "Storage cost per energy capacity";
-  // SAM 2018 cost data: 22 / (1e3 * 3600)
   parameter FI.PowerPrice pri_block = if currency == Currency.USD then 1000 / 1e3 else 1000 / r_cur "Power block cost per gross rated power";
-  // SAM 2018 cost data: 1040
   parameter FI.PowerPrice pri_bop = if currency == Currency.USD then 350 / 1e3 else 350 / 1e3 / r_cur "Balance of plant cost per gross rated power";
-  //SAM 2018 cost data: 290
   parameter FI.AreaPrice pri_land = if currency == Currency.USD then 10000 / 4046.86 else 10000 / 4046.86 / r_cur "Land cost per area";
   parameter Real pri_om_name(unit = "$/W/year") = if currency == Currency.USD then 56.715 / 1e3 else 56.715 / 1e3 / r_cur "Fixed O&M cost per nameplate per year";
-  //SAM 2018 cost data: 66
   parameter Real pri_om_prod(unit = "$/J/year") = if currency == Currency.USD then 5.7320752 / (1e6 * 3600) else 5.7320752 / (1e6 * 3600) / r_cur "Variable O&M cost per production per year";
-  //SAM 2018 cost data: 3.5
   parameter FI.Money C_field = pri_field * A_field "Field cost";
   parameter FI.Money C_site = pri_site * A_field "Site improvements cost";
-  parameter FI.Money C_tower(fixed = false) "Tower cost";
+  parameter FI.Money C_tower = if currency == Currency.USD then 3117043.67 * exp(0.0113 * H_tower) else 3117043.67 * exp(0.0113 * H_tower) / r_cur "Tower cost";
   parameter FI.Money C_receiver = if currency == Currency.USD then 71708855 * (A_receiver / 879.8) ^ 0.7 else 71708855 * (A_receiver / 879.8) ^ 0.7 / r_cur "Receiver cost";
-  // SAM 2018 cost data: 103e6 * (A_receiver / 1571) ^ 0.7
   parameter FI.Money C_storage = pri_storage * E_max "Storage cost";
   parameter FI.Money C_block = pri_block * P_gross "Power block cost";
   parameter FI.Money C_bop = pri_bop * P_gross "Balance of plant cost";
   parameter FI.Money C_cap_dir_sub = (1 - f_Subs) * (C_field + C_site + C_tower + C_receiver + C_storage + C_block + C_bop) "Direct capital cost subtotal";
-  // i.e. purchased equipment costs
   parameter FI.Money C_contingency = 0.07 * C_cap_dir_sub "Contingency costs";
   parameter FI.Money C_cap_dir_tot = C_cap_dir_sub + C_contingency "Direct capital cost total";
   parameter FI.Money C_EPC = 0.11 * C_cap_dir_tot "Engineering, procurement and construction(EPC) and owner costs";
-  // SAM 2018 cost data: 0.13
   parameter FI.Money C_land = pri_land * A_land "Land cost";
   parameter FI.Money C_cap = C_cap_dir_tot + C_EPC + C_land "Total capital (installed) cost";
   parameter FI.MoneyPerYear C_year = pri_om_name * P_name "Fixed O&M cost per year";
   parameter Real C_prod(unit = "$/J/year") = pri_om_prod "Variable O&M cost per production per year";
+
   // System components
   // *********************
   //Weather data
@@ -210,8 +185,23 @@ model SaltTwoTanks
   SolarTherm.Models.Sources.SolarModel.Sun sun(lon = data.lon, lat = data.lat, t_zone = data.t_zone, year = data.year, redeclare function solarPosition = Models.Sources.SolarFunctions.PSA_Algorithm) annotation(
     Placement(transformation(extent = {{-82, 60}, {-62, 80}})));
   // Solar field
-  SolarTherm.Models.CSP.CRS.HeliostatsField.HeliostatsField heliostatsField(n_h = n_heliostat, lon = data.lon, lat = data.lat, ele_min(displayUnit = "deg") = ele_min, use_wind = use_wind, Wspd_max = Wspd_max, he_av = he_av_design, use_on = true, use_defocus = true, A_h = A_heliostat, nu_defocus = nu_defocus, nu_min = nu_min_sf, Q_design = Q_flow_defocus, nu_start = nu_start, redeclare model Optical = Models.CSP.CRS.HeliostatsField.Optical.Table(angles = angles, file = opt_file)) annotation(
-    Placement(transformation(extent = {{-88, 2}, {-56, 36}})));
+  SolarTherm.Models.CSP.CRS.HeliostatsField.HeliostatsField heliostatsField(
+      n_h = n_heliostat, 
+      lon = data.lon, 
+      lat = data.lat, 
+      ele_min(displayUnit = "deg") = ele_min, 
+      use_wind = use_wind, 
+      Wspd_max = Wspd_max, 
+      he_av = he_av_design, 
+      use_on = true, 
+      use_defocus = true, 
+      A_h = A_heliostat, 
+      nu_defocus = nu_defocus, 
+      nu_min = nu_min_sf, 
+      Q_design = R_des, 
+      nu_start = nu_start, 
+      redeclare model Optical = Models.CSP.CRS.HeliostatsField.Optical.Table(angles = angles, file = opt_file)) 
+      annotation(Placement(transformation(extent = {{-88, 2}, {-56, 36}})));
   // Receiver
   SolarTherm.Models.CSP.CRS.Receivers.ReceiverTransient receiver(em = em_rec, redeclare package Medium = Medium, H_rcv = H_receiver, D_rcv = D_receiver, N_pa = N_pa_rec, t_tb = t_tb_rec, D_tb = D_tb_rec, ab = ab_rec) annotation(
     Placement(transformation(extent = {{-46, 4}, {-10, 40}})));
@@ -256,28 +246,13 @@ model SaltTwoTanks
   // Variables:
   SI.Power P_elec "Output power of power block";
   SI.Energy E_elec(start = 0, fixed = true, displayUnit = "MW.h") "Generate electricity";
-  FI.Money R_spot(start = 0, fixed = true) "Spot market revenue";
-initial equation
-  if fixed_field then
-    P_gross = Q_flow_des * eff_blk;
-  else
-    R_des = if match_sam then SM * Q_flow_des * (1 + rec_fr) else SM * Q_flow_des / (1 - rec_fr);
-  end if;
-  if H_tower > 120 then
-// then use concrete tower
-    C_tower = if currency == Currency.USD then 3117043.67 * exp(0.0113 * H_tower) else 3117043.67 * exp(0.0113 * H_tower) / r_cur "Tower cost";
-//SAM 2018 cost data: 3e6 * exp(0.0113 * H_tower) in USD
-  else
-// use Latticework steel tower
-    C_tower = if currency == Currency.USD then 1.09025e6 * exp(0.00879 * H_tower) else 1.09025e6 * exp(0.00879 * H_tower) / r_cur "Tower cost";
-// SAM 2018 cost data: 1.09025e6 * (603.1/318.4) * exp(0.00879 * H_tower)
-  end if;
+  FI.Money R_spot(start = 0, fixed = true) "Spot market revenue";  
 equation
 //Connections from data
   connect(DNI_input.y, sun.dni) annotation(
     Line(points = {{-119, 70}, {-102, 70}, {-102, 69.8}, {-82.6, 69.8}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
   connect(Wspd_input.y, receiver.Wspd) annotation(
-    Line(points = {{-112.7, 29.54}, {-100, 29.54}, {-100, 40}, {-31, 40}, {-21, 37}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
+    Line(points = {{-112.7, 29.54}, {-100, 29.54}, {-100, 40}, {-31.5, 40}, {-31.5, 37}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
   connect(Wspd_input.y, heliostatsField.Wspd) annotation(
     Line(points = {{-112.7, 29.54}, {-87.68, 29.54}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
   connect(Pres_input.y, tankCold.p_top) annotation(
@@ -331,8 +306,6 @@ equation
   connect(controlCold.defocus, or1.u2) annotation(
     Line(points = {{17, -10.98}, {17, -32}, {-106, -32}, {-106, 4.8}, {-102.8, 4.8}}, color = {255, 0, 255}, pattern = LinePattern.Dash));
 // controlHot connections
-//	connect(controlHot.m_tank2, Valve1.m_flow) annotation(Line(points = {{61, 69}, {93, 69}, {93, 126}, {0, 126}, {0, 116}}, color = {0, 0, 127}));
-//	connect(tankHot2.L, controlHot.L_mea_tk2) annotation(Line(points = {{36, 112}, {40, 112}, {40, 65}, {47.52, 65}}, color = {0, 0, 127}));
   connect(tankHot.L, controlHot.L_mea) annotation(
     Line(points = {{36.2, 68.4}, {40, 68.4}, {40, 68.5}, {47.52, 68.5}}, color = {0, 0, 127}));
   connect(pumpCold.m_flow, controlHot.m_flow_in) annotation(
