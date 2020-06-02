@@ -1,5 +1,4 @@
 within SolarTherm;
-
 model SaltTwoTanks
   import SolarTherm.{Models,Media};
   import Modelica.SIunits.Conversions.from_degC;
@@ -21,19 +20,19 @@ model SaltTwoTanks
   parameter Boolean const_dispatch = true "Constant dispatch of energy";
   parameter String sch_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/daily_sch_0.motab") if not const_dispatch "Discharging schedule from a file";
   // Weather data
-  parameter String wea_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Weather/example_TMY3.motab");
+  parameter String wea_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Weather/tmy_acc_mod.motab");
   parameter Real wdelay[8] = {0, 0, 0, 0, 0, 0, 0, 0} "Weather file delays";
   parameter nSI.Angle_deg lon = -22.77510 "Longitude (+ve East)";
   parameter nSI.Angle_deg lat = -69.46620 "Latitude (+ve North)";
   parameter nSI.Time_hour t_zone = -3 "Local time zone (UCT=0)";
   parameter Integer year = 2016 "Meteorological year";
   // Field
-  parameter String opt_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Optics/example_optics.motab");
-  parameter Solar_angles angles = Solar_angles.elo_hra "Angles used in the lookup table file";
-  parameter Real SM = 1.8 "Solar multiple";
+  parameter String opt_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/field_opt_eff_4ms.motab");
+  parameter Solar_angles angles = Solar_angles.ele_azi "Angles used in the lookup table file";
+  parameter Real SM = 700/(113.9/0.43) "Solar multiple";
   parameter Real land_mult = 6.16783860571 "Land area multiplier";
   parameter Boolean polar = false "True for polar field layout, otherwise surrounded";
-  parameter SI.Area A_heliostat = 144.375 "Heliostat module reflective area";
+  parameter SI.Area A_heliostat = 141.8 "Heliostat module reflective area";
   parameter Real he_av_design = 0.99 "Helisotats availability";
   parameter SI.Efficiency eff_opt = 0.6389 "Field optical efficiency at design point";
   parameter SI.Irradiance dni_des = 950 "DNI at design point";
@@ -42,9 +41,9 @@ model SaltTwoTanks
   parameter Real excl_fac = 0.97 "Exclusion factor";
   parameter Real twr_ht_const = if polar then 2.25 else 1.25 "Constant for tower height calculation";
   // Receiver
-  parameter Integer N_pa_rec = 20 "Number of panels in receiver";
+  parameter Integer N_pa_rec = 22 "Number of panels in receiver";
   parameter SI.Thickness t_tb_rec = 1.25e-3 "Receiver tube wall thickness";
-  parameter SI.Diameter D_tb_rec = 40e-3 "Receiver tube outer diameter";
+  parameter SI.Diameter D_tb_rec = 50e-3 "Receiver tube outer diameter";
   parameter Real ar_rec = 18.67 / 15 "Height to diameter aspect ratio of receiver aperture";
   parameter SI.Efficiency ab_rec = 0.94 "Receiver coating absorptance";
   parameter SI.Efficiency em_rec = 0.88 "Receiver coating emissivity";
@@ -52,11 +51,11 @@ model SaltTwoTanks
   parameter Real rec_fr = 1.0 - 0.9569597659257708 "Receiver loss fraction of radiance at design point";
   parameter SI.Temperature rec_T_amb_des = 298.15 "Ambient temperature at design point";
   // Storage
-  parameter Real t_storage(unit = "h") = 4 "Hours of storage";
+  parameter Real t_storage(unit = "h") = 16 "Hours of storage";
   parameter SI.Temperature T_cold_set = CV.from_degC(290) "Cold tank target temperature";
-  parameter SI.Temperature T_hot_set = CV.from_degC(574) "Hot tank target temperature";
+  parameter SI.Temperature T_hot_set = CV.from_degC(565) "Hot tank target temperature";
   parameter SI.Temperature T_cold_start = CV.from_degC(290) "Cold tank starting temperature";
-  parameter SI.Temperature T_hot_start = CV.from_degC(574) "Hot tank starting temperature";
+  parameter SI.Temperature T_hot_start = CV.from_degC(565) "Hot tank starting temperature";
   parameter SI.Temperature T_cold_aux_set = CV.from_degC(280) "Cold tank auxiliary heater set-point temperature";
   parameter SI.Temperature T_hot_aux_set = CV.from_degC(500) "Hot tank auxiliary heater set-point temperature";
   parameter Medium.ThermodynamicState state_cold_set = Medium.setState_pTX(Medium.p_default, T_cold_set) "Cold salt thermodynamic state at design";
@@ -75,8 +74,8 @@ model SaltTwoTanks
   // Power block
   replaceable model Cycle = Models.PowerBlocks.Correlation.Rankine "Rankine cycle regression model";
   replaceable model Cooling = Models.PowerBlocks.Cooling.SAM "PB cooling model";
-  parameter SI.Power P_gross(fixed = if fixed_field then false else true) = 111e6 "Power block gross rating at design point";
-  parameter SI.Efficiency eff_blk = 0.3774 "Power block efficiency at design point";
+  parameter SI.Power P_gross(fixed = if fixed_field then false else true) = 113.9e6 "Power block gross rating at design point";
+  parameter SI.Efficiency eff_blk = 0.43 "Power block efficiency at design point";
   parameter Real par_fr = 0.099099099 "Parasitics fraction of power block rating at design point";
   parameter Real par_fix_fr = 0.0055 "Fixed parasitics as fraction of gross rating";
   parameter Boolean blk_enable_losses = true "true if the power heat loss calculation is enabled";
@@ -87,7 +86,7 @@ model SaltTwoTanks
   parameter SI.Temperature blk_T_amb_des = 316.15 "Ambient temperature at design for power block";
   parameter SI.Temperature par_T_amb_des = 298.15 "Ambient temperature at design point";
   parameter Real nu_net_blk = 0.9 "Gross to net power conversion factor at the power block";
-  parameter SI.Temperature T_in_ref_blk = from_degC(574) "HTF inlet temperature to power block at design";
+  parameter SI.Temperature T_in_ref_blk = from_degC(565) "HTF inlet temperature to power block at design";
   parameter SI.Temperature T_out_ref_blk = from_degC(290) "HTF outlet temperature to power block at design";
   // Control
   parameter SI.Angle ele_min = 0.13962634015955 "Heliostat stow deploy angle";
@@ -95,7 +94,7 @@ model SaltTwoTanks
   parameter SI.Velocity Wspd_max = 15 if use_wind "Wind stow speed";
   parameter SI.HeatFlowRate Q_flow_defocus = 330 / 294.18 * Q_flow_des "Solar field thermal power at defocused state";
   // This only works if const_dispatch=true. TODO for variable disptach Q_flow_defocus should be turned into an input variable to match the field production rate to the dispatch rate to the power block.
-  parameter Real nu_start = 0.25/*0.6*/ "Minimum energy start-up fraction to start the receiver";
+  parameter Real nu_start = 0.6/*0.6*/ "Minimum energy start-up fraction to start the receiver";
   parameter Real nu_min_sf = 0.3 "Minimum turn-down energy fraction to stop the receiver";
   parameter Real nu_defocus = 1 "Energy fraction to the receiver at defocus state";
   parameter Real hot_tnk_empty_lb = 5 "Hot tank empty trigger lower bound";
@@ -117,13 +116,13 @@ model SaltTwoTanks
   // Calculated Parameters
   parameter SI.HeatFlowRate Q_flow_des = if fixed_field then if match_sam then R_des / ((1 + rec_fr) * SM) else R_des * (1 - rec_fr) / SM else P_gross / eff_blk "Heat to power block at design";
   parameter SI.Energy E_max = t_storage * 3600 * Q_flow_des "Maximum tank stored energy";
-  parameter SI.Area A_field = R_des / eff_opt / he_av_design / dni_des "Heliostat field reflective area";
+  parameter SI.Area A_field = n_heliostat*A_heliostat "Heliostat field reflective area";
   // parameter SI.Efficiency eff_rec = AQUI INSERTAR TABLA DE EFICIENCIA DEL RECEPTOR "Matrix of receiver optical efficiency";
   // parameter SI.Energy E_rev = R_des*A_field*eff_opt*eff_rec "Energy in receiver";
-  parameter Integer n_heliostat = integer(ceil(A_field / A_heliostat)) "Number of heliostats";
-  parameter SI.Area A_receiver = A_field / C "Receiver aperture area";
-  parameter SI.Diameter D_receiver = sqrt(A_receiver / (CN.pi * ar_rec)) "Receiver diameter";
-  parameter SI.Length H_receiver = D_receiver * ar_rec "Receiver height";
+  parameter Integer n_heliostat = 10600 "Number of heliostats";
+  parameter SI.Area A_receiver = CN.pi*D_receiver*H_receiver "Receiver aperture area";
+  parameter SI.Diameter D_receiver = 20.59 "Receiver diameter";
+  parameter SI.Length H_receiver = 18.4 "Receiver height";
   parameter SI.Area A_land = land_mult * A_field + 197434.207385281 "Land area";
   parameter SI.SpecificEnthalpy h_cold_set = Medium.specificEnthalpy(state_cold_set) "Cold salt specific enthalpy at design";
   parameter SI.SpecificEnthalpy h_hot_set = Medium.specificEnthalpy(state_hot_set) "Hot salt specific enthalpy at design";
@@ -139,7 +138,7 @@ model SaltTwoTanks
   parameter SI.Power P_name = P_net "Nameplate rating of power block";
   parameter SI.Length H_storage = ceil((4 * V_max * tank_ar ^ 2 / CN.pi) ^ (1 / 3)) "Storage tank height";
   parameter SI.Diameter D_storage = H_storage / tank_ar "Storage tank diameter";
-  parameter SI.Length H_tower = 0.154 * sqrt(twr_ht_const * (A_field / (gnd_cvge * excl_fac)) / CN.pi) "Tower height";
+  parameter SI.Length H_tower = 220 "Tower height";
   // A_field/(gnd_cvge*excl_fac) is the field gross area
   parameter SI.Diameter D_tower = D_receiver "Tower diameter";
   // That's a fair estimate. An accurate H-to-D correlation may be used.
@@ -364,7 +363,7 @@ equation
   annotation(
     Diagram(coordinateSystem(extent = {{-140, -120}, {160, 140}}, initialScale = 0.1), graphics = {Text(lineColor = {217, 67, 180}, extent = {{-96, 92}, {-60, 90}}, textString = "defocus strategy", fontSize = 9), Text(lineColor = {217, 67, 180}, extent = {{-50, -40}, {-14, -40}}, textString = "on/off strategy", fontSize = 9), Text(origin = {2, 2}, extent = {{-52, 8}, {-4, -12}}, textString = "Receiver", fontSize = 9), Text(origin = {12, 4}, extent = {{-110, 4}, {-62, -16}}, textString = "Heliostats Field", fontSize = 9), Text(origin = {4, -8}, extent = {{-80, 86}, {-32, 66}}, textString = "Sun", fontSize = 9), Text(origin = {20, 50}, extent = {{-10, -5}, {10, 5}}, textString = "Hot Tank", fontSize = 9), Text(extent = {{30, -24}, {78, -44}}, textString = "Cold Tank", fontSize = 9), Text(origin = {4, -2}, extent = {{80, 12}, {128, -8}}, textString = "Power Block", fontSize = 9), Text(origin = {6, 0}, extent = {{112, 16}, {160, -4}}, textString = "Market", fontSize = 9), Text(origin = {2, 4}, extent = {{-6, 20}, {42, 0}}, textString = "Rec Control", fontSize = 9), Text(origin = {55, 55}, extent = {{-15, -5}, {15, 5}}, textString = "PB Control", fontSize = 9), Text(origin = {8, -26}, extent = {{-146, -26}, {-98, -46}}, textString = "Data Source", fontSize = 9)}),
     Icon(coordinateSystem(extent = {{-140, -120}, {160, 140}})),
-    experiment(StopTime = 86400, StartTime = 0, Tolerance = 0.0001, Interval = 1),
+    experiment(StopTime = 31536000, StartTime = 0, Tolerance = 0.0001, Interval = 60),
     __Dymola_experimentSetupOutput,
     Documentation(revisions = "<html>
 	<ul>
