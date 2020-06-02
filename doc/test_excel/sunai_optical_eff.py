@@ -1,25 +1,29 @@
+# -*- coding: utf-8 -*-
 from scipy import interpolate
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import pandas as pd
 import os
 home = os.path.expanduser('~')
 
-x = np.linspace(0,np.pi/2,10)
-y = np.linspace(0,330*np.pi/180,12)
+ele = np.linspace(0,np.pi/2,10)
+azi = np.linspace(0,33*np.pi/18,12)
 
-xx, yy = np.meshgrid(x,y)
+ele2D, azi2D = np.meshgrid(ele,azi)
 
-df = pd.read_csv(home + '/sunaicl-solartherm/SolarTherm/new_feature_functions/acciona_tables/csv_acciona/field_opt_eff_4ms.csv', usecols = [1,2,3,4,5,6,7,8,9,10,11,12])
+OELT = pd.read_csv(home + '/sunaicl-solartherm/SolarTherm/new_feature_functions/acciona_tables/csv_acciona/field_opt_eff_4ms.csv', usecols = [1,2,3,4,5,6,7,8,9,10,11,12])
 
-z = df.values
+opt_eff = OELT.values
 
-f = interpolate.interp2d(xx, yy, z)
+f = interpolate.interp2d(ele2D, azi2D, opt_eff)
 
-df = pd.read_csv('TMY.csv')
+TMY = pd.read_csv('TMY.csv')
 
-xnew = df['Azimuth\n[°]']
-ynew = df['Elevation\n[°]']
+eleTMY = TMY['Azimuth\n[°]']
+aziTMY = TMY['Elevation\n[°]']
 
-for i in range(np.size(xnew)):
-	znew = f(xnew[i], ynew[i])
+for i in range(np.size(eleTMY)):
+	opt_effTMY = f(eleTMY[i], aziTMY[i])
+	res = str(opt_effTMY)[1:-1]
+	print res
