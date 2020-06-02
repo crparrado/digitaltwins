@@ -22,7 +22,7 @@ model ReceiverTransient
   SI.Temperature T_in=Medium.temperature(state_in) "Temperature at inlet";
   SI.Temperature T_out=Medium.temperature(state_out) "Temperature at outlet";
   Medium.ThermodynamicState state_in=Medium.setState_phX(fluid_a.p,h_in);
-  Medium.ThermodynamicState state_out=Medium.setState_phX(fluid_b.p,max(h_0,h_out));
+  Medium.ThermodynamicState state_out=Medium.setState_phX(fluid_b.p,fluid_b.h_outflow);
   Real Q_inc;
   Real Q_perd;
 
@@ -65,7 +65,6 @@ model ReceiverTransient
     smoothness=Modelica.Blocks.Types.Smoothness.ContinuousDerivative,
     fileName=file_perf_rec);
 
-protected
   parameter Medium.ThermodynamicState state_0=Medium.setState_pTX(1e5,T_0);
   parameter SI.SpecificEnthalpy h_0=Medium.specificEnthalpy(state_0);
   parameter SI.Temperature T_0=from_degC(290) "Start value of temperature"; 
@@ -88,11 +87,10 @@ equation
 
   eta_rec = max(0,rec_perf_tab.y);
   Q_rcv = fluid_a.m_flow*(h_out-h_in);
-  Q_loss = heat.Q_flow*(1-eta_rec);
+  Q_loss = if heat.Q_flow > 1e-3 then ab*heat.Q_flow*(1-eta_rec) else A*sigma*em*(medium.T^4-Tamb^4);
   Q_inc = heat.Q_flow/1e6;
   Q_perd = Q_loss/1e6;
-  medium.d*V_rcv*der(medium.u) = heat.Q_flow - Q_loss + max(1e-3,fluid_a.m_flow)*(h_in-h_out);
-
+  medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) = ab*heat.Q_flow - Q_loss + fluid_a.m_flow*(h_in-h_out);
 annotation(
     experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
 end ReceiverTransient;
