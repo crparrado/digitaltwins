@@ -20,10 +20,10 @@ f = interpolate.interp2d(ele2D, azi2D, opt_eff)
 
 TMY = pd.read_csv('TMY.csv')
 
-eleTMY = TMY['Azimuth\n[°]']
-aziTMY = TMY['Elevation\n[°]']
+aziTMY = TMY['Azimuth\n[°]']
+eleTMY = TMY['Elevation\n[°]']
 
 for i in range(np.size(eleTMY)):
-	opt_effTMY = f(eleTMY[i], aziTMY[i])
+	opt_effTMY = f(aziTMY[i], eleTMY[i])
 	res = str(opt_effTMY)[1:-1]
 	print res
