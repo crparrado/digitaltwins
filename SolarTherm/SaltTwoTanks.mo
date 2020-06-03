@@ -16,10 +16,11 @@ model SaltTwoTanks
   replaceable package Medium = Media.MoltenSalt.MoltenSalt_ph "Medium props for molten salt";
   parameter String pri_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Prices/aemo_vic_2014.motab") "Electricity price file";
   parameter Currency currency = Currency.USD "Currency used for cost analysis";
-  parameter Boolean const_dispatch = true "Constant dispatch of energy";
-  parameter String sch_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/daily_sch_0.motab") if not const_dispatch "Discharging schedule from a file";
+  parameter Boolean const_dispatch = false "Constant dispatch of energy";
+  parameter String sch_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/sch_acciona.motab") if not const_dispatch "Discharging schedule from a file";
 
   // Weather data
+  parameter String wea_file_sch = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Weather/tmy_acc_sch.motab");
   parameter String wea_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Weather/tmy_acc_mod.motab");
   parameter Real wdelay[8] = {0, 0, 0, 0, 0, 0, 0, 0} "Weather file delays";
   parameter nSI.Angle_deg lon = -69.46620 "Longitude (+ve East)";
@@ -107,7 +108,7 @@ model SaltTwoTanks
   parameter SI.Power P_name = P_net "Nameplate rating of power block";
 
   // Control
-  parameter SI.Angle ele_min = 0.13962634015955 "Heliostat stow deploy angle";
+  parameter SI.Angle ele_min = Modelica.SIunits.Conversions.from_deg(8) "Heliostat stow deploy angle";
   parameter Boolean use_wind = true "true if using wind stopping strategy in the solar field";
   parameter SI.Velocity Wspd_max = 15 if use_wind "Wind stow speed";
   parameter Real nu_start = 0.25 "Minimum energy start-up fraction to start the receiver";
@@ -160,6 +161,8 @@ model SaltTwoTanks
 
   // System components
   // *********************
+  //Weather Source Scheduler
+  SolarTherm.Models.Sources.Weather.WeatherSource wea(file=wea_file_sch);
   //Weather data
   SolarTherm.Models.Sources.DataTable.DataTable data(lon = lon, lat = lat, t_zone = t_zone, year = year, file = wea_file) annotation(
     Placement(visible = true, transformation(extent = {{-132, -56}, {-102, -28}}, rotation = 0)));
@@ -242,12 +245,14 @@ model SaltTwoTanks
   SolarTherm.Models.Analysis.Market market(redeclare model Price = Models.Analysis.EnergyPrice.Constant) annotation(
     Placement(visible = true, transformation(extent = {{128, 12}, {148, 32}}, rotation = 0)));
   // TODO Needs to be configured in instantiation if not const_dispatch. See SimpleResistiveStorage model
-  SolarTherm.Models.Sources.Schedule.Scheduler sch if not const_dispatch;
+  SolarTherm.Models.Sources.Schedule.Scheduler sch_fixed(file = sch_file, ndaily = 1, wmap={{1,1,1,1,1,1,1}}, mmap={1,1,1,1,1,1,1,1,1,1,1,1}) if not const_dispatch;
   // Variables:
   SI.Power P_elec "Output power of power block";
   SI.Energy E_elec(start = 0, fixed = true, displayUnit = "MW.h") "Generate electricity";
   FI.Money R_spot(start = 0, fixed = true) "Spot market revenue";  
 equation
+//Connections scheduler
+  connect(wea.wbus, sch_fixed.wbus);
 //Connections from data
   connect(DNI_input.y, sun.dni) annotation(
     Line(points = {{-119, 70}, {-102, 70}, {-102, 69.8}, {-82.6, 69.8}}, color = {0, 0, 127}, pattern = LinePattern.Dot));
@@ -336,7 +341,7 @@ equation
   annotation(
     Diagram(coordinateSystem(extent = {{-140, -120}, {160, 140}}, initialScale = 0.1), graphics = {Text(lineColor = {217, 67, 180}, extent = {{-96, 92}, {-60, 90}}, textString = "defocus strategy", fontSize = 9), Text(lineColor = {217, 67, 180}, extent = {{-50, -40}, {-14, -40}}, textString = "on/off strategy", fontSize = 9), Text(origin = {2, 2}, extent = {{-52, 8}, {-4, -12}}, textString = "Receiver", fontSize = 9), Text(origin = {12, 4}, extent = {{-110, 4}, {-62, -16}}, textString = "Heliostats Field", fontSize = 9), Text(origin = {4, -8}, extent = {{-80, 86}, {-32, 66}}, textString = "Sun", fontSize = 9), Text(origin = {20, 50}, extent = {{-10, -5}, {10, 5}}, textString = "Hot Tank", fontSize = 9), Text(extent = {{30, -24}, {78, -44}}, textString = "Cold Tank", fontSize = 9), Text(origin = {4, -2}, extent = {{80, 12}, {128, -8}}, textString = "Power Block", fontSize = 9), Text(origin = {6, 0}, extent = {{112, 16}, {160, -4}}, textString = "Market", fontSize = 9), Text(origin = {2, 4}, extent = {{-6, 20}, {42, 0}}, textString = "Rec Control", fontSize = 9), Text(origin = {55, 55}, extent = {{-15, -5}, {15, 5}}, textString = "PB Control", fontSize = 9), Text(origin = {8, -26}, extent = {{-146, -26}, {-98, -46}}, textString = "Data Source", fontSize = 9)}),
     Icon(coordinateSystem(extent = {{-140, -120}, {160, 140}})),
-    experiment(StopTime = 31536000, StartTime = 0, Tolerance = 0.0001, Interval = 60),
+    experiment(StopTime = 15552000, StartTime = 0, Tolerance = 0.0001, Interval = 60),
     __Dymola_experimentSetupOutput,
     Documentation(revisions = "<html>
 	<ul>
