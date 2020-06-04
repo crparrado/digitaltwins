@@ -311,6 +311,7 @@ equation
   connect(controlCold.defocus, or1.u2) annotation(
     Line(points = {{17, -10.98}, {17, -32}, {-106, -32}, {-106, 4.8}, {-102.8, 4.8}}, color = {255, 0, 255}, pattern = LinePattern.Dash));
 // controlHot connections
+  connect(tankHot2.L, controlHot.L_mea_tk2);
   connect(tankHot.L, controlHot.L_mea) annotation(
     Line(points = {{36.2, 68.4}, {40, 68.4}, {40, 68.5}, {47.52, 68.5}}, color = {0, 0, 127}));
   connect(pumpCold.m_flow, controlHot.m_flow_in) annotation(
