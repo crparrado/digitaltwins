@@ -1,0 +1,6 @@
+*.mat
+*.xml
+*.dat
+Modelica_Utilities_*
+resources
+results*

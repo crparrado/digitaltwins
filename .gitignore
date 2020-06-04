@@ -1,0 +1,17 @@
+*~
+*.o
+*.so
+*.os
+Makefile
+*.cmake
+*.makefile
+*.json
+*.log
+install_manifest.txt
+CMakeCache.txt
+CMakeFiles
+/src/python/setup.py
+/src/python/solartherm.egg-info
+Testing
+SolarTherm/Models/Control/reference_1.mat
+examples/*_res*.mat
