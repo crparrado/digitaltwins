@@ -17,7 +17,7 @@ extends Modelica.Icons.Example;
     Placement(visible = true, transformation(origin = {52, 74}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
   Modelica.Blocks.Sources.Ramp m_source_hot(duration = 1800, height = 1400, offset = 0, startTime = 0)  annotation(
     Placement(visible = true, transformation(origin = {-82, 60}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Ramp ramp(duration = 1800, height = 0, offset = 0, startTime = 0)  annotation(
+  Modelica.Blocks.Sources.Ramp ramp(duration = 1800, height = 500, offset = 0, startTime = 0)  annotation(
     Placement(visible = true, transformation(origin = {-82, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation
   connect(source_hot.ports[1], powerBlock.fluid_a) annotation(

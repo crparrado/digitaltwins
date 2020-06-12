@@ -64,13 +64,22 @@ model PowerBlockAcciona
         origin={20,60},extent={{-6,-6},{6,6}},
         rotation=-90)));
 
-protected
+  Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
+                                          final unit = "K", displayUnit = "degC", min=0) annotation (Placement(visible = true,transformation(
+        
+        origin={-58, -16},extent={{10, -10}, {-10, 10}},
+        rotation=0), iconTransformation(
+        
+        origin={-55, -23},extent={{-5, -5}, {5, 5}},
+        rotation= 180)));
+
   Modelica.Blocks.Interfaces.RealInput parasities_internal;
   Real k_q;
   Real k_w;
   SI.SpecificEnthalpy h_in;
   SI.SpecificEnthalpy h_in_a2;
   SI.SpecificEnthalpy h_out;
+  SI.SpecificEnthalpy h_mea(start = h_out_ref);
   parameter SI.MassFlowRate m_flow_ref= Q_flow_ref/(h_in_ref-h_out_ref);
 
   Medium.ThermodynamicState state_in=Medium.setState_phX(fluid_a.p,inStream(fluid_a.h_outflow));
@@ -107,18 +116,23 @@ equation
   fluid_a2.m_flow + fluid_a.m_flow + fluid_b.m_flow=0;
   fluid_a.p=fluid_b.p;
   fluid_a.p=fluid_a2.p;
+  
+  fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
+  
+  T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);
 
-  load=max(nu_eps,fluid_a.m_flow/m_flow_ref); //load=1 if it is no able partial load
+//  load=max(nu_eps,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
+  load=max(1e-3,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
 
-  if logic then
+//  if logic then
     k_q=cycle.k_q;
     k_w=cycle.k_w;
-    fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - fluid_b.m_flow*h_out - Q_flow = 0;
-  else
-    k_q=0;
-    k_w=0;
-    h_out=h_out_ref;
-  end if;
+    fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_out - Q_flow = 0;
+//  else
+//    k_q=0;
+//    k_w=0;
+//    h_out=h_out_ref;
+//  end if;
 
   Q_flow/(cool.nu_q*Q_flow_ref*load)=k_q;
   W_gross/(cool.nu_w*W_des*load)=k_w;
