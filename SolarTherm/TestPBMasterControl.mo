@@ -1,4 +1,6 @@
+within SolarTherm;
 model TestPBMasterControl
+
 extends SolarTherm.Icons.Control;
   parameter Modelica.SIunits.MassFlowRate m_flow_on = 1400 "Constant mass flow rate on";
   parameter Modelica.SIunits.MassFlowRate m_flow_off = 0 "Constant mass flow rate off";
