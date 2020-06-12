@@ -111,19 +111,21 @@ model SaltTwoTanks
   parameter SI.Angle ele_min = Modelica.SIunits.Conversions.from_deg(0) "Heliostat stow deploy angle";
   parameter Boolean use_wind = true "true if using wind stopping strategy in the solar field";
   parameter SI.Velocity Wspd_max = 15 if use_wind "Wind stow speed";
-  parameter Real nu_start = 0.0125 "Minimum energy start-up fraction to start the receiver";
+  parameter Real nu_start = 0.05 "Minimum energy start-up fraction to start the receiver";
   parameter Real nu_min_sf = 0.125 "Minimum turn-down energy fraction to stop the receiver";
   parameter Real nu_defocus = 0.3 "0.42Energy fraction to the receiver at defocus state";
   parameter Real hot_tnk_empty_lb = 5 "Hot tank empty trigger lower bound (Level below which to stop disptach)";
   parameter Real hot_tnk_empty_ub = 10 "Hot tank empty trigger upper bound (Level above which to start disptach)";
-  parameter Real hot_tnk_full_lb = 123 "Hot tank full trigger lower bound";
-  parameter Real hot_tnk_full_ub = 120 "Hot tank full trigger upper bound";
+  parameter Real hot_tnk_full_lb = 80 "Hot tank full trigger lower bound";
+  parameter Real hot_tnk_full_ub = 90 "Hot tank full trigger upper bound";
   parameter Real cold_tnk_defocus_lb = 5 "Cold tank empty trigger lower bound (Level below which to stop disptach)";
   parameter Real cold_tnk_defocus_ub = 7 "Cold tank empty trigger upper bound (Level above which to start disptach)";
   parameter Real cold_tnk_crit_lb = 0 "Cold tank critically empty trigger lower bound (Level below which to stop disptach)";
   parameter Real cold_tnk_crit_ub = 30 "Cold tank critically empty trigger upper bound (Level above which to start disptach)";
-  parameter Real Ti = 10 "Time constant for integral component of receiver control";
-  parameter Real Kp = -100 "Gain of proportional component in receiver control";
+  
+  parameter Real Ti = 1000  "Time constant for integral component of receiver control";
+  parameter Real Kp = -10 "Gain of proportional component in receiver control";
+  
   parameter SI.MassFlowRate m_flow_fac = SM * Q_flow_des / (h_hot_set - h_cold_set) "Mass flow rate to receiver at design point";
   parameter SI.MassFlowRate m_flow_rec_max = 1.5 * m_flow_fac "Maximum mass flow rate to receiver";
   parameter SI.MassFlowRate m_flow_rec_start = m_flow_fac "Initial or guess value of mass flow rate to receiver in the feedback controller";
