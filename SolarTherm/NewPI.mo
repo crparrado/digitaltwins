@@ -1,6 +1,7 @@
-within SolarTherm.Models.Control;
-block PID_AW_reset3 "PI-with anti-windup and reset"
-  import Modelica.Blocks.Types.InitPID;
+within SolarTherm;
+
+block NewPI
+import Modelica.Blocks.Types.InitPID;
   import Modelica.Blocks.Types.Init;
   extends Modelica.Blocks.Interfaces.SISO;
 
@@ -41,17 +42,13 @@ block PID_AW_reset3 "PI-with anti-windup and reset"
     annotation (Placement(transformation(extent={{56,-50},{44,-38}})));
   Modelica.Blocks.Math.Add add2
     annotation (Placement(transformation(extent={{-38,-8},{-28,2}})));
-  Modelica.Blocks.Interfaces.BooleanInput reset annotation(
-    Placement(visible = true, transformation(origin = {-120, -60}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-120, -80}, extent = {{-20, -20}, {20, 20}}, rotation = -360)));
 initial equation
 //   if initType==InitPID.InitialOutput then
 //      y = y_start;
 //   end if;
 
 equation
-  when reset then
-    reinit(I.y, (y_start/Kp)+u);
-  end when;
+  
 
   connect(u, P.u) annotation (Line(points={{-120,0},{-80,0},{-80,70},{-62,70}},
         color={0,0,127}));
@@ -182,4 +179,6 @@ to compute u by an algebraic equation.
 
 </html>"),
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
-end PID_AW_reset3;
+
+
+end NewPI;
