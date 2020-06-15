@@ -16,7 +16,7 @@ parameter SI.SpecificEnergy k_loss_hot = 0.55e3 "Hot pump parasitic power coeffi
     Placement(visible = true, transformation(origin = {30, 90}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Sources.RealExpression parasites(y = 1.4e7)  annotation(
     Placement(visible = true, transformation(origin = {88, 88}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Ramp ramp(duration = 4200, height = 185.208, offset = 0, startTime = 0)  annotation(
+  Modelica.Blocks.Sources.Ramp ramp(duration = 4200, height = 185.2083, offset = 0, startTime = 0)  annotation(
     Placement(visible = true, transformation(origin = {-82, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation
   connect(source_cold.ports[1], powerBlock.fluid_a2) annotation(
