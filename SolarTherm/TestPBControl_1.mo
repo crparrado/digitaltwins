@@ -1,5 +1,5 @@
 within SolarTherm;
-model TestPBControl
+model TestPBControl_1
 extends Modelica.Icons.Example;
 parameter SI.SpecificEnergy k_loss_cold = 0.15e3 "Cold pump parasitic power coefficient";
 parameter SI.SpecificEnergy k_loss_hot = 0.55e3 "Hot pump parasitic power coefficient";
@@ -13,36 +13,36 @@ parameter SI.SpecificEnergy k_loss_hot = 0.55e3 "Hot pump parasitic power coeffi
     Placement(visible = true, transformation(origin = {30, 90}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Sources.RealExpression parasites(y = 1.4e7)  annotation(
     Placement(visible = true, transformation(origin = {88, 88}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Ramp ramp(duration = 4200, height = 100, offset = 0, startTime = 0)  annotation(
+  Modelica.Blocks.Sources.Ramp ramp(duration = 4200, height = 185.0823, offset = 0, startTime = 0)  annotation(
     Placement(visible = true, transformation(origin = {-82, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SolarTherm.Models.Fluid.Pumps.PumpSimple pumpHot(k_loss = k_loss_hot) annotation(
-    Placement(visible = true, transformation(extent = {{32, -6}, {44, 6}}, rotation = 0)));
+    Placement(visible = true, transformation(extent = {{30, -8}, {42, 4}}, rotation = 0)));
   SolarTherm.TestPBMasterControl testPBMasterControl annotation(
     Placement(visible = true, transformation(origin = {18, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Fluid.Sources.FixedBoundary hot_tank(redeclare package Medium = Medium, T = from_degC(565), nPorts = 1, p = 1e5) annotation(
     Placement(visible = true, transformation(origin = {-58, 60}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Models.PowerBlocks.PowerBlockAcciona powerBlock annotation(
-    Placement(visible = true, transformation(origin = {80, -30}, extent = {{-30, -30}, {30, 30}}, rotation = 0)));
+  SolarTherm.TestPBTransient testPBTransient annotation(
+    Placement(visible = true, transformation(origin = {73, -43}, extent = {{-33, -33}, {33, 33}}, rotation = 0)));
 equation
   connect(ramp.y, source_cold.m_flow_in) annotation(
     Line(points = {{-70, 24}, {-44, 24}, {-44, 24}, {-44, 24}}, color = {0, 0, 127}));
   connect(testPBMasterControl.m_flow, pumpHot.m_flow) annotation(
-    Line(points = {{30, 30}, {38, 30}, {38, 6}, {38, 6}, {38, 6}}, color = {0, 0, 127}));
+    Line(points = {{30, 30}, {30, 17.5}, {36, 17.5}, {36, 3}}, color = {0, 0, 127}));
   connect(hot_tank.ports[1], pumpHot.fluid_a) annotation(
-    Line(points = {{-48, 60}, {-12, 60}, {-12, 0}, {32, 0}, {32, 0}, {32, 0}}, color = {0, 127, 255}));
-  connect(powerBlock.T, testPBMasterControl.T_mea) annotation(
-    Line(points = {{64, -36}, {-4, -36}, {-4, 32}, {6, 32}, {6, 34}, {8, 34}}, color = {0, 0, 127}));
-  connect(pumpHot.fluid_b, powerBlock.fluid_a) annotation(
-    Line(points = {{44, 0}, {54, 0}, {54, -20}, {67, -20}}, color = {0, 127, 255}));
-  connect(parasites.y, powerBlock.parasities) annotation(
-    Line(points = {{77, 88}, {86, 88}, {86, -12}}, color = {0, 0, 127}));
-  connect(T_amb.y, powerBlock.T_amb) annotation(
-    Line(points = {{41, 90}, {74, 90}, {74, -12}}, color = {0, 0, 127}));
-  connect(cold_tank.ports[1], powerBlock.fluid_b) annotation(
-    Line(points = {{-70, -44}, {15.5, -44}, {15.5, -43}, {63, -43}}, color = {0, 127, 255}));
-  connect(source_cold.ports[1], powerBlock.fluid_a2) annotation(
-    Line(points = {{-24, 16}, {6, 16}, {6, -31}, {65, -31}}, color = {0, 127, 255}));
+    Line(points = {{-48, 60}, {-12, 60}, {-12, -2}, {30, -2}}, color = {0, 127, 255}));
+  connect(cold_tank.ports[1], testPBTransient.fluid_b) annotation(
+    Line(points = {{-70, -44}, {-14, -44}, {-14, -58}, {54, -58}}, color = {0, 127, 255}));
+  connect(testPBTransient.T, testPBMasterControl.T_mea) annotation(
+    Line(points = {{55, -51}, {-4, -51}, {-4, 34}, {8, 34}}, color = {0, 0, 127}));
+  connect(pumpHot.fluid_b, testPBTransient.fluid_a) annotation(
+    Line(points = {{42, -2}, {50, -2}, {50, -32}, {58, -32}, {58, -32}, {58, -32}}));
+  connect(T_amb.y, testPBTransient.T_amb) annotation(
+    Line(points = {{42, 90}, {68, 90}, {68, -14}, {66, -14}, {66, -24}, {66, -24}}, color = {0, 0, 127}));
+  connect(parasites.y, testPBTransient.parasities) annotation(
+    Line(points = {{78, 88}, {74, 88}, {74, -2}, {80, -2}, {80, -22}, {80, -22}, {80, -24}}, color = {0, 0, 127}));
+  connect(source_cold.ports[1], testPBTransient.fluid_a2) annotation(
+    Line(points = {{-24, 16}, {-16, 16}, {-16, -32}, {18, -32}, {18, -44}, {56, -44}, {56, -44}, {56, -44}}, color = {0, 127, 255}));
 
 annotation(
     experiment(StartTime = 0, StopTime = 3600, Tolerance = 1e-6, Interval = 0.1));
-end TestPBControl;
+end TestPBControl_1;

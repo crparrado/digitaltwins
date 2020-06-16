@@ -91,6 +91,7 @@ equation
   Q_inc = heat.Q_flow/1e6;
   Q_perd = Q_loss/1e6;
   medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) = ab*heat.Q_flow - Q_loss + fluid_a.m_flow*(h_in-h_out);
+  //0 = ab*heat.Q_flow - Q_loss + fluid_a.m_flow*(h_in-h_out);
 annotation(
     experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
 end ReceiverTransient;

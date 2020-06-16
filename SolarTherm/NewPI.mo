@@ -5,10 +5,21 @@ import Modelica.Blocks.Types.InitPID;
   import Modelica.Blocks.Types.Init;
   extends Modelica.Blocks.Interfaces.SISO;
 
+
+  parameter Real k(unit="1")=1 "Gain";
+  parameter Real Nd(min=Modelica.Constants.small) = 10
+    "The higher Nd, the more ideal the derivative block";
+  parameter Real xi_start=0
+    "Initial or guess value for integrator output (= integrator state)"
+    annotation (Dialog(group="Initialization"));
+  parameter Real xd_start=0
+    "Initial or guess value for state of derivative block"
+    annotation (Dialog(group="Initialization"));
   //parameter Real k(unit="1")=1 "Gain";
   parameter Modelica.SIunits.Time Ti(min=Modelica.Constants.small, start=0.5)
     "Time Constant of Integrator";
-
+  parameter Modelica.SIunits.Time Td(min=0, start=0.1)
+    "Time Constant of Derivative block";
   parameter Modelica.Blocks.Types.InitPID initType= Modelica.Blocks.Types.InitPID.InitialOutput
     "Type of initialization (1: no init, 2: steady state, 3: initial state, 4: initial output)"
                                      annotation(Evaluate=true,
@@ -19,83 +30,38 @@ import Modelica.Blocks.Types.InitPID;
   constant Modelica.SIunits.Time unitTime=1 annotation (HideResult=true);
   parameter Real Kp,  uMax, uMin;
   parameter Modelica.SIunits.Time Tt;
-
-  Modelica.Blocks.Math.Gain P(k=Kp) "Proportional part of PID controller"
-    annotation (Placement(transformation(extent={{-60,60},{-40,80}},  rotation=0)));
-  Modelica.Blocks.Continuous.Integrator I(
-    y_start=y_start/Kp,
-    k=unitTime/1,
-    initType=Modelica.Blocks.Types.Init.InitialOutput)
-    "Integral part of PID controller" annotation (Placement(transformation(
-          extent={{-14,-12},{6,8}},  rotation=0)));
-  Modelica.Blocks.Math.Add  Add annotation (Placement(transformation(extent={{28,-4},
-            {36,4}},       rotation=0)));
-  Modelica.Blocks.Math.Gain P1(k=Kp/Ti) "Proportional part of PID controller"
-    annotation (Placement(transformation(extent={{-70,-12},{-46,12}}, rotation=0)));
-  Modelica.Blocks.Nonlinear.Limiter limiter(uMax=uMax, uMin=uMin)
-    annotation (Placement(transformation(extent={{64,-8},{80,8}})));
-  Modelica.Blocks.Math.Add add1(k2=-1)
-    annotation (Placement(transformation(extent={{-7,-7},{7,7}},
-        rotation=-90,
-        origin={73,-29})));
-  Modelica.Blocks.Math.Gain gain1(k=1/Tt)
-    annotation (Placement(transformation(extent={{56,-50},{44,-38}})));
-  Modelica.Blocks.Math.Add add2
-    annotation (Placement(transformation(extent={{-38,-8},{-28,2}})));
+  Modelica.Blocks.Math.Add3 Add annotation(
+    Placement(visible = true, transformation(extent = {{-2, -10}, {18, 10}}, rotation = 0)));
+  Modelica.Blocks.Continuous.Integrator I(initType = if initType == InitPID.SteadyState then Init.SteadyState else if initType == InitPID.InitialState or initType == InitPID.DoNotUse_InitialIntegratorState then Init.InitialState else Init.NoInit, k = unitTime / Ti, y_start = xi_start) annotation(
+    Placement(visible = true, transformation(extent = {{-82, -20}, {-42, 20}}, rotation = 0)));
+  Modelica.Blocks.Math.Gain Gain(k = k) annotation(
+    Placement(visible = true, transformation(extent = {{38, -10}, {58, 10}}, rotation = 0)));
+  Modelica.Blocks.Continuous.Derivative D(T = max([Td / Nd, 100 * Modelica.Constants.eps]), initType = if initType == InitPID.SteadyState or initType == InitPID.InitialOutput then Init.SteadyState else if initType == InitPID.InitialState then Init.InitialState else Init.NoInit, k = Td / unitTime, x_start = xd_start) annotation(
+    Placement(visible = true, transformation(extent = {{-82, -100}, {-42, -60}}, rotation = 0)));
+  Modelica.Blocks.Math.Gain P(k = 1) annotation(
+    Placement(visible = true, transformation(extent = {{-82, 60}, {-42, 100}}, rotation = 0)));
+  Modelica.Blocks.Nonlinear.Limiter limiter(uMax = uMax, uMin = uMin) annotation(
+    Placement(visible = true, transformation(extent = {{70, -8}, {86, 8}}, rotation = 0)));
 initial equation
 //   if initType==InitPID.InitialOutput then
 //      y = y_start;
 //   end if;
 
 equation
-  
-
-  connect(u, P.u) annotation (Line(points={{-120,0},{-80,0},{-80,70},{-62,70}},
-        color={0,0,127}));
-  connect(P.y, Add.u1) annotation (Line(points={{-39,70},{16,70},{16,2.4},{27.2,
-          2.4}},
-        color={0,0,127}));
-  connect(I.y, Add.u2)
-    annotation (Line(points={{7,-2},{16,-2},{16,-2.4},{27.2,-2.4}},
-                                              color={0,0,127}));
-  connect(P1.u, P.u) annotation (Line(
-      points={{-72.4,-2.22045e-016},{-74,-2.22045e-016},{-74,0},{-80,0},{-80,70},
-          {-62,70}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(Add.y, limiter.u) annotation (Line(
-      points={{36.4,0},{62.4,0}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(limiter.y, y) annotation (Line(
-      points={{80.8,2.22045e-16},{92.4,2.22045e-16},{92.4,0},{110,0}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(add1.u1, y) annotation (Line(
-      points={{77.2,-20.6},{86,-20.6},{86,0},{110,0}},
-      color={0,0,127},
-      smooth=Smooth.None));
-
-  connect(add1.u2, Add.y) annotation (Line(
-      points={{68.8,-20.6},{54,-20.6},{54,0},{36.4,0}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(gain1.u, add1.y) annotation (Line(
-      points={{57.2,-44},{73,-44},{73,-36.7}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(P1.y, add2.u1) annotation (Line(
-      points={{-44.8,0},{-40,0},{-40,-2},{-39,-2},{-39,0}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(add2.y, I.u) annotation (Line(
-      points={{-27.5,-3},{-21.75,-3},{-21.75,-2},{-16,-2}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(gain1.y, add2.u2) annotation (Line(
-      points={{43.4,-44},{-39,-44},{-39,-6}},
-      color={0,0,127},
-      smooth=Smooth.None));
+  connect(I.y, Add.u2) annotation(
+    Line(points = {{-40, 0}, {-4, 0}}, color = {0, 0, 127}));
+  connect(D.y, Add.u3) annotation(
+    Line(points = {{-40, -80}, {-4, -80}, {-4, -8}}, color = {0, 0, 127}));
+  connect(P.y, Add.u1) annotation(
+    Line(points = {{-40, 80}, {-4, 80}, {-4, 8}}, color = {0, 0, 127}));
+  connect(Add.y, Gain.u) annotation(
+    Line(points = {{19, 0}, {36, 0}}, color = {0, 0, 127}));
+  connect(u, I.u) annotation(
+    Line(points = {{-120, 0}, {-88, 0}, {-88, 0}, {-86, 0}}, color = {0, 0, 127}));
+  connect(Gain.y, limiter.u) annotation(
+    Line(points = {{60, 0}, {68, 0}, {68, 0}, {68, 0}}, color = {0, 0, 127}));
+  connect(limiter.y, y) annotation(
+    Line(points = {{86, 0}, {102, 0}, {102, 0}, {110, 0}}, color = {0, 0, 127}));
   annotation(
     defaultComponentName = "PID",
     Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Line(points = {{-80, 78}, {-80, -90}}, color = {192, 192, 192}), Polygon(lineColor = {192, 192, 192}, fillColor = {192, 192, 192}, fillPattern = FillPattern.Solid, points = {{-80, 90}, {-88, 68}, {-72, 68}, {-80, 90}}), Line(points = {{-90, -80}, {82, -80}}, color = {192, 192, 192}), Polygon(lineColor = {192, 192, 192}, fillColor = {192, 192, 192}, fillPattern = FillPattern.Solid, points = {{90, -80}, {68, -72}, {68, -88}, {90, -80}}), Line(points = {{-80, -80}, {-80, -20}, {60, 80}}, color = {0, 0, 127}), Text(lineColor = {192, 192, 192}, extent = {{-20, -60}, {80, -20}}, textString = "PID"), Text(extent = {{-150, -150}, {150, -110}}, textString = "Ti=%Ti")}),
