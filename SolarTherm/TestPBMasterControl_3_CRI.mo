@@ -1,6 +1,6 @@
 within SolarTherm;
 
-model TestPBMasterControl_3_VIC
+model TestPBMasterControl_3_CRI
   extends SolarTherm.Icons.Control;
   parameter SI.MassFlowRate m_flow_min = 0 "Mass flow rate when control off";
   parameter SI.MassFlowRate m_flow_max = 700 "Maximum mass flow rate";
@@ -42,4 +42,4 @@ equation
     Line(points = {{-74, 36}, {-44, 36}, {-44, 2}, {-10, 2}, {-10, 2}}, color = {0, 0, 127}));
   annotation(
     uses(SolarTherm(version = "0.2"), Modelica(version = "3.2.3")));
-end TestPBMasterControl_3_VIC;
+end TestPBMasterControl_3_CRI;

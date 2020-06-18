@@ -14,7 +14,6 @@ TestPBControl
 TestReceiverTransient
 TestReceiverTransient0D
 TestPBMasterControl
-NewPI
 TestRampPB
 TestPBTransient
 TestPBControl_1
@@ -24,4 +23,11 @@ TestPBControl_3_VIC
 TestPBControl_3_VIC_PERTURBED
 TestPBMasterControl_3_VIC
 TestPBTransient_fix
-Test_PID
+TestPBMasterControl_3_VIC_cold
+Logictest
+TestPBMasterControl_3_CRI
+TestPBMasterControl_3_CRI_cold
+TestPBControl_3_CRI
+TestPBMasterControl_3_CRI_hot
+TestPBControl_3_CRI_new
+Logictest_hot

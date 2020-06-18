@@ -10,6 +10,7 @@ model TestPBTransient_fix
   parameter SI.Temperature T_out_ref=from_degC(290) "HTF outlet temperature (design)"
                                                                                      annotation (Dialog(group="Design"));
   parameter SI.AbsolutePressure p_bo=10e5 "Boiler operating pressure" annotation (Dialog(group="Design"));
+  //parameter SI.HeatFlowRate Q_flow_ref=294.118e6 "Design thermal power" annotation (Dialog(group="Design"));
   parameter SI.HeatFlowRate Q_flow_ref=294.118e6 "Design thermal power" annotation (Dialog(group="Design"));
 
   parameter Real nu_min=0.25 "Minimum turbine operation" annotation (Dialog(group="Operating strategy"));
@@ -137,10 +138,11 @@ equation
   //fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
   
   
-  //T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);
+   T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);
+  //T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);from_degC(T_h(h_mea))
   
   //
-  T = T_out;
+  //T = T_out;
   
   //medium.h=(h_in+h_out)/2;
   //h_in=inStream(fluid_a.h_outflow);
@@ -171,7 +173,7 @@ equation
 
 //  load=max(nu_eps,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
  // load=max(1e-3,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
-  load=max(1e-3,-fluid_a.m_flow-fluid_a2.m_flow)/m_flow_ref; //load=1 if it is no able partial load
+  load=max(1e-3,(fluid_a.m_flow)/m_flow_ref); //load=1 if it is no able partial load
 
 //  if logic then
     k_q=cycle.k_q;
