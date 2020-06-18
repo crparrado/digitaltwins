@@ -32,16 +32,16 @@ model TestPBMasterControl_3_VIC
     Placement(visible = true, transformation(extent = {{-44, 36}, {-24, 56}}, rotation = 0)));
 equation
   connect(T_ref_input.y, LimPID_PB.u_s) annotation(
-    Line(points = {{-23, 46}, {-10, 46}}, color = {0, 0, 127}));
+    Line);
   connect(T_mea, LimPID_PB.u_m) annotation(
-    Line(points = {{-104, -4}, {2, -4}, {2, 34}}, color = {0, 0, 127}));
+    Line);
   
   LimPID_PB.y = m_flow;
   if m_flow >= 0 then
-    m_flow_hot = 0;
+    m_flow_hot = 10;
     m_flow_cold = m_flow;
   else
-    m_flow_hot = m_flow;
+    m_flow_hot = 10;
     m_flow_cold = 0;
   end if;
   annotation(
