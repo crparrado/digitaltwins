@@ -20,3 +20,8 @@ TestPBTransient
 TestPBControl_1
 TestPBMasterControl_1
 TestPBControl_2
+TestPBControl_3_VIC
+TestPBControl_3_VIC_PERTURBED
+TestPBMasterControl_3_VIC
+TestPBTransient_fix
+Test_PID

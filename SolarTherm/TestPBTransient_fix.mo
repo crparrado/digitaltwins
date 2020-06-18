@@ -99,7 +99,7 @@ model TestPBTransient_fix
 
   parameter Real nu_eps=0.1;
   SI.HeatFlowRate Q_rcv;
-  parameter SI.Volume V_rcv=500000;
+  parameter SI.Volume V_rcv=5000;
   
   initial equation
   medium.h = h_out_ref;
@@ -125,13 +125,14 @@ equation
 //  h_out=fluid_a.h_outflow;
 //  h_out=fluid_a2.h_outflow;
   h_in=fluid_a.h_outflow;
-  h_in=fluid_a2.h_outflow;
+  h_in_a2=fluid_a2.h_outflow;
   fluid_a2.m_flow + fluid_a.m_flow + fluid_b.m_flow=0;
 //  fluid_a.p=fluid_b.p;
 //  fluid_a.p=fluid_a2.p;
   fluid_a2.p=medium.p;
   fluid_a.p=medium.p;
   fluid_b.p=medium.p;
+  
   
   //fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
   
@@ -162,12 +163,15 @@ equation
   //medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) =  -fluid_a.m_flow*h_in - fluid_a2.m_flow*h_in_a2 + max(1e-3,-fluid_b.m_flow)*h_mea;
   
   
-  medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= -fluid_a.m_flow*h_in - fluid_a2.m_flow*h_in_a2 + max(1e-3,fluid_b.m_flow)*h_mea + Q_flow;
+  //medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea + Q_flow;
+  
+  medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= -fluid_a.m_flow*h_in - fluid_a2.m_flow*h_in_a2 - max(1e-3,fluid_b.m_flow)*h_mea + Q_flow;
   ///le cambie el signo a fluid_b.m_flow
   
 
 //  load=max(nu_eps,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
-  load=max(1e-3,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
+ // load=max(1e-3,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
+  load=max(1e-3,-fluid_a.m_flow-fluid_a2.m_flow)/m_flow_ref; //load=1 if it is no able partial load
 
 //  if logic then
     k_q=cycle.k_q;

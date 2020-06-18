@@ -17,7 +17,7 @@ parameter SI.SpecificEnergy k_loss_hot = 0.55e3 "Hot pump parasitic power coeffi
     Placement(visible = true, transformation(extent = {{-18, -36}, {-6, -24}}, rotation = 0)));
   Modelica.Fluid.Sources.FixedBoundary hot_tank(redeclare package Medium = Medium, T = from_degC(565), nPorts = 1, p = 1e5) annotation(
     Placement(visible = true, transformation(origin = {-88, -2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  SolarTherm.TestPBMasterControl_3_VIC testPBMasterControl_3_VIC annotation(
+  SolarTherm.TestPBMasterControl_3_VIC testPBMasterControl_3_VIC(Kp = -100, Td = 1e-6, Ti = 0.5e8, uMax = 1600, uMin = -600)  annotation(
     Placement(visible = true, transformation(origin = {-24, 42}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
   SolarTherm.TestPBTransient_fix testPBTransient_fix annotation(
     Placement(visible = true, transformation(origin = {75, -29}, extent = {{-33, -33}, {33, 33}}, rotation = 0)));
