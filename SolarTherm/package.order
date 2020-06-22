@@ -31,3 +31,8 @@ TestPBControl_3_CRI
 TestPBMasterControl_3_CRI_hot
 TestPBControl_3_CRI_new
 Logictest_hot
+Test_PID
+pb_rankine_real
+pb_rankine_boiler
+pb_rankine_turbine
+pb_rankine_condenser
