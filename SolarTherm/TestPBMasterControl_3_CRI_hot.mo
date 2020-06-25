@@ -18,7 +18,7 @@ model TestPBMasterControl_3_CRI_hot
   parameter Real L_df_off = 96 "Level of stop defocus";
   parameter Real uMax, uMin;
   //Real m_flow;
-  Modelica.Blocks.Interfaces.RealInput m_flow_hot annotation(
+  Modelica.Blocks.Interfaces.RealOutput m_flow_hot annotation(
     Placement(visible = true, transformation(extent = {{60, 52}, {100, 92}}, rotation = 0), iconTransformation(extent = {{86, 42}, {126, 82}}, rotation = 0)));
   //New variable
   //Modelica.Blocks.Interfaces.RealInput L_mea_tk2;

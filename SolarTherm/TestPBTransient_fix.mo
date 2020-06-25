@@ -6,7 +6,7 @@ model TestPBTransient_fix
   replaceable package Medium = SolarTherm.Media.MoltenSalt.MoltenSalt_ph;
 
   parameter SI.HeatFlowRate W_des=111e6 "Design turbine gross output" annotation (Dialog(group="Design"));
-  parameter SI.Temperature T_in_ref=from_degC(574) "HTF inlet temperature (design)" annotation (Dialog(group="Design"));
+  parameter SI.Temperature T_in_ref=from_degC(565) "HTF inlet temperature (design)" annotation (Dialog(group="Design"));
   parameter SI.Temperature T_out_ref=from_degC(290) "HTF outlet temperature (design)"
                                                                                      annotation (Dialog(group="Design"));
   parameter SI.AbsolutePressure p_bo=10e5 "Boiler operating pressure" annotation (Dialog(group="Design"));
@@ -99,7 +99,7 @@ model TestPBTransient_fix
   Modelica.Blocks.Interfaces.RealInput T_amb_internal;
 
   parameter Real nu_eps=0.1;
-  SI.HeatFlowRate Q_rcv;
+  //SI.HeatFlowRate Q_rcv;
   parameter SI.Volume V_rcv=5000;
   
   initial equation
@@ -157,7 +157,7 @@ equation
 //fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
 
   //eta_rec = max(0,rec_perf_tab.y);
-  Q_rcv = fluid_a.m_flow*(h_mea-h_in);
+  //Q_rcv = fluid_a.m_flow*(h_mea-h_in);
   //Q_loss = if heat.Q_flow > 1e-3 then ab*heat.Q_flow*(1-eta_rec) else A*sigma*em*(medium.T^4-Tamb^4);
   //Q_inc = heat.Q_flow/1e6;
   //Q_perd = Q_loss/1e6;
@@ -167,7 +167,7 @@ equation
   
   //medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea + Q_flow;
   
-  medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 + max(1e-3,fluid_b.m_flow)*h_mea - Q_flow;
+  medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea - Q_flow;
   ///le cambie el signo a fluid_b.m_flow
   
 
@@ -175,15 +175,15 @@ equation
  // load=max(1e-3,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
   load=max(1e-3,(fluid_a.m_flow)/m_flow_ref); //load=1 if it is no able partial load
 
-//  if logic then
+  if logic then
     k_q=cycle.k_q;
     k_w=cycle.k_w;
    // fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea - Q_flow = 0;
-//  else
-//    k_q=0;
-//    k_w=0;
+  else
+    k_q=0;
+    k_w=0;
 //    h_out=h_out_ref;
-//  end if;
+  end if;
 
   Q_flow/(cool.nu_q*Q_flow_ref*load)=k_q;
   W_gross/(cool.nu_w*W_des*load)=k_w;

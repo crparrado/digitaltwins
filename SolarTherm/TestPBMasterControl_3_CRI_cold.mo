@@ -17,8 +17,8 @@ model TestPBMasterControl_3_CRI_cold
   parameter Real L_df_on = 99 "Level of start defocus";
   parameter Real L_df_off = 96 "Level of stop defocus";
   parameter Real uMax, uMin;
-  parameter SI.Temperature T_ref= from_degC(290);
-  parameter SI.Temperature t_max = from_degC(290);
+  parameter SI.Temperature T_ref= from_degC(400);
+  //parameter SI.Temperature t_max = from_degC(290);
   //Real m_flow;
   //New variable
   //Modelica.Blocks.Interfaces.RealInput L_mea_tk2;
@@ -26,13 +26,13 @@ model TestPBMasterControl_3_CRI_cold
     Placement(visible = true, transformation(origin = {18, 4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealInput T_mea annotation(
     Placement(visible = true, transformation(extent = {{-112, 18}, {-72, 58}}, rotation = 0), iconTransformation(extent = {{-112, 18}, {-72, 58}}, rotation = 0)));
-  Modelica.Blocks.Interfaces.RealInput m_flow_cold annotation(
+  Modelica.Blocks.Interfaces.RealOutput m_flow_cold annotation(
     Placement(visible = true, transformation(extent = {{60, 12}, {100, 52}}, rotation = 0), iconTransformation(extent = {{84, -74}, {124, -34}}, rotation = 0)));
   Modelica.Blocks.Logical.Switch switch annotation(
     Placement(visible = true, transformation(extent = {{60, 70}, {72, 82}}, rotation = 0)));
   Modelica.Blocks.Sources.RealExpression m_flow_off_input(y = 0) annotation(
     Placement(visible = true, transformation(extent = {{-18, 48}, {8, 72}}, rotation = 0)));
-  SolarTherm.Logictest logictest(t_max = t_max) annotation(
+  SolarTherm.Logictest logictest annotation(
     Placement(visible = true, transformation(origin = {-54, 6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Sources.RealExpression T_ref_input(y = T_ref) annotation(
     Placement(visible = true, transformation(extent = {{-84, -62}, {-64, -42}}, rotation = 0)));
