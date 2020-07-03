@@ -27,7 +27,7 @@ model TestPBMasterControl_3_CRI_cold
   Modelica.Blocks.Interfaces.RealInput T_mea annotation(
     Placement(visible = true, transformation(extent = {{-112, 18}, {-72, 58}}, rotation = 0), iconTransformation(extent = {{-112, 18}, {-72, 58}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealOutput m_flow_cold annotation(
-    Placement(visible = true, transformation(extent = {{60, 12}, {100, 52}}, rotation = 0), iconTransformation(extent = {{84, -74}, {124, -34}}, rotation = 0)));
+    Placement(visible = true, transformation(extent = {{78, 10}, {118, 50}}, rotation = 0), iconTransformation(extent = {{84, -74}, {124, -34}}, rotation = 0)));
   Modelica.Blocks.Logical.Switch switch annotation(
     Placement(visible = true, transformation(extent = {{60, 70}, {72, 82}}, rotation = 0)));
   Modelica.Blocks.Sources.RealExpression m_flow_off_input(y = 0) annotation(
@@ -49,7 +49,7 @@ equation
   connect(limPID.y, switch.u1) annotation(
     Line(points = {{30, 4}, {42, 4}, {42, 81}, {59, 81}}, color = {0, 0, 127}));
   connect(switch.y, m_flow_cold) annotation(
-    Line(points = {{72, 76}, {80, 76}, {80, 56}, {54, 56}, {54, 30}, {82, 30}, {82, 32}, {80, 32}}, color = {0, 0, 127}));
+    Line(points = {{72, 76}, {80, 76}, {80, 56}, {54, 56}, {54, 30}, {98, 30}}, color = {0, 0, 127}));
   connect(T_ref_input.y, limPID.u_s) annotation(
     Line(points = {{-62, -52}, {-14, -52}, {-14, 4}, {6, 4}, {6, 4}}, color = {0, 0, 127}));
   annotation(

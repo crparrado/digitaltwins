@@ -6,7 +6,7 @@ block Logictest_hot
                                           final unit = "K", displayUnit = "degC", min=0)
     annotation (Placement(transformation(extent={{-120,-20},{-80,20}}),
         iconTransformation(extent={{-120,-20},{-80,20}})));
-    parameter Real t_min = 10+273.15;
+    parameter Real t_min = 280+273.15;
     
     //parameter Real level_min = 10;
 

@@ -1,6 +1,6 @@
 within SolarTherm;
 
-model TestPBTransient_fix
+model TestPBT_OM
    extends Interfaces.Models.PowerBlock;
    Medium.BaseProperties medium;
   replaceable package Medium = SolarTherm.Media.MoltenSalt.MoltenSalt_ph;
@@ -100,7 +100,7 @@ model TestPBTransient_fix
 
   parameter Real nu_eps=0.1;
   //SI.HeatFlowRate Q_rcv;
-  parameter SI.Volume V_rcv=2000;
+  parameter SI.Volume V_rcv=500;
   
   initial equation
   medium.h = h_out_ref;
@@ -194,4 +194,4 @@ equation
   W_loss=(1-nu_net)*W_gross+W_base+parasities_internal;
   W_net = W_gross - W_loss;
 
-end TestPBTransient_fix;
+end TestPBT_OM;
