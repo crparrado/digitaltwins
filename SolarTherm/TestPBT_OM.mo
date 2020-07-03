@@ -8,6 +8,7 @@ model TestPBT_OM
   parameter SI.HeatFlowRate W_des=111e6 "Design turbine gross output" annotation (Dialog(group="Design"));
   parameter SI.Temperature T_in_ref=from_degC(565) "HTF inlet temperature (design)" annotation (Dialog(group="Design"));
   parameter SI.Temperature T_out_ref=from_degC(146) "HTF outlet temperature (design)"
+  //parameter SI.Temperature T_out_ref=from_degC(290) "HTF outlet temperature (design)"
                                                                                      annotation (Dialog(group="Design"));
   parameter SI.AbsolutePressure p_bo=10e5 "Boiler operating pressure" annotation (Dialog(group="Design"));
   //parameter SI.HeatFlowRate Q_flow_ref=294.118e6 "Design thermal power" annotation (Dialog(group="Design"));

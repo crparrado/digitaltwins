@@ -17,6 +17,7 @@ block Logictest
 
   Modelica.Blocks.Interfaces.BooleanOutput y
     annotation (Placement(transformation(extent={{98,-10},{118,10}})));
+    
 initial equation
   y=  T_mea<t_max;
 equation

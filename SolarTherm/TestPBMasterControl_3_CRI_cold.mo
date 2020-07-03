@@ -17,7 +17,8 @@ model TestPBMasterControl_3_CRI_cold
   parameter Real L_df_on = 99 "Level of start defocus";
   parameter Real L_df_off = 96 "Level of stop defocus";
   parameter Real uMax, uMin;
-  parameter SI.Temperature T_ref= from_degC(400);
+  parameter SI.Temperature T_ref = from_degC(400);
+  //parameter SI.Temperature T_ref2 = from_degC(565);
   //parameter SI.Temperature t_max = from_degC(290);
   //Real m_flow;
   //New variable
@@ -35,7 +36,7 @@ model TestPBMasterControl_3_CRI_cold
   SolarTherm.Logictest logictest annotation(
     Placement(visible = true, transformation(origin = {-54, 6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Sources.RealExpression T_ref_input(y = T_ref) annotation(
-    Placement(visible = true, transformation(extent = {{-84, -62}, {-64, -42}}, rotation = 0)));
+    Placement(visible = true, transformation(extent = {{-86, -56}, {-66, -36}}, rotation = 0)));
 equation
 // LimPID_PB.y = m_flow;
   connect(m_flow_off_input.y, switch.u3) annotation(
@@ -51,7 +52,7 @@ equation
   connect(switch.y, m_flow_cold) annotation(
     Line(points = {{72, 76}, {80, 76}, {80, 56}, {54, 56}, {54, 30}, {98, 30}}, color = {0, 0, 127}));
   connect(T_ref_input.y, limPID.u_s) annotation(
-    Line(points = {{-62, -52}, {-14, -52}, {-14, 4}, {6, 4}, {6, 4}}, color = {0, 0, 127}));
+    Line(points = {{-64, -46}, {-12, -46}, {-12, 4}, {6, 4}, {6, 4}}, color = {0, 0, 127}));
   annotation(
     uses(SolarTherm(version = "0.2"), Modelica(version = "3.2.3")));
 end TestPBMasterControl_3_CRI_cold;
