@@ -101,7 +101,7 @@ model TestPBT_OM
 
   parameter Real nu_eps=0.1;
   //SI.HeatFlowRate Q_rcv;
-  parameter SI.Volume V_rcv=500;
+  parameter SI.Volume V_rcv=28000;
   
   initial equation
   medium.h = h_out_ref;

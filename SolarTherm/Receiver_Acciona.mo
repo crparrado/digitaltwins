@@ -41,12 +41,12 @@ extends Interfaces.Models.ReceiverFluid;
         origin={30,0})));
 
   SI.HeatFlowRate Q_loss;
-  SI.HeatFlowRate Q_rcv;
+  Real Q_rcv(unit = "MWt");
   SI.Efficiency eta_rec;
   /////////
   SI.MassFlowRate m_tht;
   SI.HeatFlowRate DNI;
-  SI.HeatFlowRate E_tht;
+  Real E_tht(unit = "MWt");
   SI.Temperature t_rcv;
 
 
@@ -112,7 +112,7 @@ equation
   T = t_rcv;
 
   eta_rec = max(0,rec_perf_tab.y);
-  Q_rcv = fluid_a.m_flow*(h_out-h_in);
+  Q_rcv = m_tht*(h_in-h_out)*2.77778e-10*3600;
   Q_loss = if heat.Q_flow > 1e-3 then ab*heat.Q_flow*(1-eta_rec) else A*sigma*em*(medium.T^4-Tamb^4);
   Q_inc = heat.Q_flow/1e6;
   Q_perd = Q_loss/1e6;

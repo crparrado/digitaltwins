@@ -51,7 +51,7 @@ extends Interfaces.Models.Heliostats;
 //            -72},{-86,-48}})));
 
 SI.HeatFlowRate DNI;
-SI.Energy RTOM;
+Real RTOM(unit = "MWt");
 
   Modelica.Blocks.Interfaces.RealInput Wspd if use_wind annotation (Placement(
         transformation(extent={{-126,50},{-86,90}}), iconTransformation(extent={
