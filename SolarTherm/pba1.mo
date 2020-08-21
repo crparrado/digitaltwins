@@ -22,7 +22,7 @@ model pba1
  SolarTherm.TestPBMasterControl_3_CRI_cold testPBMasterControl_3_CRI_cold(Kp = 100, Td = 1e-6, Ti = 0.5e8, uMax = 185.188)  annotation(
     Placement(visible = true, transformation(origin = {-14, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
  SolarTherm.TestPBT_OM testPBT_OM annotation(
-    Placement(visible = true, transformation(origin = {60, -12}, extent = {{-28, -28}, {28, 28}}, rotation = 0)));
+    Placement(visible = true, transformation(origin = {60, -8}, extent = {{-28, -28}, {28, 28}}, rotation = 0)));
 equation
   connect(hot_tank.ports[1], pumpHot.fluid_a) annotation(
     Line(points = {{-70, 58}, {-44, 58}, {-44, 40}, {-24, 40}}, color = {0, 127, 255}));
@@ -33,18 +33,18 @@ equation
  connect(testPBMasterControl_3_CRI_cold.m_flow_cold, pumpSimple.m_flow) annotation(
     Line(points = {{-24, 25}, {-38, 25}, {-38, 6}, {-16, 6}, {-16, 3}}, color = {0, 0, 127}));
  connect(testPBT_OM.fluid_b, fixedBoundary.ports[1]) annotation(
-    Line(points = {{44, -24}, {18, -24}, {18, -66}, {-26, -66}, {-26, -66}}, color = {0, 127, 255}));
+    Line(points = {{44, -20}, {18, -20}, {18, -66}, {-26, -66}}, color = {0, 127, 255}));
  connect(pumpSimple.fluid_b, testPBT_OM.fluid_a) annotation(
-    Line(points = {{-10, -2}, {48, -2}}, color = {0, 127, 255}));
+    Line(points = {{-10, -2}, {19, -2}, {19, 2}, {48, 2}}, color = {0, 127, 255}));
  connect(pumpHot.fluid_b, testPBT_OM.fluid_a2) annotation(
-    Line(points = {{-12, 40}, {12, 40}, {12, -12}, {46, -12}, {46, -12}}, color = {0, 127, 255}));
+    Line(points = {{-12, 40}, {12, 40}, {12, -9}, {46, -9}}, color = {0, 127, 255}));
  connect(testPBT_OM.T, testPBMasterControl_3_CRI_cold.T_mea) annotation(
-    Line(points = {{44, -18}, {6, -18}, {6, 16}, {-5, 16}}, color = {0, 0, 127}));
+    Line(points = {{45, -14}, {6, -14}, {6, 16}, {-5, 16}}, color = {0, 0, 127}));
  connect(testPBMasterControl_3_CRI_hot.T_mea, testPBT_OM.T) annotation(
-    Line(points = {{26, 58}, {32, 58}, {32, 22}, {8, 22}, {8, -18}, {44, -18}, {44, -18}}, color = {0, 0, 127}));
+    Line(points = {{26, 58}, {32, 58}, {32, 22}, {8, 22}, {8, -14}, {45, -14}}, color = {0, 0, 127}));
  connect(parasites.y, testPBT_OM.parasities) annotation(
-    Line(points = {{78, 88}, {66, 88}, {66, 4}, {66, 4}}, color = {0, 0, 127}));
+    Line(points = {{78, 88}, {66, 88}, {66, 9}}, color = {0, 0, 127}));
  connect(testPBT_OM.T_amb, T_amb.y) annotation(
-    Line(points = {{54, 4}, {52, 4}, {52, 84}, {20, 84}, {20, 84}}, color = {0, 0, 127}));
+    Line(points = {{54, 9}, {54, 84}, {20, 84}}, color = {0, 0, 127}));
 protected
 end pba1;

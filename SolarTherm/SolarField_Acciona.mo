@@ -127,7 +127,7 @@ RTOM = ref_table.y[28];
 //    on_internal=false;
 //  end when;
 
-  Q_net= min(Q_defocus,Q_raw);
+  Q_net= RTOM;
 
   heat.Q_flow= -Q_net;
   elo=SolarTherm.Models.Sources.SolarFunctions.eclipticLongitude(solar.dec);

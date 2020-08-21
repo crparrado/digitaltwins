@@ -20,55 +20,39 @@ model TestPBMasterControl_3_CRI_hot
   parameter Real uMax, uMin;
   //Real m_flow;
   Modelica.Blocks.Interfaces.RealOutput m_flow_hot annotation(
-    Placement(visible = true, transformation(extent = {{60, 52}, {100, 92}}, rotation = 0), iconTransformation(extent = {{86, 42}, {126, 82}}, rotation = 0)));
+    Placement(visible = true, transformation(extent = {{76, 56}, {116, 96}}, rotation = 0), iconTransformation(extent = {{86, 42}, {126, 82}}, rotation = 0)));
   //New variable
   //Modelica.Blocks.Interfaces.RealInput L_mea_tk2;
   Modelica.Blocks.Interfaces.RealInput T_mea annotation(
     Placement(visible = true, transformation(extent = {{-124, -24}, {-84, 16}}, rotation = 0), iconTransformation(extent = {{-124, -24}, {-84, 16}}, rotation = 0)));
   Modelica.Blocks.Continuous.LimPID LimPID_PB(Td = Td, Ti = Ti, controllerType = Modelica.Blocks.Types.SimpleController.PI, k = Kp, limitsAtInit = true, yMax = uMax, yMin = uMin, y_start = y_start) annotation(
     Placement(visible = true, transformation(origin = {2, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.RealExpression T_ref_input(y = T_ref) annotation(
-    Placement(visible = true, transformation(extent = {{-92, -60}, {-72, -40}}, rotation = 0)));
   Modelica.Blocks.Sources.RealExpression m_flow_off_input(y = 0) annotation(
     Placement(visible = true, transformation(extent = {{-22, 52}, {4, 76}}, rotation = 0)));
   Modelica.Blocks.Logical.Switch switch annotation(
     Placement(visible = true, transformation(origin = {39, 81}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
   SolarTherm.Logictest_hot logictest_hot annotation(
-    Placement(visible = true, transformation(origin = {-48, 76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  SolarTherm.Logic_OMods logic_OMods annotation(
-    Placement(visible = true, transformation(origin = {-54, -64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Logical.Switch switch1 annotation(
-    Placement(visible = true, transformation(origin = {-15, -65}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
-  Modelica.Blocks.Sources.RealExpression realExpression(y = T_ref2) annotation(
-    Placement(visible = true, transformation(extent = {{-90, -98}, {-70, -78}}, rotation = 0)));
+    Placement(visible = true, transformation(origin = {-46, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation
 //if T_mea <= from_degC(290) then
 //  uMax = 1e-3;
 //  else
 //  uMax = 680;
 //  end if;
-  connect(T_mea, LimPID_PB.u_m) annotation(
-    Line(points = {{-104, -4}, {-68, -4}, {-68, -46}, {2, -46}, {2, -10}, {2, -10}}, color = {0, 0, 127}));
   connect(m_flow_off_input.y, switch.u3) annotation(
     Line(points = {{6, 64}, {18, 64}, {18, 75}, {31, 75}}, color = {0, 0, 127}));
   connect(LimPID_PB.y, switch.u1) annotation(
     Line(points = {{14, 2}, {20, 2}, {20, 87}, {31, 87}}, color = {0, 0, 127}));
   connect(switch.y, m_flow_hot) annotation(
-    Line(points = {{47, 81}, {58, 81}, {58, 74}, {80, 74}, {80, 72}}, color = {0, 0, 127}));
+    Line(points = {{47, 81}, {58, 81}, {58, 76}, {96, 76}}, color = {0, 0, 127}));
   connect(T_mea, logictest_hot.T_mea) annotation(
-    Line(points = {{-104, -4}, {-86, -4}, {-86, 76}, {-58, 76}, {-58, 76}}, color = {0, 0, 127}));
+    Line(points = {{-104, -4}, {-86, -4}, {-86, 70}, {-56, 70}}, color = {0, 0, 127}));
   connect(logictest_hot.y, switch.u2) annotation(
-    Line(points = {{-38, 76}, {-6, 76}, {-6, 81}, {31, 81}}, color = {255, 0, 255}));
-  connect(logic_OMods.y, switch1.u2) annotation(
-    Line(points = {{-44, -64}, {-23, -64}, {-23, -65}}, color = {255, 0, 255}));
-  connect(logic_OMods.T_mea, T_mea) annotation(
-    Line(points = {{-64, -64}, {-96, -64}, {-96, -4}, {-104, -4}}, color = {0, 0, 127}));
-  connect(switch1.y, LimPID_PB.u_s) annotation(
-    Line(points = {{-8, -64}, {12, -64}, {12, -20}, {-26, -20}, {-26, 2}, {-10, 2}, {-10, 2}}, color = {0, 0, 127}));
-  connect(T_ref_input.y, switch1.u1) annotation(
-    Line(points = {{-70, -50}, {-34, -50}, {-34, -60}, {-24, -60}, {-24, -60}, {-24, -60}}, color = {0, 0, 127}));
-  connect(realExpression.y, switch1.u3) annotation(
-    Line(points = {{-68, -88}, {-36, -88}, {-36, -70}, {-24, -70}, {-24, -70}, {-24, -70}}, color = {0, 0, 127}));
+    Line(points = {{-35, 70}, {-6, 70}, {-6, 81}, {31, 81}}, color = {255, 0, 255}));
+  connect(logictest_hot.t_ref, LimPID_PB.u_s) annotation(
+    Line(points = {{-43, 70}, {-46, 70}, {-46, 2}, {-10, 2}}, color = {0, 0, 127}));
+  connect(T_mea, LimPID_PB.u_m) annotation(
+    Line(points = {{-104, -4}, {-46, -4}, {-46, -28}, {2, -28}, {2, -10}, {2, -10}}, color = {0, 0, 127}));
   annotation(
     uses(SolarTherm(version = "0.2"), Modelica(version = "3.2.3")));
 end TestPBMasterControl_3_CRI_hot;

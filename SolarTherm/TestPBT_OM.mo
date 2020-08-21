@@ -168,7 +168,7 @@ equation
   
   //medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea + Q_flow;
   
-  medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea - Q_flow;
+  medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,fluid_b.m_flow)*h_mea - Q_flow;
   ///le cambie el signo a fluid_b.m_flow
   
 
