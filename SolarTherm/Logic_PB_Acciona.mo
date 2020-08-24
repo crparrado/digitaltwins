@@ -12,7 +12,7 @@ model Logic_PB_Acciona
   Modelica.Blocks.Interfaces.RealOutput m_flow_cold annotation(
     Placement(visible = true, transformation(extent = {{92, -70}, {132, -30}}, rotation = 0), iconTransformation(extent = {{92, -70}, {132, -30}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealInput t_sgs annotation(
-    Placement(transformation(extent = {{-128, -20}, {-88, 20}})));
+    Placement(visible = true, transformation(extent = {{-126, 34}, {-86, 74}}, rotation = 0), iconTransformation(extent = {{-126, 34}, {-86, 74}}, rotation = 0)));
   
   //////
   // Universal parameters
@@ -86,7 +86,6 @@ model Logic_PB_Acciona
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {0, 104})));
 //  Modelica.Blocks.Interfaces.RealInput m_flow_in annotation(
 //    Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {0, 104})));
-
 
 initial equation
 //  pre(t_off) = 0;
@@ -314,9 +313,9 @@ equation
 //  end if;
 ///////////////////////////
   annotation(
+    experiment(StartTime = 0.0, StopTime = 31536000.0, Interval = 60, Tolerance = 1e-06));
+  annotation(
     Icon(coordinateSystem(preserveAspectRatio = false)),
     Diagram(coordinateSystem(preserveAspectRatio = false)),
     uses(Modelica(version = "3.2.2")));
-  annotation(
-    experiment(StartTime = 0.0, StopTime = 31536000.0, Interval = 60, Tolerance = 1e-06));
 end Logic_PB_Acciona;

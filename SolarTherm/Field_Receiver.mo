@@ -29,7 +29,7 @@ extends Modelica.Icons.Example;
     Placement(visible = true, transformation(origin = {-58, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SolarTherm.Receiver_Acciona receiver_Acciona(D_rcv = 20.59, D_tb = 50e-3, H_rcv = 18.4, N_pa = 22, ab = 0.94, em = 0.88, t_tb = 1.651e-3) annotation(
     Placement(visible = true, transformation(origin = {-10, 38}, extent = {{-18, -18}, {18, 18}}, rotation = 0)));
-  SolarTherm.SolarField_Acciona solarField_Acciona annotation(
+  SolarTherm.Solarfield_Acciona solarField_Acciona annotation(
     Placement(visible = true, transformation(origin = {-74, 24}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
   SolarTherm.Models.Sources.SolarModel.Sun sun(lat = data.lat, lon = data.lon, t_zone = data.t_zone, year = data.year) annotation(
     Placement(visible = true, transformation(extent = {{-92, 64}, {-72, 84}}, rotation = 0)));
