@@ -7,8 +7,10 @@ model Logic_PB_Acciona
     Placement(transformation(extent = {{-128, -20}, {-88, 20}})));
   Modelica.Blocks.Interfaces.RealOutput m_flow_hot annotation(
     Placement(transformation(extent = {{90, -20}, {130, 20}})));
+  
   Modelica.Blocks.Interfaces.RealInput level_cold annotation(
     Placement(visible = true, transformation(extent = {{-128, -72}, {-88, -32}}, rotation = 0), iconTransformation(extent = {{-128, -72}, {-88, -32}}, rotation = 0)));
+ 
   Modelica.Blocks.Interfaces.RealOutput m_flow_cold annotation(
     Placement(visible = true, transformation(extent = {{92, -70}, {132, -30}}, rotation = 0), iconTransformation(extent = {{92, -70}, {132, -30}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealInput t_sgs annotation(
@@ -21,19 +23,22 @@ model Logic_PB_Acciona
   parameter Real m_flow_max;
   parameter Real m_flow_startup;
   parameter Real m_flow_standby;
-  parameter Real level_on = 20;
-  parameter Real level_off = 5;
+//  parameter Real level_on = 20;
+//  parameter Real level_off = 5;
+  parameter Real level_hot_min = 20;
+  parameter Real level_cold_max = 5;
   //  Boolean standby;
   //  Boolean startup(start=false, fixed=true);
   //  Boolean on_charge;
   //  Boolean on_discharge;
-  discrete Modelica.SIunits.Time t_off;
-  discrete Modelica.SIunits.Time t_on;
+//  discrete Modelica.SIunits.Time t_off;
+//  discrete Modelica.SIunits.Time t_on;
   ///////////
   // States parameters
   //  Integer con_state(min=1, max=5) "Concentrator state";
   Integer blk_state(min = 1, max = 4) "Power block state";
-  SI.HeatFlowRate Q_flow_sched "Discharge schedule";
+  //Integer sch_state(min=1, max=n_sched_states) "Schedule state";
+  //SI.HeatFlowRate Q_flow_sched "Discharge schedule";
   //  SI.HeatFlowRate Q_flow_dis "Heat flow out of tank";
   //  SI.Power P_elec "Output power of power block";
   parameter SI.Efficiency eff_blk = 0.48 "Power block efficiency";
@@ -65,11 +70,11 @@ model Logic_PB_Acciona
 			} "Time differences between schedule states";
   
   
-//  Boolean full "True if the storage tank is full";
-//  SI.Energy E(min = 0, max = E_max) "Stored energy";
+  //Boolean full "True if the storage tank is full";
+  //SI.Energy E(min = 0, max = E_max) "Stored energy";
   //  SolarTherm.Utilities.Transition.Ramp ramp_up_con(ramp_order=ramp_order, t_dur= t_con_on_delay, up=true);
   //  SolarTherm.Utilities.Transition.Ramp ramp_down_con(ramp_order=ramp_order, t_dur= t_con_off_delay, up=false);
-  Real fr_ramp_con(min = 0.0, max = 1.0) "ramping transition rate for the concentrator";
+  //Real fr_ramp_con(min = 0.0, max = 1.0) "ramping transition rate for the concentrator";
   SolarTherm.Utilities.Transition.Ramp ramp_up_blk(ramp_order = ramp_order, t_dur = t_blk_on_delay, up = true);
   SolarTherm.Utilities.Transition.Ramp ramp_down_blk(ramp_order = ramp_order, t_dur = t_blk_off_delay, up = false);
   Real fr_ramp_blk(min = 0.0, max = 1.0) "ramping transition rate for the power block";
@@ -81,6 +86,7 @@ model Logic_PB_Acciona
   SI.Time t_blk_w_next "Time of power block next warm-up event";
   SI.Time t_blk_c_now "Time of power block current cool-down event";
   SI.Time t_blk_c_next "Time of power block next cool-down event";
+  //SI.Time  t_sch_next "Time of next schedule change";
   //////
   Modelica.Blocks.Interfaces.RealInput m_flow_in annotation(
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {0, 104})));
@@ -96,9 +102,9 @@ initial equation
 //  t_con_w_next = 0;
 //  t_con_c_now = 0;
 //  t_con_c_next = 0;
-Q_flow_sched = Q_flow_sched_val[sch_state_start];
-sch_state = sch_state_start;
-t_sch_next = t_sch_next_start;
+//Q_flow_sched = Q_flow_sched_val[sch_state_start];
+//sch_state = sch_state_start;
+//t_sch_next = t_sch_next_start;
   t_blk_w_now = 0;
   t_blk_w_next = 0;
   t_blk_c_now = 0;
@@ -144,27 +150,53 @@ algorithm
 //		con_state := 1; // off sun
 //	end when;
 //Power Block
-  when blk_state == 2 and Q_flow_sched <= 0 then
-    blk_state := 1;
-  elsewhen blk_state == 2 and E <= E_low_l then
-    blk_state := 1;
-  elsewhen blk_state == 3 and Q_flow_sched <= 0 and t_blk_off_delay > 0 then
-    blk_state := 4;
-  elsewhen blk_state == 3 and Q_flow_sched <= 0 and t_blk_off_delay <= 0 then
-    blk_state := 1;
-  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay > 0 then
-    blk_state := 4;
-  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay <= 0 then
-    blk_state := 1;
-  elsewhen blk_state == 2 and time >= t_blk_w_next then
-    blk_state := 3;
-  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay > 0 then
+//  when blk_state == 2 and Q_flow_sched <= 0 then
+//    blk_state := 1;
+//  elsewhen blk_state == 2 and E <= E_low_l then
+//    blk_state := 1;
+//  elsewhen blk_state == 3 and Q_flow_sched <= 0 and t_blk_off_delay > 0 then
+//    blk_state := 4;
+//  elsewhen blk_state == 3 and Q_flow_sched <= 0 and t_blk_off_delay <= 0 then
+//    blk_state := 1;
+//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay > 0 then
+//    blk_state := 4;
+//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay <= 0 then
+//    blk_state := 1;
+//  elsewhen blk_state == 2 and time >= t_blk_w_next then
+//    blk_state := 3;
+//  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay > 0 then
+//    blk_state := 2;
+//  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay <= 0 then
+//    blk_state := 3;
+//  elsewhen blk_state == 4 and time >= t_blk_c_next then
+//    blk_state := 1;
+//  end when;
+  /////
+  
+  //Power Block
+  when blk_state == 1 and m_flow_in >= 0 then
     blk_state := 2;
-  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay <= 0 then
+  elsewhen blk_state == 2 and t_blk_w_now > 392*60 then
     blk_state := 3;
-  elsewhen blk_state == 4 and time >= t_blk_c_next then
-    blk_state := 1;
+  elsewhen blk_state == 3 and level_hot >= level_hot_min and level_cold < level_cold_max then
+    blk_state := 4;
+  elsewhen blk_state == 4 and t_sgs >= from_degC(300) then
+    blk_state := 3;
+//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay > 0 then
+//    blk_state := 4;
+//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay <= 0 then
+//    blk_state := 1;
+//  elsewhen blk_state == 2 and time >= t_blk_w_next then
+//    blk_state := 3;
+//  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay > 0 then
+//    blk_state := 2;
+//  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay <= 0 then
+//    blk_state := 3;
+//  elsewhen blk_state == 4 and time >= t_blk_c_next then
+//    blk_state := 1;
   end when;
+  ///////
+  
 // turn off (or stop ramping) due to no demand
 // turn off (or stop ramping) due to empty tank
 // ramp down due to no demand
@@ -190,16 +222,19 @@ algorithm
     t_blk_w_now := time;
     t_blk_w_next := time + t_blk_on_delay;
   end when;
+  
   when blk_state == 4 then
     t_blk_c_now := time;
     t_blk_c_next := time + t_blk_off_delay;
   end when;
-	for i in 1:n_sched_states loop
-		when sch_state == i then
-			Q_flow_sched := Q_flow_sched_val[i];
-			t_sch_next := time + t_delta[i];
-		end when;
-	end for;
+  
+//	for i in 1:n_sched_states loop
+//		when sch_state == i then
+//			Q_flow_sched := Q_flow_sched_val[i];
+//			t_sch_next := time + t_delta[i];
+//		end when;
+//	end for;
+	
 //  when E > E_up_u then
 //    full := true;
 //  elsewhen E < E_up_l then
@@ -254,19 +289,25 @@ equation
   if blk_state <= 1 then
 //Q_flow_dis = 0;
 //P_elec = 0;
-    m_flow = 0;
+    m_flow_hot = 0;
+    m_flow_cold = 0;
   elseif blk_state == 2 then
 //    Q_flow_dis = if ramp_order == 0 then Q_flow_sched else fr_ramp_blk * Q_flow_sched;
 //    P_elec = eff_blk * Q_flow_dis;
-    m_flow = m_flow_in;
+    //m_flow = m_flow_in;
+    m_flow_hot = 0;
+    m_flow_cold = m_flow_in;
   elseif blk_state == 4 then
 //    Q_flow_dis = fr_ramp_blk * Q_flow_sched;
 //    P_elec = eff_blk * Q_flow_dis;
-    m_flow = min(m_flow_in, m_flow_max);
+  //  m_flow = min(m_flow_in, m_flow_max);
+    m_flow_hot = m_flow_in;
+    m_flow_cold = 0;
   else
 //    Q_flow_dis = Q_flow_sched;
 //    P_elec = eff_blk * Q_flow_dis;
-  m_flow = 0;
+    m_flow_hot = 0;
+    m_flow_cold = m_flow_in;
   end if;
 //  der(E_elec) = P_elec;
 //	der(R_spot) = P_elec*pri.price;
