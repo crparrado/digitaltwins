@@ -112,6 +112,7 @@ equation
   end if;
 
  W_loss=W_net/e_ht;
+ 
 
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),

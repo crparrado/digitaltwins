@@ -5,7 +5,7 @@ model Logic_PB_Acciona
   // Inputs y Outputs
   Modelica.Blocks.Interfaces.RealInput level_hot annotation(
     Placement(transformation(extent = {{-128, -20}, {-88, 20}})));
-  Modelica.Blocks.Interfaces.RealOutput m_flow_hot annotation(
+  Modelica.Blocks.Interfaces.RealOutput m_flow_hot(max = 1400, min = 0) annotation(
     Placement(transformation(extent = {{90, -20}, {130, 20}})));
   
   Modelica.Blocks.Interfaces.RealInput level_cold annotation(
@@ -25,8 +25,8 @@ model Logic_PB_Acciona
   parameter Real m_flow_standby;
 //  parameter Real level_on = 20;
 //  parameter Real level_off = 5;
-  parameter Real level_hot_min = 20;
-  parameter Real level_cold_max = 5;
+  parameter Real level_hot_min = 30;
+  parameter Real level_cold_max = 70;
   //  Boolean standby;
   //  Boolean startup(start=false, fixed=true);
   //  Boolean on_charge;
@@ -75,9 +75,9 @@ model Logic_PB_Acciona
   //  SolarTherm.Utilities.Transition.Ramp ramp_up_con(ramp_order=ramp_order, t_dur= t_con_on_delay, up=true);
   //  SolarTherm.Utilities.Transition.Ramp ramp_down_con(ramp_order=ramp_order, t_dur= t_con_off_delay, up=false);
   //Real fr_ramp_con(min = 0.0, max = 1.0) "ramping transition rate for the concentrator";
-  SolarTherm.Utilities.Transition.Ramp ramp_up_blk(ramp_order = ramp_order, t_dur = t_blk_on_delay, up = true);
-  SolarTherm.Utilities.Transition.Ramp ramp_down_blk(ramp_order = ramp_order, t_dur = t_blk_off_delay, up = false);
-  Real fr_ramp_blk(min = 0.0, max = 1.0) "ramping transition rate for the power block";
+//  SolarTherm.Utilities.Transition.Ramp ramp_up_blk(ramp_order = ramp_order, t_dur = t_blk_on_delay, up = true);
+//  SolarTherm.Utilities.Transition.Ramp ramp_down_blk(ramp_order = ramp_order, t_dur = t_blk_off_delay, up = false);
+//  Real fr_ramp_blk(min = 0.0, max = 1.0) "ramping transition rate for the power block";
   //  SI.Time  t_con_w_now "Time of concentrator current warm-up event";
   //  SI.Time  t_con_w_next "Time of concentrator next warm-up event";
   //  SI.Time  t_con_c_now "Time of concentrator current cool-down event";
@@ -105,6 +105,7 @@ initial equation
 //Q_flow_sched = Q_flow_sched_val[sch_state_start];
 //sch_state = sch_state_start;
 //t_sch_next = t_sch_next_start;
+  blk_state = 1;
   t_blk_w_now = 0;
   t_blk_w_next = 0;
   t_blk_c_now = 0;
@@ -174,13 +175,13 @@ algorithm
   /////
   
   //Power Block
-  when blk_state == 1 and m_flow_in >= 0 then
+  when blk_state == 1 and m_flow_in >= 0 and time > 20000 then
     blk_state := 2;
-  elsewhen blk_state == 2 and t_blk_w_now > 392*60 then
+  elsewhen blk_state == 2 and (time-t_blk_w_now) > 30*60 then
     blk_state := 3;
   elsewhen blk_state == 3 and level_hot >= level_hot_min and level_cold < level_cold_max then
     blk_state := 4;
-  elsewhen blk_state == 4 and t_sgs >= from_degC(300) then
+  elsewhen blk_state == 4 and m_flow_in <= 0 then
     blk_state := 3;
 //  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay > 0 then
 //    blk_state := 4;
@@ -247,20 +248,20 @@ algorithm
 //	else
 //		fr_ramp_con := 0;
 //	end if;
-  if blk_state == 2 then
-    fr_ramp_blk := if ramp_order == 0 then 0.0 else abs(ramp_up_blk.y);
-  elseif blk_state == 4 then
-    fr_ramp_blk := if ramp_order == 0 then 0.0 else abs(ramp_down_blk.y);
-  else
-    fr_ramp_blk := 0;
-  end if;
+//  if blk_state == 2 then
+//    fr_ramp_blk := if ramp_order == 0 then 0.0 else abs(ramp_up_blk.y);
+//  elseif blk_state == 4 then
+//    fr_ramp_blk := if ramp_order == 0 then 0.0 else abs(ramp_down_blk.y);
+//  else
+//    fr_ramp_blk := 0;
+//  end if;
 //////////
 equation
 //Nuevo Control
 //  ramp_up_con.x = t_con_w_now;
 //  ramp_down_con.x = t_con_c_now;
-  ramp_up_blk.x = t_blk_w_now;
-  ramp_down_blk.x = t_blk_c_now;
+//  ramp_up_blk.x = t_blk_w_now;
+//  ramp_down_blk.x = t_blk_c_now;
 //  Q_flow_chg = eff_rec*Q_flow_rec;
 //  der(E) = Q_flow_chg - Q_flow_dis;
 //	if con_state <= 1 then
@@ -296,18 +297,18 @@ equation
 //    P_elec = eff_blk * Q_flow_dis;
     //m_flow = m_flow_in;
     m_flow_hot = 0;
-    m_flow_cold = m_flow_in;
+    m_flow_cold = 185;
   elseif blk_state == 4 then
 //    Q_flow_dis = fr_ramp_blk * Q_flow_sched;
 //    P_elec = eff_blk * Q_flow_dis;
   //  m_flow = min(m_flow_in, m_flow_max);
-    m_flow_hot = m_flow_in;
+    m_flow_hot = 658.1;
     m_flow_cold = 0;
   else
 //    Q_flow_dis = Q_flow_sched;
 //    P_elec = eff_blk * Q_flow_dis;
     m_flow_hot = 0;
-    m_flow_cold = m_flow_in;
+    m_flow_cold = 185;
   end if;
 //  der(E_elec) = P_elec;
 //	der(R_spot) = P_elec*pri.price;

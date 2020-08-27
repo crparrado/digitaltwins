@@ -1,6 +1,6 @@
 within SolarTherm;
 
-model PB_Acciona_New
+model PB_Acciona_New_2
 extends Interfaces.Models.PowerBlock;
   Medium.BaseProperties medium;
   replaceable package Medium = SolarTherm.Media.MoltenSalt.MoltenSalt_ph;
@@ -8,7 +8,7 @@ extends Interfaces.Models.PowerBlock;
     Dialog(group = "Design"));
   parameter SI.Temperature T_in_ref = from_degC(565) "HTF inlet temperature (design)" annotation(
     Dialog(group = "Design"));
-  parameter SI.Temperature T_out_ref = from_degC(146) "HTF outlet temperature (design)" annotation(
+  parameter SI.Temperature T_out_ref = from_degC(200) "HTF outlet temperature (design)" annotation(
     Dialog(group = "Design"));
   //parameter SI.Temperature T_out_ref=from_degC(290) "HTF outlet temperature (design)"
   parameter SI.AbsolutePressure p_bo = 10e5 "Boiler operating pressure" annotation(
@@ -38,8 +38,10 @@ extends Interfaces.Models.PowerBlock;
     Dialog(group = "Parasities energy losses"));
   parameter Real W_base = 0.0055 * 294.188e6 "Power consumed at all times" annotation(
     Dialog(group = "Parasities energy losses"));
-  Modelica.Fluid.Interfaces.FluidPort_a fluid_a2(redeclare package Medium = Medium) annotation(
-    Placement(visible = true, transformation(extent = {{-54, -4}, {-34, 16}}, rotation = 0), iconTransformation(extent = {{-54, -6}, {-46, 2}}, rotation = 0)));
+ 
+//  Modelica.Fluid.Interfaces.FluidPort_a fluid_a2(redeclare package Medium = Medium) annotation(
+//    Placement(visible = true, transformation(extent = {{-54, -4}, {-34, 16}}, rotation = 0), iconTransformation(extent = {{-54, -6}, {-46, 2}}, rotation = 0)));
+  
   Modelica.Blocks.Interfaces.RealInput T_amb if enable_losses annotation(
     Placement(visible = true, transformation(origin = {-12, 80}, extent = {{-12, -12}, {12, 12}}, rotation = -90), iconTransformation(origin = {-20, 60}, extent = {{-6, -6}, {6, 6}}, rotation = -90)));
   replaceable model Cycle = SolarTherm.Models.PowerBlocks.Correlation.Rankine constrainedby SolarTherm.Models.PowerBlocks.Correlation.Cycle annotation(
@@ -65,7 +67,7 @@ extends Interfaces.Models.PowerBlock;
   Real k_q;
   Real k_w;
   SI.SpecificEnthalpy h_in;
-  SI.SpecificEnthalpy h_in_a2;
+//  SI.SpecificEnthalpy h_in_a2;
   //SI.SpecificEnthalpy h_out;
   //SI.SpecificEnthalpy h_out(start=h_0);
   SI.SpecificEnthalpy h_mea(start = h_out_ref);
@@ -97,17 +99,17 @@ equation
   logic = load > nu_min;
   medium.h = (h_in + h_mea) / 2;
   h_in = inStream(fluid_a.h_outflow);
-  h_in_a2 = inStream(fluid_a2.h_outflow);
+  //h_in_a2 = inStream(fluid_a2.h_outflow);
   fluid_b.h_outflow = max(h_out_ref, h_mea);
 //h_out=fluid_b.h_outflow;
 //  h_out=fluid_a.h_outflow;
 //  h_out=fluid_a2.h_outflow;
   h_in = fluid_a.h_outflow;
-  h_in_a2 = fluid_a2.h_outflow;
-  fluid_a2.m_flow + fluid_a.m_flow + fluid_b.m_flow = 0;
+  //h_in_a2 = fluid_a2.h_outflow;
+  fluid_a.m_flow + fluid_b.m_flow = 0;
 //  fluid_a.p=fluid_b.p;
 //  fluid_a.p=fluid_a2.p;
-  fluid_a2.p = medium.p;
+  //fluid_a2.p = medium.p;
   fluid_a.p = medium.p;
   fluid_b.p = medium.p;
 //fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
@@ -133,11 +135,11 @@ equation
 //medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) = ab*heat.Q_flow - Q_loss + fluid_a.m_flow*(h_in-h_mea);
 //medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) =  -fluid_a.m_flow*h_in - fluid_a2.m_flow*h_in_a2 + max(1e-3,-fluid_b.m_flow)*h_mea;
 //medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea + Q_flow;
-  medium.d * V_rcv * der(medium.u) + medium.u * V_rcv * der(medium.d) = fluid_a.m_flow * h_in + fluid_a2.m_flow * h_in_a2 - max(1e-3, -fluid_b.m_flow) * h_mea /*- Q_flow*/;
+  medium.d * V_rcv * der(medium.u) + medium.u * V_rcv * der(medium.d) = fluid_a.m_flow * h_in - max(1e-3, -fluid_b.m_flow) * h_mea /*- Q_flow*/;
 ///le cambie el signo a fluid_b.m_flow
 //  load=max(nu_eps,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
 // load=max(1e-3,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
-  load = max(1e-3, fluid_a2.m_flow / m_flow_ref);
+  load = max(1e-3, fluid_a.m_flow / m_flow_ref);
 //load=1 if it is no able partial load
   if logic then
     k_q = cycle.k_q;
@@ -157,4 +159,4 @@ equation
   W_net = W_gross - W_loss;
 
 
-end PB_Acciona_New;
+end PB_Acciona_New_2;
