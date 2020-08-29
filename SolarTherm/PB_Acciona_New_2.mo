@@ -4,11 +4,13 @@ model PB_Acciona_New_2
 extends Interfaces.Models.PowerBlock;
   Medium.BaseProperties medium;
   replaceable package Medium = SolarTherm.Media.MoltenSalt.MoltenSalt_ph;
+  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/outputs_10min_v2.motab");
+  parameter String refi_table = "outputs";
   parameter SI.HeatFlowRate W_des = 111e6 "Design turbine gross output" annotation(
     Dialog(group = "Design"));
   parameter SI.Temperature T_in_ref = from_degC(565) "HTF inlet temperature (design)" annotation(
     Dialog(group = "Design"));
-  parameter SI.Temperature T_out_ref = from_degC(200) "HTF outlet temperature (design)" annotation(
+  parameter SI.Temperature T_out_ref = from_degC(217) "HTF outlet temperature (design)" annotation(
     Dialog(group = "Design"));
   //parameter SI.Temperature T_out_ref=from_degC(290) "HTF outlet temperature (design)"
   parameter SI.AbsolutePressure p_bo = 10e5 "Boiler operating pressure" annotation(
@@ -67,6 +69,10 @@ extends Interfaces.Models.PowerBlock;
   Real k_q;
   Real k_w;
   SI.SpecificEnthalpy h_in;
+  
+  Modelica.Blocks.Interfaces.RealOutput P_SP(final quantity = "Power", final unit = "MW", displayUnit = "MW", min = 0) annotation(
+    Placement(visible = true, transformation(origin = {-58, 10}, extent = {{10, -10}, {-10, 10}}, rotation = 0), iconTransformation(origin = {-51, 3}, extent = {{-5, -5}, {5, 5}}, rotation = 180)));
+  
 //  SI.SpecificEnthalpy h_in_a2;
   //SI.SpecificEnthalpy h_out;
   //SI.SpecificEnthalpy h_out(start=h_0);
@@ -83,6 +89,12 @@ extends Interfaces.Models.PowerBlock;
   parameter Real nu_eps = 0.1;
   //SI.HeatFlowRate Q_rcv;
   parameter SI.Volume V_rcv = 500;
+  
+   Modelica.Blocks.Sources.CombiTimeTable ref_table(tableOnFile = true, tableName = refi_table, smoothness = Modelica.Blocks.Types.Smoothness.ContinuousDerivative, fileName = file_ref_10min, columns = 1:39);
+   SI.HeatFlowRate DNI;
+   SI.HeatFlowRate P_SGS;
+   SI.Power Net_power;
+   SI.MassFlowRate m_flow_sgp;
 initial equation
   medium.h = h_out_ref;
 equation
@@ -98,6 +110,11 @@ equation
   end if;
   logic = load > nu_min;
   medium.h = (h_in + h_mea) / 2;
+  
+  DNI = ref_table.y[7];
+  P_SGS = ref_table.y[10];
+  m_flow_sgp = ref_table.y[12];
+  Net_power = ref_table.y[24];
   h_in = inStream(fluid_a.h_outflow);
   //h_in_a2 = inStream(fluid_a2.h_outflow);
   fluid_b.h_outflow = max(h_out_ref, h_mea);
@@ -107,6 +124,7 @@ equation
   h_in = fluid_a.h_outflow;
   //h_in_a2 = fluid_a2.h_outflow;
   fluid_a.m_flow + fluid_b.m_flow = 0;
+  //fluid_a.m_flow = m_flow_sgp;
 //  fluid_a.p=fluid_b.p;
 //  fluid_a.p=fluid_a2.p;
   //fluid_a2.p = medium.p;
@@ -114,6 +132,7 @@ equation
   fluid_b.p = medium.p;
 //fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
   T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);
+  P_SP = P_SGS;
 //T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);from_degC(T_h(h_mea))
 //
 //T = T_out;

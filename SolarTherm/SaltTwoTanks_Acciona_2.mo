@@ -59,8 +59,12 @@ model SaltTwoTanks_Acciona_2
   parameter SI.Density rho_cold_set = Medium.density(state_cold_set) "Cold salt density at design";
   parameter SI.Density rho_hot_set = Medium.density(state_hot_set) "Hot salt density at design";
   parameter SI.Volume V_max = m_max / ((rho_hot_set + rho_cold_set) / 2) "Max salt volume in tanks";
-  parameter SI.Length H_storage = ceil((4 * V_max * tank_ar ^ 2 / CN.pi) ^ (1 / 3)) "Storage tank height";
-  parameter SI.Diameter D_storage = H_storage / tank_ar "Storage tank diameter";
+  //  parameter SI.Length H_storage = ceil((4 * V_max * tank_ar ^ 2 / CN.pi) ^ (1 / 3)) "Storage tank height";
+  //  parameter SI.Diameter D_storage = H_storage / tank_ar "Storage tank diameter";
+  parameter SI.Length H_storage_hot = 11.1 "Storage tank height";
+  parameter SI.Diameter D_storage_hot = 51.3 "Storage tank diameter";
+  parameter SI.Length H_storage_cold = 10.9 "Storage tank height";
+  parameter SI.Diameter D_storage_cold = 50.4 "Storage tank diameter";
   parameter SI.Temperature T_cold_set = CV.from_degC(290) "Cold tank target temperature";
   parameter SI.Temperature T_hot_set = CV.from_degC(565) "Hot tank target temperature";
   parameter SI.Temperature T_cold_start = CV.from_degC(290) "Cold tank starting temperature";
@@ -192,10 +196,10 @@ model SaltTwoTanks_Acciona_2
   Modelica.Fluid.Fittings.TeeJunctionIdeal Tee annotation(
     Placement(visible = true, transformation(origin = {96, 42}, extent = {{-6, 6}, {6, -6}}, rotation = 0)));
   // Hot tank 1
-  SolarTherm.Models.Storage.Tank.Tank tankHot(redeclare package Medium = Medium, D = D_storage, H = H_storage, T_start = T_hot_start, L_start = (1 - split_cold) * 100, alpha = alpha, use_p_top = tnk_use_p_top, enable_losses = tnk_enable_losses, use_L = true, W_max = W_heater_hot, T_set = T_hot_aux_set) annotation(
+  SolarTherm.Models.Storage.Tank.Tank tankHot(redeclare package Medium = Medium, D = D_storage_hot, H = H_storage_hot, L_start = (1 - split_cold) * 100, T_set = T_hot_aux_set, T_start = T_hot_start, W_max = W_heater_hot, alpha = alpha, enable_losses = tnk_enable_losses, use_L = true, use_p_top = tnk_use_p_top) annotation(
     Placement(transformation(extent = {{16, 54}, {36, 74}})));
   // Hot tank 2
-  SolarTherm.Models.Storage.Tank.Tank tankHot2(redeclare package Medium = Medium, D = D_storage, H = H_storage, T_start = T_hot_start, L_start = (1 - split_cold) * 100, alpha = alpha, use_p_top = tnk_use_p_top, enable_losses = tnk_enable_losses, use_L = true, W_max = W_heater_hot, T_set = T_hot_aux_set) annotation(
+  SolarTherm.Models.Storage.Tank.Tank tankHot2(redeclare package Medium = Medium, D = D_storage_hot, H = H_storage_hot, L_start = (1 - split_cold) * 100, T_set = T_hot_aux_set, T_start = T_hot_start, W_max = W_heater_hot, alpha = alpha, enable_losses = tnk_enable_losses, use_L = true, use_p_top = tnk_use_p_top) annotation(
     Placement(transformation(origin = {16, 98}, extent = {{0, 0}, {20, 20}})));
   // Pump hot 1
   SolarTherm.Models.Fluid.Pumps.PumpSimple pumpHot(redeclare package Medium = Medium, k_loss = k_loss_hot) annotation(
@@ -207,8 +211,6 @@ model SaltTwoTanks_Acciona_2
     Placement(transformation(extent = {{10, -30}, {-2, -18}})));
   // PowerBlockControl
   // ReceiverControl
-  SolarTherm.Models.Control.ReceiverControl controlCold(T_ref = T_hot_set, m_flow_max = m_flow_rec_max, y_start = m_flow_rec_start, L_df_on = cold_tnk_defocus_lb, L_df_off = cold_tnk_defocus_ub, L_off = cold_tnk_crit_lb, L_on = cold_tnk_crit_ub, Ti = Ti, Kp = Kp) annotation(
-    Placement(transformation(extent = {{24, -10}, {10, 4}})));
   // Power block
   // Price
   SolarTherm.Models.Analysis.Market market(redeclare model Price = Models.Analysis.EnergyPrice.Constant) annotation(
@@ -219,7 +221,7 @@ model SaltTwoTanks_Acciona_2
   SI.Power P_elec "Output power of power block";
   SI.Energy E_elec(start = 0, fixed = true, displayUnit = "MW.h") "Generate electricity";
   FI.Money R_spot(start = 0, fixed = true) "Spot market revenue";
-  SolarTherm.Tank_Cold_Acciona tank_Cold_Acciona(D = D_storage, H = H_storage, L_start = split_cold * 100, T_set = T_cold_aux_set, T_start = T_cold_start, W_max = W_heater_cold, alpha = alpha, use_L = true) annotation(
+  SolarTherm.Tank_Cold_Acciona tank_Cold_Acciona(D = D_storage_cold, H = H_storage_cold, L_start = split_cold * 100, T_set = T_cold_aux_set, T_start = T_cold_start, W_max = W_heater_cold, alpha = alpha, use_L = true) annotation(
     Placement(visible = true, transformation(origin = {66, -22}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
   SolarTherm.PB_Control_Acciona pB_Control_Acciona(L_df_off = hot_tnk_full_lb, L_df_on = hot_tnk_full_ub, L_off = hot_tnk_empty_lb, L_on = hot_tnk_empty_ub, m_flow_on = m_flow_blk) annotation(
     Placement(visible = true, transformation(origin = {56, 72}, extent = {{-8, 8}, {8, -8}}, rotation = 0)));
@@ -227,6 +229,8 @@ model SaltTwoTanks_Acciona_2
     Placement(visible = true, transformation(extent = {{60, 8}, {72, 20}}, rotation = 0)));
   SolarTherm.PB_Acciona_New_2 pB_Acciona_New_2 annotation(
     Placement(visible = true, transformation(origin = {119, 9}, extent = {{-23, -23}, {23, 23}}, rotation = 0)));
+  SolarTherm.Receiver_Control_Acciona receiver_Control_Acciona(Kp = Kp, L_df_off = cold_tnk_defocus_ub, L_df_on = cold_tnk_defocus_lb, L_off = cold_tnk_crit_lb, L_on = cold_tnk_crit_ub, T_ref = T_hot_set, Ti = Ti, m_flow_max = m_flow_rec_max, y_start = m_flow_rec_start) annotation(
+    Placement(visible = true, transformation(origin = {22, 2}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
 equation
 //Connections scheduler
   connect(wea.wbus, sch_fixed.wbus);
@@ -261,14 +265,6 @@ equation
   connect(pumpHot.fluid_b, Tee.port_1) annotation(
     Line(points = {{78, 44}, {84, 44}, {84, 42}, {90, 42}}, color = {0, 127, 255}));
 // controlCold connections
-  connect(receiver.T, controlCold.T_mea) annotation(
-    Line(points = {{-21, 22}, {30, 22}, {30, 1}, {26, 1}}, color = {0, 0, 127}));
-  connect(heliostatsField.on, controlCold.sf_on) annotation(
-    Line(points = {{-72, 2}, {-72, 2}, {-72, -36}, {28, -36}, {28, -6}, {24.7, -6}, {24.7, -7.2}}, color = {255, 0, 255}));
-  connect(controlCold.m_flow, pumpCold.m_flow) annotation(
-    Line(points = {{9.16, -3}, {4, -3}, {4, -18.84}}, color = {0, 0, 127}));
-  connect(controlCold.defocus, or1.u2) annotation(
-    Line(points = {{17, -10.98}, {17, -32}, {-106, -32}, {-106, 4.8}, {-102.8, 4.8}}, color = {255, 0, 255}, pattern = LinePattern.Dash));
 // controlHot connections
 //Solar field connections i.e. solar.heat port and control
   connect(sun.solar, heliostatsField.solar) annotation(
@@ -283,8 +279,6 @@ equation
   R_spot = market.profit;
   connect(tank_Cold_Acciona.fluid_b, pumpCold.fluid_a) annotation(
     Line(points = {{56, -29}, {16, -29}, {16, -24}, {10, -24}}, color = {0, 127, 255}));
-  connect(controlCold.L_mea, tank_Cold_Acciona.L) annotation(
-    Line(points = {{24, -2}, {40, -2}, {40, -18}, {56, -18}}, color = {0, 0, 127}));
   connect(Pres_input.y, tank_Cold_Acciona.p_top) annotation(
     Line(points = {{55, 30}, {52, 30}, {52, 0}, {61.5, 0}, {61.5, -12}}, color = {0, 0, 127}));
   connect(Tamb_input.y, tank_Cold_Acciona.T_amb) annotation(
@@ -323,6 +317,18 @@ equation
     Line(points = {{106, -2}, {86, -2}, {86, -17}, {76, -17}}, color = {0, 127, 255}));
   connect(pB_Acciona_New_2.T, pB_Control_Acciona.T) annotation(
     Line(points = {{106, 4}, {42, 4}, {42, 72}, {46, 72}, {46, 72}, {48, 72}}, color = {0, 0, 127}));
+  connect(pB_Control_Acciona.P_SP, pB_Acciona_New_2.P_SP) annotation(
+    Line(points = {{52, 64}, {52, 64}, {52, 36}, {48, 36}, {48, 10}, {108, 10}, {108, 10}}, color = {0, 0, 127}));
+  connect(receiver_Control_Acciona.m_flow, pumpCold.m_flow) annotation(
+    Line(points = {{10, 2}, {4, 2}, {4, -18}, {4, -18}}, color = {0, 0, 127}));
+  connect(receiver_Control_Acciona.T_mea, receiver.T) annotation(
+    Line(points = {{34, 8}, {36, 8}, {36, 22}, {-22, 22}, {-22, 22}}, color = {0, 0, 127}));
+  connect(receiver_Control_Acciona.L_mea, tank_Cold_Acciona.L) annotation(
+    Line(points = {{32, 2}, {46, 2}, {46, -18}, {56, -18}, {56, -18}}, color = {0, 0, 127}));
+  connect(receiver_Control_Acciona.defocus, or1.u2) annotation(
+    Line(points = {{22, -10}, {22, -10}, {22, -14}, {-112, -14}, {-112, 4}, {-102, 4}, {-102, 4}}, color = {255, 0, 255}));
+  connect(receiver_Control_Acciona.sf_on, heliostatsField.on) annotation(
+    Line(points = {{34, -4}, {38, -4}, {38, -24}, {-72, -24}, {-72, 2}, {-72, 2}}, color = {255, 0, 255}));
   annotation(
     Diagram(coordinateSystem(extent = {{-140, -120}, {160, 140}}, initialScale = 0.1), graphics = {Text(lineColor = {217, 67, 180}, extent = {{-96, 92}, {-60, 90}}, textString = "defocus strategy", fontSize = 9), Text(lineColor = {217, 67, 180}, extent = {{-50, -40}, {-14, -40}}, textString = "on/off strategy", fontSize = 9), Text(origin = {2, 2}, extent = {{-52, 8}, {-4, -12}}, textString = "Receiver", fontSize = 9), Text(origin = {12, 4}, extent = {{-110, 4}, {-62, -16}}, textString = "Heliostats Field", fontSize = 9), Text(origin = {4, -8}, extent = {{-80, 86}, {-32, 66}}, textString = "Sun", fontSize = 9), Text(origin = {20, 50}, extent = {{-10, -5}, {10, 5}}, textString = "Hot Tank", fontSize = 9), Text(extent = {{30, -24}, {78, -44}}, textString = "Cold Tank", fontSize = 9), Text(origin = {4, -2}, extent = {{80, 12}, {128, -8}}, textString = "Power Block", fontSize = 9), Text(origin = {6, 0}, extent = {{112, 16}, {160, -4}}, textString = "Market", fontSize = 9), Text(origin = {2, 4}, extent = {{-6, 20}, {42, 0}}, textString = "Rec Control", fontSize = 9), Text(origin = {55, 55}, extent = {{-15, -5}, {15, 5}}, textString = "PB Control", fontSize = 9), Text(origin = {8, -26}, extent = {{-146, -26}, {-98, -46}}, textString = "Data Source", fontSize = 9)}),
     Icon(coordinateSystem(extent = {{-140, -120}, {160, 140}})),

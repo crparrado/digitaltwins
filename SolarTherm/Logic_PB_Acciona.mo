@@ -7,10 +7,13 @@ model Logic_PB_Acciona
     Placement(transformation(extent = {{-128, -20}, {-88, 20}})));
   Modelica.Blocks.Interfaces.RealOutput m_flow_hot(max = 1400, min = 0) annotation(
     Placement(transformation(extent = {{90, -20}, {130, 20}})));
-  
+   parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/outputs_10min_v2.motab");
+  parameter String refi_table = "outputs";
   Modelica.Blocks.Interfaces.RealInput level_cold annotation(
     Placement(visible = true, transformation(extent = {{-128, -72}, {-88, -32}}, rotation = 0), iconTransformation(extent = {{-128, -72}, {-88, -32}}, rotation = 0)));
- 
+ Modelica.Blocks.Interfaces.RealInput P_SP(final quantity = "Power", final unit = "MW", displayUnit = "MW", min = 0) annotation(
+    Placement(visible = true, transformation(extent = {{-126, 74}, {-86, 114}}, rotation = 0), iconTransformation(extent = {{-60, 78}, {-20, 118}}, rotation = 0)));
+  
   Modelica.Blocks.Interfaces.RealOutput m_flow_cold annotation(
     Placement(visible = true, transformation(extent = {{92, -70}, {132, -30}}, rotation = 0), iconTransformation(extent = {{92, -70}, {132, -30}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealInput t_sgs annotation(
@@ -36,7 +39,7 @@ model Logic_PB_Acciona
   ///////////
   // States parameters
   //  Integer con_state(min=1, max=5) "Concentrator state";
-  Integer blk_state(min = 1, max = 4) "Power block state";
+  Integer blk_state(min = 1, max = 6) "Power block state";
   //Integer sch_state(min=1, max=n_sched_states) "Schedule state";
   //SI.HeatFlowRate Q_flow_sched "Discharge schedule";
   //  SI.HeatFlowRate Q_flow_dis "Heat flow out of tank";
@@ -56,7 +59,7 @@ model Logic_PB_Acciona
   parameter SI.Time t_blk_on_delay = 15 * 60 "Delay until power block starts";
   parameter SI.Time t_blk_off_delay = 10 * 60 "Delay until power block shuts off";
   parameter Integer ramp_order = 1 "ramping filter order";
-  
+  parameter SI.Time time_sinchro = 14*60;
   //Schedule
   
   	parameter Integer n_sched_states = 1 "Number of schedule states";
@@ -86,12 +89,18 @@ model Logic_PB_Acciona
   SI.Time t_blk_w_next "Time of power block next warm-up event";
   SI.Time t_blk_c_now "Time of power block current cool-down event";
   SI.Time t_blk_c_next "Time of power block next cool-down event";
+  SI.Time t_blk_synchro;
   //SI.Time  t_sch_next "Time of next schedule change";
   //////
   Modelica.Blocks.Interfaces.RealInput m_flow_in annotation(
-    Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {0, 104})));
+    Placement(visible = true, transformation(origin = {0, 104}, extent = {{-20, -20}, {20, 20}}, rotation = -90), iconTransformation(extent = {{28, 76}, {68, 116}}, rotation = -90)));
 //  Modelica.Blocks.Interfaces.RealInput m_flow_in annotation(
 //    Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {0, 104})));
+
+ Modelica.Blocks.Sources.CombiTimeTable ref_table(tableOnFile = true, tableName = refi_table, smoothness = Modelica.Blocks.Types.Smoothness.ContinuousDerivative, fileName = file_ref_10min, columns = 1:39);
+//   SI.MassFlowRate m_flow_col;
+//   SI.HeatFlowRate P_SGS;
+//   SI.Power Net_power;
 
 initial equation
 //  pre(t_off) = 0;
@@ -110,6 +119,7 @@ initial equation
   t_blk_w_next = 0;
   t_blk_c_now = 0;
   t_blk_c_next = 0;
+  t_blk_synchro = 0;
 //  if E > E_up_u then
 //    full = true;
 //  elseif E < E_up_l then
@@ -175,17 +185,17 @@ algorithm
   /////
   
   //Power Block
-  when blk_state == 1 and m_flow_in >= 0 and time > 20000 then
+  when blk_state == 1 and m_flow_in >= 0 and time > 3600 then
     blk_state := 2;
-  elsewhen blk_state == 2 and (time-t_blk_w_now) > 30*60 then
+  elsewhen blk_state == 2 and (time-t_blk_w_now) > 392*60 then
     blk_state := 3;
-  elsewhen blk_state == 3 and level_hot >= level_hot_min and level_cold < level_cold_max then
+  elsewhen blk_state == 3 and level_hot >= 1.5*level_hot_min and level_cold < level_cold_max and P_SP >= 10 then
     blk_state := 4;
-  elsewhen blk_state == 4 and m_flow_in <= 0 then
-    blk_state := 3;
-//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay > 0 then
-//    blk_state := 4;
-//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay <= 0 then
+  elsewhen blk_state == 4 and t_sgs > from_degC(400) then
+    blk_state := 5;
+  elsewhen blk_state == 5 and (time - t_blk_synchro) > time_sinchro then
+    blk_state := 6;
+  //elsewhen blk_state == 6 and E <= E_low_l and t_blk_off_delay <= 0 then
 //    blk_state := 1;
 //  elsewhen blk_state == 2 and time >= t_blk_w_next then
 //    blk_state := 3;
@@ -229,6 +239,10 @@ algorithm
     t_blk_c_next := time + t_blk_off_delay;
   end when;
   
+  when blk_state == 5 then
+    t_blk_synchro := time;
+    //t_blk_w_next := time + t_blk_on_delay;
+  end when;
 //	for i in 1:n_sched_states loop
 //		when sch_state == i then
 //			Q_flow_sched := Q_flow_sched_val[i];
@@ -302,6 +316,19 @@ equation
 //    Q_flow_dis = fr_ramp_blk * Q_flow_sched;
 //    P_elec = eff_blk * Q_flow_dis;
   //  m_flow = min(m_flow_in, m_flow_max);
+    m_flow_hot = 0.1*658.1;
+    m_flow_cold = 0;
+    elseif blk_state == 5 then
+//    Q_flow_dis = if ramp_order == 0 then Q_flow_sched else fr_ramp_blk * Q_flow_sched;
+//    P_elec = eff_blk * Q_flow_dis;
+    //m_flow = m_flow_in;
+    m_flow_hot = 658.1;
+    m_flow_cold = 0;
+    
+    elseif blk_state == 6 then
+//    Q_flow_dis = if ramp_order == 0 then Q_flow_sched else fr_ramp_blk * Q_flow_sched;
+//    P_elec = eff_blk * Q_flow_dis;
+    //m_flow = m_flow_in;
     m_flow_hot = 658.1;
     m_flow_cold = 0;
   else

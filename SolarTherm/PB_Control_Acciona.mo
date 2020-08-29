@@ -4,6 +4,10 @@ model PB_Control_Acciona
   extends SolarTherm.Icons.Control;
   parameter Modelica.SIunits.MassFlowRate m_flow_on = 1400 "Constant mass flow rate on";
   parameter Modelica.SIunits.MassFlowRate m_flow_off = 0 "Constant mass flow rate off";
+  
+  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/outputs_10min_v2.motab");
+  parameter String refi_table = "outputs";
+  
   parameter Real L_on = 90 "Level of start discharge";
   parameter Real L_off = 10 "Level of stop discharge";
   parameter Real L_df_on = 99 "Level of start defocus";
@@ -37,7 +41,12 @@ model PB_Control_Acciona
   Modelica.Blocks.Interfaces.RealInput m_flow_in annotation(
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 0, origin = {-108, 50})));
   SolarTherm.Logic_PB_Acciona logic_PB_Acciona annotation(
-    Placement(visible = true, transformation(origin = {-6, 25}, extent = {{-16, -19}, {16, 19}}, rotation = 0)));
+    Placement(visible = true, transformation(origin = {-2, 23}, extent = {{-16, -19}, {16, 19}}, rotation = 0)));
+ 
+ Modelica.Blocks.Sources.CombiTimeTable ref_table(tableOnFile = true, tableName = refi_table, smoothness = Modelica.Blocks.Types.Smoothness.ContinuousDerivative, fileName = file_ref_10min, columns = 1:39);
+               Modelica.Blocks.Interfaces.RealInput P_SP annotation(
+    Placement(visible = true, transformation(extent = {{-68, 82}, {-28, 122}}, rotation = 0), iconTransformation(extent = {{-68, 82}, {-28, 122}}, rotation = 0)));
+ //SI.MassFlowRate m_flow_sgp;
 equation
   connect(defocus_logic.level_ref, level_hot) annotation(
     Line(points = {{-4.44089e-016, -34}, {0, -34}, {0, -20}, {-38, -20}, {-38, -50}, {-108, -50}}, color = {0, 0, 127}));
@@ -48,6 +57,7 @@ equation
   connect(m_tank_2.y, m_tank2) annotation(
     Line(points = {{61, 52}, {92, 52}}, color = {0, 0, 127}));
 //  connect(level_hot_tk2, realValue.number)
+// P_SGS = ref_table.y[10];
 //    annotation (Line(points={{-88,2},{-80,2},{-80,7},{-74,7}}, color={0,0,127}));
 //  extends SolarTherm.Icons.Control;
 //  parameter Modelica.SIunits.MassFlowRate m_flow_on = 1400 "Constant mass flow rate on";
@@ -134,17 +144,19 @@ equation
 //</ul>
 //</html>"));
   connect(level_cold, logic_PB_Acciona.level_cold) annotation(
-    Line(points = {{-106, 88}, {-52, 88}, {-52, 15}, {-23, 15}}, color = {0, 0, 127}));
-  connect(logic_PB_Acciona.level_hot, level_hot) annotation(
-    Line(points = {{-23, 25}, {-62, 25}, {-62, -50}, {-108, -50}}, color = {0, 0, 127}));
-  connect(m_flow_in, logic_PB_Acciona.m_flow_in) annotation(
-    Line(points = {{-108, 50}, {-62, 50}, {-62, 66}, {-6, 66}, {-6, 45}}, color = {0, 0, 127}));
-  connect(T, logic_PB_Acciona.t_sgs) annotation(
-    Line(points = {{-106, 2}, {-68, 2}, {-68, 35}, {-23, 35}}, color = {0, 0, 127}));
-  connect(logic_PB_Acciona.m_flow_cold, m_flow_cold) annotation(
-    Line(points = {{12, 15.5}, {32, 15.5}, {32, 86}, {114, 86}, {114, 84}}, color = {0, 0, 127}));
-  connect(logic_PB_Acciona.m_flow_hot, m_flow_hot) annotation(
-    Line(points = {{12, 25}, {50, 25}, {50, 0}, {112, 0}}, color = {0, 0, 127}));
+    Line(points = {{-106, 88}, {-52, 88}, {-52, 13}, {-19, 13}}, color = {0, 0, 127}));
+ connect(logic_PB_Acciona.level_hot, level_hot) annotation(
+    Line(points = {{-19, 23}, {-62, 23}, {-62, -50}, {-108, -50}}, color = {0, 0, 127}));
+ connect(T, logic_PB_Acciona.t_sgs) annotation(
+    Line(points = {{-106, 2}, {-68, 2}, {-68, 33}, {-19, 33}}, color = {0, 0, 127}));
+ connect(logic_PB_Acciona.m_flow_cold, m_flow_cold) annotation(
+    Line(points = {{16, 13.5}, {32, 13.5}, {32, 86}, {114, 86}, {114, 84}}, color = {0, 0, 127}));
+ connect(logic_PB_Acciona.m_flow_hot, m_flow_hot) annotation(
+    Line(points = {{16, 23}, {50, 23}, {50, 0}, {112, 0}}, color = {0, 0, 127}));
+ connect(m_flow_in, logic_PB_Acciona.m_flow_in) annotation(
+    Line(points = {{-108, 50}, {8, 50}, {8, 44}, {6, 44}, {6, 42}}, color = {0, 0, 127}));
+ connect(P_SP, logic_PB_Acciona.P_SP) annotation(
+    Line(points = {{-48, 102}, {-8, 102}, {-8, 42}, {-8, 42}}, color = {0, 0, 127}));
   annotation(
     Documentation(revisions = "<html>
 <ul>
