@@ -227,6 +227,14 @@ model SaltTwoTanks
   SI.Power P_elec "Output power of power block";
   SI.Energy E_elec(start = 0, fixed = true, displayUnit = "MW.h") "Generate electricity";
   FI.Money R_spot(start = 0, fixed = true) "Spot market revenue";
+  SolarTherm.Models.Fluid.Fittings.Splitter splitter(redeclare package Medium = Medium) annotation(
+    Placement(visible = true, transformation(origin = {35, -27.1679}, extent = {{7, 0}, {-7, 7.16795}}, rotation = 0)));
+  SolarTherm.Models.Fluid.Pumps.PumpSimple pumpColdPB(redeclare package Medium = Medium, k_loss = k_loss_cold) annotation(
+    Placement(visible = true, transformation(origin = {56, -48}, extent = {{-6, -6}, {6, 6}}, rotation = 0)));
+  Modelica.Fluid.Fittings.TeeJunctionIdeal tee2(redeclare package Medium = Medium) annotation(
+    Placement(visible = true, transformation(origin = {88, -48}, extent = {{-6, -6}, {6, 6}}, rotation = 0)));
+  Modelica.Blocks.Sources.RealExpression pumpInput(y = 0.001) annotation(
+    Placement(visible = true, transformation(origin = {41, -40}, extent = {{-5, -4}, {5, 4}}, rotation = 0)));
 equation
 //Connections scheduler
   connect(wea.wbus, sch_fixed.wbus);
@@ -270,8 +278,6 @@ equation
     Line(points = {{78, 44}, {80, 44}}, color = {0, 127, 255}));
   connect(pumpHot2.fluid_b, Tee.port_3) annotation(
     Line(points = {{78, 101}, {86, 101}, {86, 50}}, color = {0, 127, 255}));
-  connect(Tee.port_2, powerBlock.fluid_a) annotation(
-    Line(points = {{92, 44}, {94, 44}, {94, 29.46}, {98.08, 29.46}}, color = {0, 127, 255}));
   connect(powerBlock.fluid_b, tankCold.fluid_a) annotation(
     Line(points = {{95.56, 14.64}, {78, 14.64}, {78, -13}, {64, -13}}, color = {0, 127, 255}));
 // controlCold connections
@@ -294,7 +300,7 @@ equation
     Line(points = {{60.72, 65}, {72, 65}, {72, 49.16}}, color = {0, 0, 127}));
   connect(controlHot.defocus, or1.u1) annotation(
     Line(points = {{54, 72.98}, {54, 72.98}, {54, 86}, {-106, 86}, {-106, 8}, {-102.8, 8}}, color = {255, 0, 255}, pattern = LinePattern.Dash));
-  connect(powerBlock.T_pb, controlHot.T_mea);
+//  connect(powerBlock.T_pb, controlHot.T_mea);
 //Solar field connections i.e. solar.heat port and control
   connect(sun.solar, heliostatsField.solar) annotation(
     Line(points = {{-72, 60}, {-72, 36}}, color = {255, 128, 0}));
@@ -314,8 +320,26 @@ equation
     Line(points = {{60, 68}, {72, 68}, {72, 106}, {72, 106}}, color = {0, 0, 127}));
   connect(controlHot.m_pump2, Valve1.m_flow) annotation(
     Line(points = {{60, 62}, {64, 62}, {64, 122}, {0, 122}, {0, 116}, {0, 116}}, color = {0, 0, 127}));
-  connect(pumpCold.fluid_a, tankCold.fluid_b) annotation(
-    Line(points = {{10, -24.12}, {10, -24.12}, {10, -25}, {44, -25}}, color = {0, 127, 255}));
+  connect(splitter.fluid_a, tankCold.fluid_b) annotation(
+    Line(points = {{39, -24}, {44, -24}}, color = {0, 127, 255}));
+  connect(splitter.fluid_b1, pumpCold.fluid_a) annotation(
+    Line(points = {{31, -24}, {10, -24}}, color = {0, 127, 255}));
+  connect(pumpColdPB.fluid_a, splitter.fluid_b2) annotation(
+    Line(points = {{50, -48}, {34, -48}, {34, -28}, {36, -28}}, color = {0, 127, 255}));
+  connect(pumpColdPB.fluid_b, tee2.port_1) annotation(
+    Line(points = {{62, -48}, {82, -48}}, color = {0, 127, 255}));
+  connect(Tee.port_2, tee2.port_3) annotation(
+    Line(points = {{92, 44}, {88, 44}, {88, -42}, {88, -42}}, color = {0, 127, 255}));
+  connect(tee2.port_2, powerBlock.fluid_a) annotation(
+    Line(points = {{94, -48}, {94, -48}, {94, 30}, {98, 30}, {98, 30}}, color = {0, 127, 255}));
+  connect(pumpInput.y, pumpColdPB.m_flow) annotation(
+    Line(points = {{46, -40}, {56, -40}, {56, -42}, {56, -42}}, color = {0, 0, 127}));
+  connect(powerBlock.T_pb, controlHot.T_mea) annotation(
+    Line(points = {{96, 23}, {44, 23}, {44, 59}, {48, 59}}, color = {0, 0, 127}));
+  connect(tankCold.L, controlHot.L_cold) annotation(
+    Line(points = {{44, -14}, {42, -14}, {42, 64}, {48, 64}, {48, 64}}, color = {0, 0, 127}));
+  connect(tankHot2.L, controlHot.L_hot_2) annotation(
+    Line(points = {{36, 112}, {42, 112}, {42, 66}, {48, 66}, {48, 66}}, color = {0, 0, 127}));
   annotation(
     Diagram(coordinateSystem(extent = {{-140, -120}, {160, 140}}, initialScale = 0.1), graphics = {Text(lineColor = {217, 67, 180}, extent = {{-96, 92}, {-60, 90}}, textString = "defocus strategy", fontSize = 9), Text(lineColor = {217, 67, 180}, extent = {{-50, -40}, {-14, -40}}, textString = "on/off strategy", fontSize = 9), Text(origin = {2, 2}, extent = {{-52, 8}, {-4, -12}}, textString = "Receiver", fontSize = 9), Text(origin = {12, 4}, extent = {{-110, 4}, {-62, -16}}, textString = "Heliostats Field", fontSize = 9), Text(origin = {4, -8}, extent = {{-80, 86}, {-32, 66}}, textString = "Sun", fontSize = 9), Text(origin = {20, 50}, extent = {{-10, -5}, {10, 5}}, textString = "Hot Tank", fontSize = 9), Text(extent = {{30, -24}, {78, -44}}, textString = "Cold Tank", fontSize = 9), Text(origin = {4, -2}, extent = {{80, 12}, {128, -8}}, textString = "Power Block", fontSize = 9), Text(origin = {6, 0}, extent = {{112, 16}, {160, -4}}, textString = "Market", fontSize = 9), Text(origin = {2, 4}, extent = {{-6, 20}, {42, 0}}, textString = "Rec Control", fontSize = 9), Text(origin = {55, 55}, extent = {{-15, -5}, {15, 5}}, textString = "PB Control", fontSize = 9), Text(origin = {8, -26}, extent = {{-146, -26}, {-98, -46}}, textString = "Data Source", fontSize = 9)}),
     Icon(coordinateSystem(extent = {{-140, -120}, {160, 140}})),
