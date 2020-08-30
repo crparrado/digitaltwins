@@ -1,5 +1,4 @@
-within SolarTherm;
-
+within SolarTherm.Systems;
 model TestTwoTanks
   extends Modelica.Icons.Example;
   import SolarTherm.{Models,Media};
