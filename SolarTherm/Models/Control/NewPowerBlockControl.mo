@@ -68,6 +68,12 @@ model NewPowerBlockControl
   Modelica.Blocks.Interfaces.RealInput T_mea annotation(
     Placement(visible = true, transformation(origin = {-108, 80}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
 
+  Modelica.Blocks.Interfaces.RealInput L_cold annotation(
+    Placement(visible = true, transformation(origin = {-108, 15}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
+
+  Modelica.Blocks.Interfaces.RealInput L_hot_2 annotation(
+    Placement(visible = true, transformation(origin = {-108, -15}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
+
   Modelica.Blocks.Math.Feedback feedback annotation(
     Placement(visible = true, transformation(origin = {-40, 80}, extent = {{-10, -10}, {10, 10}})));
 
