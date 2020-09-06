@@ -18,11 +18,8 @@ SimpleSystem
 PB_Control_Acciona
 Logic_PB_Acciona
 SaltTwoTanks_Acciona
-Tee_Acciona
 Field_Receiver
 Solarfield_Acciona
-TB_MC_Cold
-TB_MC_Hot
 PB_Acciona_New
 Receiver_Acciona
 Logictest_hot
@@ -35,3 +32,7 @@ PB_Acciona_New_2
 Receiver_Control_Acciona
 Level2Logic_Acciona
 Control_Cold_Tank
+NewReceiverControl_Acciona
+SaltTwoTanks_Acciona_Avance
+Heliostat_field_Acciona
+Tee_Acciona

@@ -9,6 +9,7 @@ block Level2Logic_Acciona
 
   Modelica.Blocks.Interfaces.BooleanOutput y
     annotation (Placement(transformation(extent={{98,-10},{118,10}})));
+
 initial equation
   y= (level_ref>level_max) and (level_ref>level_min);
 

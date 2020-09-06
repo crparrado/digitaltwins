@@ -3,23 +3,24 @@ within SolarTherm;
 model Control_Cold_Tank
   //power block startup+ time of standby
   // Inputs y Outputs
-//  Modelica.Blocks.Interfaces.RealInput level_hot annotation(
-//    Placement(transformation(extent = {{-128, -20}, {-88, 20}})));
-//  Modelica.Blocks.Interfaces.RealOutput m_flow_hot(max = 1400, min = 0) annotation(
+  Modelica.Blocks.Interfaces.RealInput level_hot annotation(
+   Placement(visible = true, transformation(extent = {{-128, -20}, {-88, 20}}, rotation = 0), iconTransformation(extent = {{-126, -46}, {-86, -6}}, rotation = 0)));
+  
+//  Modelica.Blocks.Interfaces.RealOutput m_flow_hot annotation(
 //    Placement(transformation(extent = {{90, -20}, {130, 20}})));
   
   parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/outputs_10min_v2.motab");
   parameter String refi_table = "outputs";
-//  Modelica.Blocks.Interfaces.RealInput level_cold annotation(
-//    Placement(visible = true, transformation(extent = {{-128, -72}, {-88, -32}}, rotation = 0), iconTransformation(extent = {{-128, -72}, {-88, -32}}, rotation = 0)));
-//  Modelica.Blocks.Interfaces.RealInput P_SP(final quantity = "Power", final unit = "MW", displayUnit = "MW", min = 0) annotation(
-//    Placement(visible = true, transformation(extent = {{-126, 74}, {-86, 114}}, rotation = 0), iconTransformation(extent = {{-60, 78}, {-20, 118}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealInput level_cold annotation(
+    Placement(visible = true, transformation(extent = {{-128, -72}, {-88, -32}}, rotation = 0), iconTransformation(extent = {{-128, -100}, {-88, -60}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealInput Recpower(final quantity = "Power", final unit = "MW", displayUnit = "MW", min = 0) annotation(
+    Placement(visible = true, transformation(extent = {{-126, 74}, {-86, 114}}, rotation = 0), iconTransformation(extent = {{-124, 56}, {-84, 96}}, rotation = 0)));
   
   Modelica.Blocks.Interfaces.RealOutput m_flow_cold annotation(
     Placement(visible = true, transformation(extent = {{92, -70}, {132, -30}}, rotation = 0), iconTransformation(extent = {{92, -70}, {132, -30}}, rotation = 0)));
   
-  Modelica.Blocks.Interfaces.RealInput t_sgs annotation(
-    Placement(visible = true, transformation(extent = {{-126, 34}, {-86, 74}}, rotation = 0), iconTransformation(extent = {{-126, 34}, {-86, 74}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealInput Sun_elev(final quantity = "Angle", final unit = "deg", displayUnit = "deg", min = 0) annotation(
+    Placement(visible = true, transformation(extent = {{-126, 34}, {-86, 74}}, rotation = 0), iconTransformation(extent = {{-126, 6}, {-86, 46}}, rotation = 0)));
   //////
   // Universal parameters
   parameter Modelica.SIunits.Time t_start = 0.5 * 3600;
@@ -29,8 +30,11 @@ model Control_Cold_Tank
   parameter Real m_flow_standby;
   //  parameter Real level_on = 20;
   //  parameter Real level_off = 5;
+  parameter Real level_hot_max = 50;
+  parameter Real level_cold_min = /*2.58*/10;
   parameter Real level_hot_min = 30;
-  parameter Real level_cold_max = 70;
+  parameter Real level_cold_max = 50;
+  Integer con_state(min=1, max=10) "Concentrator state";
   //  Boolean standby;
   //  Boolean startup(start=false, fixed=true);
   //  Boolean on_charge;
@@ -79,6 +83,11 @@ model Control_Cold_Tank
   //  SI.Time  t_con_w_next "Time of concentrator next warm-up event";
   //  SI.Time  t_con_c_now "Time of concentrator current cool-down event";
   //  SI.Time  t_con_c_next "Time of concentrator next cool-down event";
+    SI.Time t_con_4_now;
+    SI.Time t_con_5_now;
+    SI.Time t_con_8_now;
+    SI.Time t_con_9_now;
+    //SI.Time t_con_1_now;
 //  SI.Time t_blk_w_now "Time of power block current warm-up event";
 //  SI.Time t_blk_w_next "Time of power block next warm-up event";
 //  SI.Time t_blk_c_now "Time of power block current cool-down event";
@@ -93,6 +102,10 @@ model Control_Cold_Tank
   //    Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {0, 104})));
   Modelica.Blocks.Sources.CombiTimeTable ref_table(tableOnFile = true, tableName = refi_table, smoothness = Modelica.Blocks.Types.Smoothness.ContinuousDerivative, fileName = file_ref_10min, columns = 1:39);
      SI.MassFlowRate m_flow_cold_ac;
+     
+  Modelica.Blocks.Interfaces.BooleanOutput level_y
+ annotation (Placement(transformation(extent={{98,-10},{118,10}})));
+
   //   SI.HeatFlowRate P_SGS;
   //   SI.Power Net_power;
 initial equation
@@ -100,7 +113,12 @@ initial equation
 //  pre(t_on) = 0;
 ////Initial equations states
 //  E = E_low_l;
-//  t_con_w_now = 0;
+    t_con_4_now = 0;
+    t_con_5_now = 0;
+    t_con_8_now = 0;
+    t_con_9_now = 0;
+    //t_con_1_now = 0;
+    con_state = 1;
 //  t_con_w_next = 0;
 //  t_con_c_now = 0;
 //  t_con_c_next = 0;
@@ -120,6 +138,8 @@ initial equation
 //  else
 //    full = true;
 //  end if;
+
+level_y= (level_cold>level_cold_max) and (level_cold>level_cold_min) and (level_hot>level_hot_max) and (level_hot>level_hot_min);
 //////
 //Antiguo
 //initial equation
@@ -129,8 +149,82 @@ initial equation
 algorithm
 // Discrete equation system not yet supported (even though correct)
 // Putting in algorithm section instead
-// Receiver
-//	when con_state == 2 and (wea.wbus.dni <= dni_stop or E >= E_up_u) then
+//Receiver
+  when con_state == 1 and ((Sun_elev < from_deg(45) and Sun_elev > from_deg(25)) or Recpower >= 140000000) and level_hot < 0.98 * level_hot_max and level_cold > 1.1 * level_cold_min then
+    con_state := 2;
+  elsewhen con_state == 2 and /*permi_trace == 1*/ /*time > 7200*/ Recpower >= 300000000 then
+    con_state := 3;
+  elsewhen con_state == 3 and Recpower >= 140000000 then
+    con_state := 4;
+  elsewhen con_state == 4 and (time - t_con_4_now) > 5 then
+    con_state := 5;
+  elsewhen con_state == 5 and (time - t_con_5_now) > 5 then
+    con_state := 6;
+  elsewhen con_state == 6 and level_hot >= 0.98 * level_hot_max or level_cold <= 1.1 * level_cold_min then
+    con_state := 7;
+  elsewhen con_state == 7 and Recpower >= 140000000 or level_hot >= 1.1 * level_hot_max or level_cold <= 0.8 * level_cold_min then
+    con_state := 9;
+  elsewhen con_state == 9 and level_hot >= 0.98 * level_hot_max or level_cold <= 1.1 * level_cold_min then
+    con_state := 8;
+  elsewhen con_state == 8 and (time - t_con_8_now) > 10 and Recpower < 140000000 then
+    con_state := 10;
+  elsewhen con_state == 3 and Sun_elev > 45 and Recpower < 140000000 then
+    con_state := 1;
+  elsewhen con_state == 7 and level_hot < 0.95 * level_hot_max and level_cold > 1.5 * level_cold_min then
+    con_state := 6;
+  elsewhen con_state == 9 and Recpower >= 140000000 and level_hot < 1.1 * level_hot_max and level_cold > 0.8 * level_cold_min then
+    con_state := 7;
+  elsewhen con_state == 8 and level_hot < 0.95 * level_hot_max and level_cold > 1.5 * level_cold_min then
+    con_state := 9;
+  elsewhen con_state == 8 and Recpower < 140000000 then
+    con_state := 6;
+  elsewhen con_state == 9 and level_hot >= 1.1 * level_hot_max or level_cold <= 0.8 * level_cold_min then
+    con_state := 10;
+  elsewhen con_state == 9 and (time - t_con_9_now) > 10 and Recpower < 140000000 then
+    con_state := 10;
+//  elsewhen con_state == 10 and Dif_rec_ctank <= 50 then
+//    con_state := 1;
+  end when;
+// precalentamiento electrico 1
+// precalentamiento electrico 2
+// precalentamiento solar 1
+// precalentamiento solar 2
+// modo transicion a power mode
+// modo paso nubes
+// power mode
+// modo de adaptacion de potencia termica del receptor a la potencia termica
+// modo stand-by de transicion a apagado
+//
+//
+//
+//
+//
+//
+//
+//\
+
+// when con_state == 1 then
+//    t_con_1_now := time;
+//  end when;
+//t_con_4_next := time + t_blk_on_delay;
+  when con_state == 4 then
+    t_con_4_now := time;
+  end when;
+//t_con_4_next := time + t_blk_on_delay;
+  when con_state == 5 then
+    t_con_5_now := time;
+  end when;
+//t_con_5_next := time + t_blk_on_delay;
+  when con_state == 8 then
+    t_con_8_now := time;
+  end when;
+    
+    when con_state == 9 then
+    t_con_9_now := time;
+    //t_con_9_next := time + t_blk_on_delay;
+    end when;
+//t_con_9_next := time + t_blk_on_delay;
+//	when con_state == 1 and (wea.wbus.dni <= dni_stop or E >= E_up_u) then
 //		con_state := 1; // off sun
 //	elsewhen con_state == 3 and (wea.wbus.dni <= dni_stop) and t_con_off_delay > 0 then
 //		con_state := 5; // ramp down
@@ -261,6 +355,13 @@ algorithm
 equation
 m_flow_cold_ac = ref_table.y[13];
 m_flow_cold = m_flow_cold_ac;
+
+ when (level_cold > 1.1*level_cold_min) and (level_hot < 0.98*level_hot_max) then
+    level_y=true;
+  elsewhen (level_cold<level_cold_min) and (level_hot>level_hot_max) then
+    level_y=false;
+  end when;
+  
 //Nuevo Control
 //  ramp_up_con.x = t_con_w_now;
 //  ramp_down_con.x = t_con_c_now;
@@ -291,6 +392,8 @@ m_flow_cold = m_flow_cold_ac;
 //			fr_dfc = 1;
 //		end if;
 //	end if;
+
+
 //  if blk_state <= 1 then
 ////Q_flow_dis = 0;
 ////P_elec = 0;
@@ -371,9 +474,9 @@ m_flow_cold = m_flow_cold_ac;
 //  end if;
 ///////////////////////////
   annotation(
-    Icon(coordinateSystem(preserveAspectRatio = false)),
-    Diagram(coordinateSystem(preserveAspectRatio = false)),
-    uses(Modelica(version = "3.2.2")));
-  annotation(
     experiment(StartTime = 0.0, StopTime = 31536000.0, Interval = 60, Tolerance = 1e-06));
+  annotation(
+    Icon(coordinateSystem(preserveAspectRatio = false)),
+  Diagram(coordinateSystem(preserveAspectRatio = false)),
+  uses(Modelica(version = "3.2.2")));
 end Control_Cold_Tank;

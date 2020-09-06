@@ -11,7 +11,7 @@ extends Interfaces.Models.PowerBlock;
   parameter SI.Temperature T_in_ref = from_degC(565) "HTF inlet temperature (design)" annotation(
     Dialog(group = "Design"));
   parameter SI.Temperature T_out_ref = from_degC(217) "HTF outlet temperature (design)" annotation(
-    Dialog(group = "Design"));
+    Dialog(group = "Design")); //Fix?
   //parameter SI.Temperature T_out_ref=from_degC(290) "HTF outlet temperature (design)"
   parameter SI.AbsolutePressure p_bo = 10e5 "Boiler operating pressure" annotation(
     Dialog(group = "Design"));
@@ -22,7 +22,7 @@ extends Interfaces.Models.PowerBlock;
     Dialog(group = "Operating strategy"));
   SI.HeatFlowRate Q_flow(final start = 0) "Cycle heat addition";
   SI.Temperature T_in = Medium.temperature(state_in);
-  SI.Temperature T_out = Medium.temperature(state_out);
+  //SI.Temperature T_out = Medium.temperature(state_out);
   Real eff_pb "Power Block Efficiency";
   parameter Boolean enable_losses = false "= true enable thermal losses with environment" annotation(
     Dialog(group = "Assumptions"),
@@ -74,7 +74,7 @@ extends Interfaces.Models.PowerBlock;
     Placement(visible = true, transformation(origin = {-58, 10}, extent = {{10, -10}, {-10, 10}}, rotation = 0), iconTransformation(origin = {-51, 3}, extent = {{-5, -5}, {5, 5}}, rotation = 180)));
   
 //  SI.SpecificEnthalpy h_in_a2;
-  //SI.SpecificEnthalpy h_out;
+  //SI.SpecificEnthalpy h_out; //uncommented by Zeb
   //SI.SpecificEnthalpy h_out(start=h_0);
   SI.SpecificEnthalpy h_mea(start = h_out_ref);
   parameter SI.MassFlowRate m_flow_ref = Q_flow_ref / (h_in_ref - h_out_ref);
@@ -95,8 +95,15 @@ extends Interfaces.Models.PowerBlock;
    SI.HeatFlowRate P_SGS;
    SI.Power Net_power;
    SI.MassFlowRate m_flow_sgp;
+   
+algorithm
+  DNI := ref_table.y[7];
+  P_SGS := ref_table.y[10];
+  m_flow_sgp := ref_table.y[12];
+  Net_power := ref_table.y[24];  
+  P_SP := P_SGS; 
 initial equation
-  medium.h = h_out_ref;
+  //medium.h = h_out_ref;
 equation
   if enable_losses then
     connect(T_amb_internal, T_amb);
@@ -108,68 +115,38 @@ equation
   else
     parasities_internal = 0;
   end if;
-  logic = load > nu_min;
-  medium.h = (h_in + h_mea) / 2;
-  
-  DNI = ref_table.y[7];
-  P_SGS = ref_table.y[10];
-  m_flow_sgp = ref_table.y[12];
-  Net_power = ref_table.y[24];
+  logic = T > from_degC(564);
+  medium.h = (h_in + h_mea) / 2; //Commented by Zeb
+  medium.p = fluid_a.p;
+  //medium.h = h_in; //Added by Zeb
+ 
   h_in = inStream(fluid_a.h_outflow);
-  //h_in_a2 = inStream(fluid_a2.h_outflow);
-  fluid_b.h_outflow = max(h_out_ref, h_mea);
-//h_out=fluid_b.h_outflow;
-//  h_out=fluid_a.h_outflow;
-//  h_out=fluid_a2.h_outflow;
-  h_in = fluid_a.h_outflow;
-  //h_in_a2 = fluid_a2.h_outflow;
+  h_mea=fluid_b.h_outflow;
+  h_mea=fluid_a.h_outflow;
   fluid_a.m_flow + fluid_b.m_flow = 0;
-  //fluid_a.m_flow = m_flow_sgp;
-//  fluid_a.p=fluid_b.p;
-//  fluid_a.p=fluid_a2.p;
-  //fluid_a2.p = medium.p;
-  fluid_a.p = medium.p;
-  fluid_b.p = medium.p;
+  fluid_a.p=fluid_b.p;
+
 //fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
   T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);
-  P_SP = P_SGS;
-//T = SolarTherm.Media.MoltenSalt.MoltenSalt_utilities.T_h(h_mea);from_degC(T_h(h_mea))
-//
-//T = T_out;
-//medium.h=(h_in+h_out)/2;
-//h_in=inStream(fluid_a.h_outflow);
-//fluid_b.h_outflow=max(h_0,h_out);
-//fluid_a.h_outflow=h_in;
-//T = T_out;
-//heat.T=medium.T;
-//  fluid_b.m_flow=-fluid_a.m_flow;
-//  fluid_a.p=medium.p;
-//  fluid_b.p=medium.p;
-//fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea = 0;
-//eta_rec = max(0,rec_perf_tab.y);
-//Q_rcv = fluid_a.m_flow*(h_mea-h_in);
-//Q_loss = if heat.Q_flow > 1e-3 then ab*heat.Q_flow*(1-eta_rec) else A*sigma*em*(medium.T^4-Tamb^4);
-//Q_inc = heat.Q_flow/1e6;
-//Q_perd = Q_loss/1e6;
-//medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) = ab*heat.Q_flow - Q_loss + fluid_a.m_flow*(h_in-h_mea);
-//medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) =  -fluid_a.m_flow*h_in - fluid_a2.m_flow*h_in_a2 + max(1e-3,-fluid_b.m_flow)*h_mea;
-//medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d)= fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea + Q_flow;
-  medium.d * V_rcv * der(medium.u) + medium.u * V_rcv * der(medium.d) = fluid_a.m_flow * h_in - max(1e-3, -fluid_b.m_flow) * h_mea /*- Q_flow*/;
-///le cambie el signo a fluid_b.m_flow
-//  load=max(nu_eps,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
-// load=max(1e-3,(fluid_a.m_flow+fluid_a2.m_flow)/m_flow_ref); //load=1 if it is no able partial load
+  
+
   load = max(1e-3, fluid_a.m_flow / m_flow_ref);
 //load=1 if it is no able partial load
   if logic then
     k_q = cycle.k_q;
     k_w = cycle.k_w;
+    Q_flow=fluid_a.m_flow*(h_in-h_mea); //Added by zebedee to try to fix the issues.
 // fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea - Q_flow = 0;
   else
     k_q = 0;
     k_w = 0;
+    //h_in = h_mea;//Added by zebedee to try to fix the issues.
 //    h_out=h_out_ref;
+    h_mea=h_out_ref;
   end if;
-  Q_flow / (cool.nu_q * Q_flow_ref * load) = k_q;
+  Q_flow / (cool.nu_q * Q_flow_ref * load) = k_q; //Input heat rate into the power cycle. Q_flow = m_flow(h_in-h_out) Energy balance
+  
+  
   W_gross / (cool.nu_w * W_des * load) = k_w;
   eff_pb = W_gross / max(1, Q_flow);
   der(E_gross) = W_gross;

@@ -28,7 +28,7 @@ model Logic_PB_Acciona
   parameter Real m_flow_standby;
 //  parameter Real level_on = 20;
 //  parameter Real level_off = 5;
-  parameter Real level_hot_min = 30;
+  parameter Real level_hot_min = 10;
   parameter Real level_cold_max = 70;
   //  Boolean standby;
   //  Boolean startup(start=false, fixed=true);
@@ -134,56 +134,6 @@ initial equation
 ////////////////////
 // Algoritmo States
 algorithm
-// Discrete equation system not yet supported (even though correct)
-// Putting in algorithm section instead
-// Receiver
-//	when con_state == 2 and (wea.wbus.dni <= dni_stop or E >= E_up_u) then
-//		con_state := 1; // off sun
-//	elsewhen con_state == 3 and (wea.wbus.dni <= dni_stop) and t_con_off_delay > 0 then
-//		con_state := 5; // ramp down
-//	elsewhen con_state == 3 and (wea.wbus.dni <= dni_stop) and t_con_off_delay <= 0 then
-//		con_state := 1; // off sun(no ramp-down)
-//	elsewhen con_state == 3 and full then
-//		con_state := 4; // on sun at part load
-//	elsewhen con_state == 4 and not full then
-//		con_state := 3; // on sun at full load
-//	elsewhen con_state == 4 and (wea.wbus.dni <= dni_stop) and t_con_off_delay > 0 then
-//		con_state := 5; // ramp down
-//	elsewhen con_state == 4 and (wea.wbus.dni <= dni_stop) and t_con_off_delay <= 0 then
-//		con_state := 1; // off sun (no ramp-down)
-//	elsewhen con_state == 1 and wea.wbus.dni >= dni_start and E <= E_up_l and t_con_on_delay > 0 then
-//		con_state := 2; // start onsteering (i.e. ramp up)
-//	elsewhen con_state == 1 and wea.wbus.dni >= dni_start and E <= E_up_l and t_con_on_delay <= 0 then
-//		con_state := 3; // on sun at full (no ramp-up)
-//	elsewhen con_state == 2 and time >= t_con_w_next then
-//		con_state := 3; // on sun at full load
-//	elsewhen con_state == 5 and time >= t_con_c_next then
-//		con_state := 1; // off sun
-//	end when;
-//Power Block
-//  when blk_state == 2 and Q_flow_sched <= 0 then
-//    blk_state := 1;
-//  elsewhen blk_state == 2 and E <= E_low_l then
-//    blk_state := 1;
-//  elsewhen blk_state == 3 and Q_flow_sched <= 0 and t_blk_off_delay > 0 then
-//    blk_state := 4;
-//  elsewhen blk_state == 3 and Q_flow_sched <= 0 and t_blk_off_delay <= 0 then
-//    blk_state := 1;
-//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay > 0 then
-//    blk_state := 4;
-//  elsewhen blk_state == 3 and E <= E_low_l and t_blk_off_delay <= 0 then
-//    blk_state := 1;
-//  elsewhen blk_state == 2 and time >= t_blk_w_next then
-//    blk_state := 3;
-//  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay > 0 then
-//    blk_state := 2;
-//  elsewhen blk_state == 1 and Q_flow_sched > 0 and E >= E_low_u and t_blk_on_delay <= 0 then
-//    blk_state := 3;
-//  elsewhen blk_state == 4 and time >= t_blk_c_next then
-//    blk_state := 1;
-//  end when;
-  /////
-  
   //Power Block
   when blk_state == 1 and m_flow_in >= 0 and time > 3600 then
     blk_state := 2;
@@ -316,7 +266,7 @@ equation
 //    Q_flow_dis = fr_ramp_blk * Q_flow_sched;
 //    P_elec = eff_blk * Q_flow_dis;
   //  m_flow = min(m_flow_in, m_flow_max);
-    m_flow_hot = 0.1*658.1;
+    m_flow_hot = 0.2*658.1;
     m_flow_cold = 0;
     elseif blk_state == 5 then
 //    Q_flow_dis = if ramp_order == 0 then Q_flow_sched else fr_ramp_blk * Q_flow_sched;

@@ -6,7 +6,10 @@ model ReceiverTransient
   SI.SpecificEnthalpy h_out(start=h_0);
   parameter String file_perf_rec = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/rec_perf.motab");
   parameter String perf_table = "rec_perf";
-
+  
+  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/outputs_10min_v2.motab");
+  parameter String refi_table = "outputs";
+  
   parameter SI.Length H_rcv=1 "Receiver height" annotation(Dialog(group="Technical data"));
   parameter SI.Diameter D_rcv=1 "Receiver diameter" annotation(Dialog(group="Technical data"));
   parameter Integer N_pa = 1 "Number of panels" annotation(Dialog(group="Technical data"));
@@ -25,16 +28,24 @@ model ReceiverTransient
   Medium.ThermodynamicState state_out=Medium.setState_phX(fluid_b.p,fluid_b.h_outflow);
   Real Q_inc;
   Real Q_perd;
+  
+  Modelica.Blocks.Sources.CombiTimeTable ref_table(tableOnFile = true, tableName = refi_table, smoothness = Modelica.Blocks.Types.Smoothness.ContinuousDerivative, fileName = file_ref_10min, columns = 1:39);
 
   Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
-                                          final unit = "K", displayUnit = "degC", min=0) annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=0,
-        origin={94,0}), iconTransformation(
-        extent={{-10,-10},{10,10}},
-        rotation=0,
-        origin={30,0})));
+                                          final unit = "K", displayUnit = "degC", min=0) annotation (Placement(visible = true,transformation(
+        
+        origin={94,0},extent={{-10,-10},{10,10}},
+        rotation=0), iconTransformation(
+        
+        origin={30, 0},extent={{-10,-10},{10,10}},
+        rotation=0)));
 
+  Modelica.Blocks.Interfaces.RealOutput Recpower(final quantity = "Power", final unit = "MW", displayUnit = "MW", min = 0) annotation(
+    Placement(visible = true, transformation(extent = {{-126, 74}, {-86, 114}}, rotation = 0), iconTransformation(origin = {30, -38}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  
+//   Modelica.Blocks.Interfaces.RealOutput Sun_elev annotation(
+//    Placement(visible = true, transformation(extent = {{92, -20}, {132, 20}}, rotation = 0), iconTransformation(extent = {{92, -40}, {132, 0}}, rotation = 0)));
+  
   SI.HeatFlowRate Q_loss;
   SI.HeatFlowRate Q_rcv;
   SI.Efficiency eta_rec;
@@ -68,12 +79,16 @@ model ReceiverTransient
   parameter Medium.ThermodynamicState state_0=Medium.setState_pTX(1e5,T_0);
   parameter SI.SpecificEnthalpy h_0=Medium.specificEnthalpy(state_0);
   parameter SI.Temperature T_0=from_degC(290) "Start value of temperature"; 
+  
+  Real RTOM(unit = "MWt");
 initial equation
   medium.h = h_0;
 equation
   connect(Wspd, rec_perf_tab.u2);
   connect(q_in.y, rec_perf_tab.u1);
 
+  RTOM = ref_table.y[28];
+  
   medium.h=(h_in+h_out)/2;
   h_in=inStream(fluid_a.h_outflow);
   fluid_b.h_outflow=max(h_0,h_out);
@@ -91,6 +106,8 @@ equation
   Q_inc = heat.Q_flow/1e6;
   Q_perd = Q_loss/1e6;
   medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d) = ab*heat.Q_flow - Q_loss + fluid_a.m_flow*(h_in-h_out);
+  
+  Recpower = Q_inc;
 annotation(
     experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
 end ReceiverTransient;

@@ -1,9 +1,14 @@
 within SolarTherm;
 
 model Tee_Acciona
-  "Splitting/joining component with static balances for an infinitesimal control volume"
   extends Modelica.Fluid.Fittings.BaseClasses.PartialTeeJunction;
-
+  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/new_feature_functions/acciona_tables/motab_acciona/outputs_10min_v2.motab");
+  parameter String refi_table = "outputs";
+  //SI.MassFlowRate m_flow_sgp;
+  //Real m_flow;
+   Modelica.Blocks.Sources.CombiTimeTable ref_table(tableOnFile = true, tableName = refi_table, smoothness = Modelica.Blocks.Types.Smoothness.ContinuousDerivative, fileName = file_ref_10min, columns = 1:39);
+initial equation
+port_2.m_flow = ref_table.y[12];
 equation
   connect(port_1, port_2) annotation (Line(
       points={{-100,0},{100,0}}, color={0,127,255}));
@@ -19,5 +24,9 @@ when not using a splitting/joining component. The reason for the confusion is th
 enthalpy of the infinitesimal control volume introduced with the connect statement when
 looking at the specific enthalpy in the connector which
 might not be equal to the specific enthalpy at the port in the \"real world\".</html>"));
+
+
+//m_flow = m_flow_sgp;
+//port_2.m_flow = m_flow_sgp;
 
 end Tee_Acciona;
