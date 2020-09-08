@@ -13,6 +13,7 @@ TestTwoTanks
 TestPBControl
 TestReceiverTransient
 TestReceiverTransient0D
+<<<<<<< HEAD
 PB_Acciona
 SimpleSystem
 PB_Control_Acciona
@@ -40,3 +41,23 @@ PB_control_acciona_new
 PB_Control_Acciona_2
 Logic_PB_Acciona_2
 SaltTwoTanks_Acciona_3
+=======
+TestPBMasterControl
+TestPBTransient
+TestPBTransient_fix
+Logictest
+TestPBMasterControl_3_CRI_cold
+TestPBMasterControl_3_CRI_hot
+TestPBControl_3_CRI_new
+Logictest_hot
+tesmaster
+pba
+pba1
+Test_PID
+TestPBT_OM
+Logic_OMods
+Receiver_Acciona
+Test_Receiver_Acciona
+Modelo_Acciona
+SolarField_Acciona
+>>>>>>> 748c3e56847c66b4b9a7fecbbe3b40e1279fad40
