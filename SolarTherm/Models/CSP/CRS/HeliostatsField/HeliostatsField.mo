@@ -98,9 +98,13 @@ equation
 
   when Q_raw>Q_start then
     on_internal=true;
-  elsewhen Q_raw<Q_min then
-    on_internal=false;
-  end when;
+    elsewhen Q_raw < Q_start then
+    on_internal = false;
+    end when;
+    
+//  elsewhen Q_raw<Q_min then
+//    on_internal=false;
+//  end when;
 
   Q_net= if on_internal then (if defocus_internal then min(Q_defocus,Q_raw) else Q_raw) else 0;
 
