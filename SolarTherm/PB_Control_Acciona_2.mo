@@ -10,7 +10,7 @@ model PB_Control_Acciona_2
   parameter Real L_off = 10 "Level of stop discharge";
   parameter Real L_df_on = 99 "Level of start defocus";
   parameter Real L_df_off = 96 "Level of stop defocus";
-  parameter Real m_flow_max = 1000 "Maximum flow to the power block";
+  parameter Real m_flow_max = 674.1 "Maximum flow to the power block";
   parameter Real m_flow_min = 0 "Minimum flow to the power block";
   parameter Real y_start = 300 "Initial value of output";
   parameter Real Ti = 1 "Integer constant";
@@ -61,7 +61,7 @@ model PB_Control_Acciona_2
   Modelica.Blocks.Logical.Switch switch annotation(
     Placement(visible = true, transformation(origin = {68, 26}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SolarTherm.Logic_PB_Acciona_2 logic_PB_Acciona_2 annotation(
-    Placement(visible = true, transformation(origin = {-2, -8}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
+    Placement(visible = true, transformation(origin = {-2, -4}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
   Modelica.Blocks.Logical.Switch switch1 annotation(
     Placement(visible = true, transformation(origin = {54, -64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   SolarTherm.Models.Control.PID_AW_reset3 PID1(Kp = Kp, Ti = Ti, Tt = 1, initType = Modelica.Blocks.Types.InitPID.InitialOutput, uMax = m_flow_max, uMin = m_flow_min, y_start = y_start) annotation(
@@ -90,21 +90,19 @@ equation
   connect(switch.y, m_flow_hot) annotation(
     Line(points = {{80, 26}, {96, 26}, {96, 0}, {112, 0}}, color = {0, 0, 127}));
   connect(level_cold, logic_PB_Acciona_2.level_cold) annotation(
-    Line(points = {{-112, -2}, {-50, -2}, {-50, -16}, {-19, -16}}, color = {0, 0, 127}));
+    Line(points = {{-112, -2}, {-50, -2}, {-50, -12}, {-19, -12}}, color = {0, 0, 127}));
   connect(level_hot, logic_PB_Acciona_2.level_hot) annotation(
-    Line(points = {{-114, -92}, {-64, -92}, {-64, -8}, {-19, -8}}, color = {0, 0, 127}));
+    Line(points = {{-114, -92}, {-64, -92}, {-64, -4}, {-19, -4}}, color = {0, 0, 127}));
 //  connect(T, logic_PB_Acciona_2.t_sgs) annotation(
 //    Line(points = {{-112, -60}, {-78, -60}, {-78, 4}, {-20, 4}, {-20, 1}, {-19, 1}}, color = {0, 0, 127}));
-  
 //  connect(P_SP, logic_PB_Acciona_2.P_SP) annotation(
 //    Line(points = {{-112, 24}, {-8, 24}, {-8, 8}}, color = {0, 0, 127}));
-  
   connect(m_flow_in, logic_PB_Acciona_2.m_flow_in) annotation(
-    Line(points = {{-112, -32}, {-64, -32}, {-64, 32}, {6, 32}, {6, 8}, {6, 8}}, color = {0, 0, 127}));
+    Line(points = {{-112, -32}, {-64, -32}, {-64, 32}, {6, 32}, {6, 11}}, color = {0, 0, 127}));
   connect(logic_PB_Acciona_2.switch, switch.u2) annotation(
-    Line(points = {{16, 4}, {40, 4}, {40, 26}, {56, 26}, {56, 26}}, color = {255, 0, 255}));
+    Line(points = {{16, 9}, {40, 9}, {40, 26}, {56, 26}}, color = {255, 0, 255}));
   connect(logic_PB_Acciona_2.m_flow_hot, switch.u3) annotation(
-    Line(points = {{16, -2}, {36, -2}, {36, 18}, {56, 18}, {56, 18}}, color = {0, 0, 127}));
+    Line(points = {{16, 1}, {36, 1}, {36, 18}, {56, 18}}, color = {0, 0, 127}));
   connect(m_tank_2.y, m_tank2) annotation(
     Line(points = {{86, -38}, {114, -38}, {114, -36}}, color = {0, 0, 127}));
   connect(m_pump_2.y, m_pump2) annotation(
@@ -112,7 +110,7 @@ equation
   connect(switch1.y, m_flow_cold) annotation(
     Line(points = {{66, -64}, {78, -64}, {78, -90}, {112, -90}, {112, -92}}, color = {0, 0, 127}));
   connect(logic_PB_Acciona_2.switch2, switch1.u2) annotation(
-    Line(points = {{16, -12}, {30, -12}, {30, -64}, {42, -64}, {42, -64}}, color = {255, 0, 255}));
+    Line(points = {{16, -7}, {30, -7}, {30, -64}, {42, -64}}, color = {255, 0, 255}));
   connect(feedback1.y, PID1.u) annotation(
     Line(points = {{-12, -32}, {-8, -32}, {-8, -52}, {-2, -52}, {-2, -52}}, color = {0, 0, 127}));
   connect(T_ref_cold_in.y, feedback1.u2) annotation(
@@ -122,7 +120,7 @@ equation
   connect(d.y, PID1.reset) annotation(
     Line(points = {{-8, -75}, {-8, -60}, {-2, -60}}, color = {255, 0, 255}));
   connect(logic_PB_Acciona_2.m_flow_cold, switch1.u3) annotation(
-    Line(points = {{16, -22}, {32, -22}, {32, -72}, {42, -72}, {42, -72}}, color = {0, 0, 127}));
+    Line(points = {{16, -17}, {32, -17}, {32, -72}, {42, -72}}, color = {0, 0, 127}));
   connect(PID1.y, switch1.u1) annotation(
     Line(points = {{22, -52}, {26, -52}, {26, -56}, {42, -56}, {42, -56}}, color = {0, 0, 127}));
   annotation(

@@ -40,7 +40,7 @@ model ReceiverTransient
         origin={30, 0},extent={{-10,-10},{10,10}},
         rotation=0)));
 
-  Modelica.Blocks.Interfaces.RealOutput Recpower(final quantity = "Power", final unit = "MW", displayUnit = "MW", min = 0) annotation(
+  Modelica.Blocks.Interfaces.RealOutput Recpower annotation(
     Placement(visible = true, transformation(extent = {{-126, 74}, {-86, 114}}, rotation = 0), iconTransformation(origin = {30, -38}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   
 //   Modelica.Blocks.Interfaces.RealOutput Sun_elev annotation(
@@ -101,7 +101,7 @@ equation
   fluid_b.p=medium.p;
 
   eta_rec = max(0,rec_perf_tab.y);
-  Q_rcv = fluid_a.m_flow*(h_out-h_in);
+  Q_rcv = /*ab*heat.Q_flow + fluid_a.m_flow*(h_out-h_in) - Q_loss*/ medium.d*V_rcv*der(medium.u) + medium.u*V_rcv*der(medium.d);
   Q_loss = if heat.Q_flow > 1e-3 then ab*heat.Q_flow*(1-eta_rec) else A*sigma*em*(medium.T^4-Tamb^4);
   Q_inc = heat.Q_flow/1e6;
   Q_perd = Q_loss/1e6;
