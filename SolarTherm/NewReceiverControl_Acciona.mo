@@ -32,7 +32,7 @@ model NewReceiverControl_Acciona
     Placement(transformation(extent = {{-130, -80}, {-90, -40}})));
   Modelica.Blocks.Interfaces.RealInput T_mea annotation(
     Placement(visible = true, transformation(extent = {{-128, 68}, {-88, 108}}, rotation = 0), iconTransformation(extent = {{-128, 68}, {-88, 108}}, rotation = 0)));
-  SolarTherm.Models.Control.Level2Logic coldTankLogic(level_max = 8, level_min = 7) annotation(
+  SolarTherm.Models.Control.Level2Logic coldTankLogic(level_max = 10, level_min = 5) annotation(
     Placement(transformation(extent = {{-74, -10}, {-54, 10}})));
   Modelica.Blocks.Logical.And and1 annotation(
     Placement(transformation(extent = {{-34, -22}, {-14, -2}})));
@@ -40,8 +40,8 @@ model NewReceiverControl_Acciona
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {0, -114})));
   Modelica.Blocks.Logical.Not not1 annotation(
     Placement(visible = true, transformation(origin = {0, -74}, extent = {{-6, -6}, {6, 6}}, rotation = -90)));
-  SolarTherm.Models.Control.Level2Logic defocus_logic(level_max = L_df_off, level_min = L_df_on, y(start = false)) annotation(
-    Placement(visible = true, transformation(origin = {-36, -44}, extent = {{-12, -10}, {12, 10}}, rotation = -90)));
+  SolarTherm.logic_defocus logic2defocus annotation(
+    Placement(visible = true, transformation(origin = {-28, -42}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation
   connect(m_flow_off_input.y, switch.u3) annotation(
     Line(points = {{33.3, -22}, {44, -22}, {44, -5}, {73, -5}}, color = {0, 0, 127}));
@@ -75,10 +75,10 @@ equation
 //    Line(points = {{-108, 40}, {-58, 40}, {-58, -42}, {-48, -42}, {-48, -43}}, color = {0, 0, 127}));
   connect(not1.y, defocus) annotation(
     Line(points = {{0, -80}, {0, -80}, {0, -114}, {0, -114}}, color = {255, 0, 255}));
-  connect(defocus_logic.y, not1.u) annotation(
-    Line(points = {{-36, -56}, {-36, -56}, {-36, -62}, {0, -62}, {0, -66}, {0, -66}}, color = {255, 0, 255}));
-  connect(L_mea, defocus_logic.level_ref) annotation(
-    Line(points = {{-108, 0}, {-84, 0}, {-84, -26}, {-36, -26}, {-36, -32}, {-36, -32}}, color = {0, 0, 127}));
+  connect(logic2defocus.y, not1.u) annotation(
+    Line(points = {{-18, -42}, {0, -42}, {0, -66}, {0, -66}}, color = {255, 0, 255}));
+  connect(Recpower, logic2defocus.Recpower) annotation(
+    Line(points = {{-108, 40}, {-48, 40}, {-48, -42}, {-38, -42}, {-38, -40}}, color = {0, 0, 127}));
 protected
   annotation(
     Documentation(revisions = "<html>

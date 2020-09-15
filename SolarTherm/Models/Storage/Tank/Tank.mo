@@ -37,8 +37,10 @@ model Tank
   SI.Mass m;
 
   Medium.BaseProperties medium;
+  
+  //SI.Temperature T_stor;
 
- // SI.Temperature T=Medium.temperature(medium.state);
+  SI.Temperature T=Medium.temperature(medium.state);
   SI.Area A;
   SI.HeatFlowRate Q_losses;
   Medium.ThermodynamicState state_i=Medium.setState_pTX(medium.p,T_start);

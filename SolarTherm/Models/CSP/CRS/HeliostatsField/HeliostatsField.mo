@@ -109,7 +109,7 @@ equation
 
   Q_net= if on_internal then (if defocus_internal then min(Q_defocus,Q_raw) else Q_raw) else 0;
 
-  heat.Q_flow= -Q_net;
+  heat.Q_flow= max(-Q_net,-700e6);
   elo=SolarTherm.Models.Sources.SolarFunctions.eclipticLongitude(solar.dec);
 //   optical.hra=solar.hra;
 //   optical.dec=solar.dec;
