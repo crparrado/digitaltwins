@@ -152,7 +152,7 @@ equation
 //Nuevo Control
 
   if blk_state==4 then
-    m_flow_hot = 0.77*(time - t_ramp_on); //0.077*dt=677, dt=8792.2 0.77
+    m_flow_hot = min((0.77*(time - t_ramp_on)+185.0), 641.2); //0.077*dt=677, dt=8792.2 0.77
 	m_flow_cold = 0;
 	
   elseif blk_state==3 then
@@ -167,13 +167,13 @@ equation
 	
 	
   elseif blk_state==5 then
-    m_flow_hot = 677;
+    m_flow_hot = 641.2;
 	m_flow_cold = 0;
 	
   elseif blk_state==6 then
 //    m_flow_hot = -0.77*(t_ramp_down-time);
-    m_flow_hot = 0;
-	m_flow_cold = 100;
+    m_flow_hot = max(0,m_flow_in);
+	m_flow_cold = 185;
 
   else
     m_flow_hot = 0;

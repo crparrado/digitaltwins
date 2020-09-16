@@ -51,12 +51,6 @@ model PB_Control_Acciona_3
   //SI.MassFlowRate m_flow_sgp;
   SolarTherm.Logic_PB_Acciona_3 logic_PB_Acciona_3 annotation(
     Placement(visible = true, transformation(origin = {-6, 24}, extent = {{-28, -28}, {28, 28}}, rotation = 0)));
-  Modelica.Blocks.Logical.Switch switch annotation(
-    Placement(visible = true, transformation(extent = {{70, 0}, {82, 12}}, rotation = 0)));
-  Modelica.Blocks.Sources.RealExpression m_flow_off_input(y = 0) annotation(
-    Placement(visible = true, transformation(extent = {{-16, -28}, {10, -4}}, rotation = 0)));
-  level2acciona level2acciona1(level_max = 10, level_min = 5)  annotation(
-    Placement(visible = true, transformation(origin = {-6, -38}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 equation
   connect(defocus_logic.level_ref, level_hot) annotation(
     Line(points = {{-41, -60}, {-41, -40}, {-52, -40}, {-52, -92}, {-114, -92}}, color = {0, 0, 127}));
@@ -78,16 +72,8 @@ equation
     Line(points = {{24, 2}, {56, 2}, {56, -92}, {112, -92}, {112, -92}}, color = {0, 0, 127}));
   connect(level_hot, logic_PB_Acciona_3.level_hot) annotation(
     Line(points = {{-114, -92}, {-60, -92}, {-60, 26}, {-36, 26}, {-36, 24}}, color = {0, 0, 127}));
-  connect(logic_PB_Acciona_3.m_flow_hot, switch.u1) annotation(
-    Line(points = {{24, 32}, {48, 32}, {48, 12}, {68, 12}, {68, 10}}, color = {0, 0, 127}));
-  connect(switch.y, m_flow_hot) annotation(
-    Line(points = {{82, 6}, {86, 6}, {86, 0}, {112, 0}, {112, 0}}, color = {0, 0, 127}));
-  connect(m_flow_off_input.y, switch.u3) annotation(
-    Line(points = {{12, -16}, {48, -16}, {48, 0}, {68, 0}, {68, 2}}, color = {0, 0, 127}));
-  connect(level_hot, level2acciona1.level_ref) annotation(
-    Line(points = {{-114, -92}, {-56, -92}, {-56, -38}, {-16, -38}, {-16, -38}}, color = {0, 0, 127}));
-  connect(level2acciona1.y, switch.u2) annotation(
-    Line(points = {{4, -38}, {50, -38}, {50, 6}, {68, 6}, {68, 6}}, color = {255, 0, 255}));
+  connect(logic_PB_Acciona_3.m_flow_hot, m_flow_hot) annotation(
+    Line(points = {{24, 32}, {68, 32}, {68, 0}, {112, 0}, {112, 0}}, color = {0, 0, 127}));
   annotation(
     Documentation(revisions = "<html>
 <ul>
