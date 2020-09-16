@@ -16,10 +16,11 @@ model Market
   Price price;
   SolarTherm.Types.Money profit;
 equation
-  der(profit)=W_net*SolarTherm.Types.from_dollarperMWh(price.price);
+  der(profit)=W_net*(price.price);
   annotation (Documentation(revisions="<html>
 <ul>
 <li>Alberto de la Calle:<br>Released first version. </li>
 </ul>
 </html>"));
 end Market;
+

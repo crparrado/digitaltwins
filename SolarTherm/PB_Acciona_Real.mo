@@ -3,6 +3,11 @@ within SolarTherm;
 model PB_Acciona_Real
 extends Interfaces.Models.PowerBlock;
   //Medium.BaseProperties medium;
+  
+  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/sch_acciona.motab");
+  parameter String refi_table = "outputs";
+  
+  
   replaceable package Medium = SolarTherm.Media.MoltenSalt.MoltenSalt_ph;
   parameter SI.HeatFlowRate W_des = 111e6 "Design turbine gross output" annotation(
     Dialog(group = "Design"));
@@ -82,6 +87,11 @@ extends Interfaces.Models.PowerBlock;
   parameter Real nu_eps = 0.1;
   //SI.HeatFlowRate Q_rcv;
   parameter SI.Volume V_rcv = 5000;
+  
+  Real test;
+  Real test1;
+  
+  Modelica.Blocks.Sources.CombiTimeTable ref_table(tableOnFile = true, tableName = refi_table, smoothness = Modelica.Blocks.Types.Smoothness.ConstantSegments, fileName = file_ref_10min, columns = 1:3);
 initial equation
   //medium.h = h_out_ref;
 equation
@@ -100,6 +110,9 @@ equation
   h_in = inStream(fluid_a.h_outflow);
 //  h_in_a2 = inStream(fluid_a2.h_outflow);
   fluid_b.h_outflow = h_mea;//max(h_out_ref, h_mea);
+  test = ref_table.y[2];
+  test1 = ref_table.y[3];
+  
 //h_out=fluid_b.h_outflow;
 //  h_out=fluid_a.h_outflow;
 //  h_out=fluid_a2.h_outflow;
@@ -160,7 +173,9 @@ equation
   der(E_gross) = W_gross;
   der(E_net) = W_net;
   W_loss = (1 - nu_net) * W_gross + W_base + parasities_internal;
-  W_net = W_gross - W_loss;
+  //W_loss = (1 - nu_net) * W_gross + W_base + parasities_internal;
+  W_net = (W_gross - W_loss)*test;
+  //W_net = (W_gross - W_loss);
 
 
 end PB_Acciona_Real;

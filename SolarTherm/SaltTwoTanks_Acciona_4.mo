@@ -107,7 +107,7 @@ model SaltTwoTanks_Acciona_4
   parameter SI.Power P_net = (1 - par_fr) * P_gross "Power block net rating at design point";
   parameter SI.Power P_name = P_net "Nameplate rating of power block";
   // Control
-  parameter SI.Angle ele_min = Modelica.SIunits.Conversions.from_deg(8) "Heliostat stow deploy angle";
+  parameter SI.Angle ele_min = Modelica.SIunits.Conversions.from_deg(0) "Heliostat stow deploy angle";
   parameter Boolean use_wind = true "true if using wind stopping strategy in the solar field";
   parameter SI.Velocity Wspd_max = 15 if use_wind "Wind stow speed";
   parameter Real nu_start = 0 "Minimum energy start-up fraction to start the receiver";
@@ -216,7 +216,7 @@ model SaltTwoTanks_Acciona_4
   // ReceiverControl
   // Power block
   // Price
-  SolarTherm.Models.Analysis.Market market(redeclare model Price = Models.Analysis.EnergyPrice.Constant) annotation(
+  SolarTherm.Models.Analysis.Market market(redeclare model Price = Models.Analysis.EnergyPrice.Table) annotation(
     Placement(visible = true, transformation(extent = {{144, 4}, {164, 24}}, rotation = 0)));
   // TODO Needs to be configured in instantiation if not const_dispatch. See SimpleResistiveStorage model
   SolarTherm.Models.Sources.Schedule.Scheduler sch_fixed(file = sch_file, ndaily = 1, wmap = {{1, 1, 1, 1, 1, 1, 1}}, mmap = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}) if not const_dispatch;
