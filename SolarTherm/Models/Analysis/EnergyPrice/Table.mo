@@ -2,7 +2,7 @@ within SolarTherm.Models.Analysis.EnergyPrice;
 model Table "Price from a table"
   extends EnergyPrice;
   
-  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/sch_acciona.motab");
+  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/disp_sch_0.motab");
   parameter String refi_table = "outputs";
   
 //  parameter String file "File where price data matrix is stored" annotation (Dialog(

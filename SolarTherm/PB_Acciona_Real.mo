@@ -4,7 +4,7 @@ model PB_Acciona_Real
 extends Interfaces.Models.PowerBlock;
   //Medium.BaseProperties medium;
   
-  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/sch_acciona.motab");
+  parameter String file_ref_10min = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Schedules/disp_sch_0.motab");
   parameter String refi_table = "outputs";
   
   
@@ -41,7 +41,7 @@ extends Interfaces.Models.PowerBlock;
     choices(checkBox = true));
   parameter Real nu_net = 0.9 "Estimated gross to net conversion factor at the power block" annotation(
     Dialog(group = "Parasities energy losses"));
-  parameter Real W_base = 0.0055 * 294.188e6 "Power consumed at all times" annotation(
+  parameter Real W_base = 0.0015 * 294.188e6 "Power consumed at all times" annotation(
     Dialog(group = "Parasities energy losses"));
 //  Modelica.Fluid.Interfaces.FluidPort_a fluid_a2(redeclare package Medium = Medium) annotation(
 //    Placement(visible = true, transformation(extent = {{-54, -4}, {-34, 16}}, rotation = 0), iconTransformation(extent = {{-54, -6}, {-46, 2}}, rotation = 0)));
@@ -57,8 +57,11 @@ extends Interfaces.Models.PowerBlock;
      choicesAllMatching = true);
   Cooling cool(T_amb = T_amb_internal);
   Real load;
-  SI.HeatFlowRate W_gross "Parasitic losses power";
+  SI.HeatFlowRate W_gross "Gross Electric Power";
   SI.HeatFlowRate W_loss "Parasitic losses power";
+  SI.HeatFlowRate W_sch "Scheduled electric power";
+  
+  
   //SI.HeatFlowRate W_net "Estimated net output at design";
   SI.Energy E_gross(final start = 0, fixed = true, displayUnit = "MW.h");
   SI.Energy E_net(final start = 0, fixed = true, displayUnit = "MW.h");
@@ -158,7 +161,7 @@ equation
 //load=1 if it is no able partial load
   if logic then
     k_q = cycle.k_q;
-    k_w = cycle.k_w;
+    k_w = cycle.k_w*1.1;
     Q_flow = fluid_a.m_flow*(h_in-h_mea);
 // fluid_a.m_flow*h_in + fluid_a2.m_flow*h_in_a2 - max(1e-3,-fluid_b.m_flow)*h_mea - Q_flow = 0;
   else
@@ -167,15 +170,15 @@ equation
     h_mea = h_in;
 //    h_out=h_out_ref;
   end if;
-  Q_flow / (cool.nu_q * Q_flow_ref * load) = k_q;
+  Q_flow / (cool.nu_q * Q_flow_ref * load) = k_q; 
   W_gross / (cool.nu_w * W_des * load) = k_w;
   eff_pb = W_gross / max(1, Q_flow);
   der(E_gross) = W_gross;
   der(E_net) = W_net;
-  W_loss = (1 - nu_net) * W_gross + W_base + parasities_internal;
+  W_loss = W_base + parasities_internal;
   //W_loss = (1 - nu_net) * W_gross + W_base + parasities_internal;
-  W_net = (W_gross - W_loss)*test;
-  //W_net = (W_gross - W_loss);
+  W_sch = ((W_gross - W_loss)*test)/1e6;
+  W_net = (W_gross - W_loss);
 
 
 end PB_Acciona_Real;

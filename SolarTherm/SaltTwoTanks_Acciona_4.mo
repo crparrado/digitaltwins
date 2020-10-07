@@ -1,5 +1,5 @@
 within SolarTherm;
-
+//Check c_p value of molten salt, delta_T seems the same and so is Q_rcv, so m_flow should be the same but is 1350 vs 1600.
 model SaltTwoTanks_Acciona_4
   import SolarTherm.{Models,Media};
   import Modelica.SIunits.Conversions.from_degC;
@@ -32,7 +32,8 @@ model SaltTwoTanks_Acciona_4
   parameter Real SM = R_des / Q_flow_des "Solar multiple";
   parameter Real land_mult = 6.16783860571 "Land area multiplier";
   parameter SI.Area A_heliostat = 141.8 "Heliostat module reflective area";
-  parameter Real he_av_design = 0.9950 "Helisotats availability";
+  parameter Real he_av_design = 0.9950;
+  // 0.9950 "Helisotats availability";
   //See which losses are already included in the optical efficiency matrix, the remaining losses should be captured by this term
   parameter SI.Area A_field = n_heliostat * A_heliostat "Heliostat field reflective area";
   parameter Integer n_heliostat = 10600 "Number of heliostats";
@@ -64,14 +65,15 @@ model SaltTwoTanks_Acciona_4
   //  parameter SI.Diameter D_storage = H_storage / tank_ar "Storage tank diameter";
   parameter SI.Length H_storage_hot = 12.7883 "Storage tank height";
   parameter SI.Diameter D_storage_hot = 50.4 "Storage tank diameter";
-  parameter SI.Length H_storage_cold = 12.7883 "Storage tank height";
+  parameter SI.Length H_storage_cold = 13.55 "Storage tank height";
   parameter SI.Diameter D_storage_cold = 51.34 "Storage tank diameter";
-  parameter SI.Temperature T_cold_set = CV.from_degC(290) "Cold tank target temperature";
+  parameter SI.Temperature T_cold_set = CV.from_degC(295) "Cold tank target temperature";
   parameter SI.Temperature T_hot_set = CV.from_degC(565) "Hot tank target temperature";
-  parameter SI.Temperature T_cold_start = CV.from_degC(290) "Cold tank starting temperature";
-  parameter SI.Temperature T_hot_start = CV.from_degC(565) "Hot tank starting temperature";
-  parameter SI.Temperature T_cold_aux_set = CV.from_degC(280) "Cold tank auxiliary heater set-point temperature";
-  parameter SI.Temperature T_hot_aux_set = CV.from_degC(500) "Hot tank auxiliary heater set-point temperature";
+  parameter SI.Temperature T_cold_start = CV.from_degC(300) "Cold tank starting temperature";
+  parameter SI.Temperature T_hot_start = CV.from_degC(570) "Hot tank starting temperature";
+  parameter SI.Temperature T_cold_aux_set = CV.from_degC(290) "Cold tank auxiliary heater set-point temperature";
+  parameter SI.Temperature T_hot_aux_set = CV.from_degC(560) "Hot tank auxiliary heater set-point temperature";
+  //500
   parameter Medium.ThermodynamicState state_cold_set = Medium.setState_pTX(Medium.p_default, T_cold_set) "Cold salt thermodynamic state at design";
   parameter Medium.ThermodynamicState state_hot_set = Medium.setState_pTX(Medium.p_default, T_hot_set) "Hold salt thermodynamic state at design";
   parameter Real tnk_fr = 0.01 "Tank loss fraction of tank in one day at design point";
@@ -107,7 +109,7 @@ model SaltTwoTanks_Acciona_4
   parameter SI.Power P_net = (1 - par_fr) * P_gross "Power block net rating at design point";
   parameter SI.Power P_name = P_net "Nameplate rating of power block";
   // Control
-  parameter SI.Angle ele_min = Modelica.SIunits.Conversions.from_deg(0) "Heliostat stow deploy angle";
+  parameter SI.Angle ele_min = Modelica.SIunits.Conversions.from_deg(8) "Heliostat stow deploy angle";
   parameter Boolean use_wind = true "true if using wind stopping strategy in the solar field";
   parameter SI.Velocity Wspd_max = 15 if use_wind "Wind stow speed";
   parameter Real nu_start = 0 "Minimum energy start-up fraction to start the receiver";
@@ -121,7 +123,7 @@ model SaltTwoTanks_Acciona_4
   parameter Real cold_tnk_defocus_ub = 7 "Cold tank empty trigger upper bound (Level above which to start disptach)";
   parameter Real cold_tnk_crit_lb = 0 "Cold tank critically empty trigger lower bound (Level below which to stop disptach)";
   parameter Real cold_tnk_crit_ub = 30 "Cold tank critically empty trigger upper bound (Level above which to start disptach)";
-  parameter Real Ti = 10 "Time constant for integral component of receiver control";
+  parameter Real Ti = 1 "Time constant for integral component of receiver control";
   parameter Real Kp = -10 "Gain of proportional component in receiver control";
   //  parameter Real Ti = 1e-4 "Time constant for integral component of receiver control";
   //  parameter Real Kp = 5e-8 "Gain of proportional component in receiver control";
@@ -199,7 +201,7 @@ model SaltTwoTanks_Acciona_4
   Modelica.Fluid.Fittings.TeeJunctionIdeal Tee annotation(
     Placement(visible = true, transformation(origin = {96, 42}, extent = {{-6, 6}, {6, -6}}, rotation = 0)));
   // Hot tank 1
-  SolarTherm.Models.Storage.Tank.Tank tankHot(redeclare package Medium = Medium, D = D_storage_hot, H = H_storage_hot, L_start = 7.1, T_set = T_hot_aux_set, T_start = T_hot_start, W_max = W_heater_hot, alpha = alpha, enable_losses = tnk_enable_losses, use_L = true, use_p_top = tnk_use_p_top) annotation(
+  SolarTherm.Models.Storage.Tank.Tank tankHot(redeclare package Medium = Medium, D = D_storage_hot, H = H_storage_hot, L_start = 7.1, T_set = T_hot_aux_set, T_start = T_hot_start, W_max = W_heater_hot, alpha = alpha, enable_losses = true, use_L = true, use_p_top = tnk_use_p_top) annotation(
     Placement(transformation(extent = {{16, 54}, {36, 74}})));
   // Hot tank 2
   SolarTherm.Models.Storage.Tank.Tank tankHot2(redeclare package Medium = Medium, D = D_storage_hot, H = H_storage_hot, L_start = (1 - split_cold) * 100, T_set = T_hot_aux_set, T_start = T_hot_start, W_max = W_heater_hot, alpha = alpha, enable_losses = tnk_enable_losses, use_L = true, use_p_top = tnk_use_p_top) annotation(
@@ -224,7 +226,7 @@ model SaltTwoTanks_Acciona_4
   SI.Power P_elec "Output power of power block";
   SI.Energy E_elec(start = 0, fixed = true, displayUnit = "MW.h") "Generate electricity";
   FI.Money R_spot(start = 0, fixed = true) "Spot market revenue";
-  SolarTherm.Tank_Cold_Acciona tank_Cold_Acciona(D = D_storage_cold, H = H_storage_cold, L_start = 80.44, T_set = T_cold_aux_set, T_start = T_cold_start, W_max = W_heater_cold, alpha = alpha, use_L = true) annotation(
+  SolarTherm.Tank_Cold_Acciona tank_Cold_Acciona(D = D_storage_cold, H = H_storage_cold, L_start = 80.44, T_set = T_cold_aux_set, T_start = T_cold_start, W_max = W_heater_cold, alpha = alpha, enable_losses = true, use_L = true) annotation(
     Placement(visible = true, transformation(origin = {66, -26}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
   SolarTherm.Models.Fluid.Pumps.PumpSimple pumpSimple(k_loss = k_loss_hot) annotation(
     Placement(visible = true, transformation(extent = {{60, 8}, {72, 20}}, rotation = 0)));

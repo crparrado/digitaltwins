@@ -33,7 +33,7 @@ model Logic_PB_Acciona_3
   parameter Real level_hot_min = 10;
   parameter Real level_cold_max = 70;
  
-  Integer blk_state(min = 1, max = 5) "Power block state";
+  Integer blk_state(min = 1, max = 6) "Power block state";
 
 
  // SI.Time t_blk_w_now "Time of power block current warm-up event";
@@ -168,6 +168,7 @@ equation
 	
   elseif blk_state==5 then
     m_flow_hot = 641.2;
+    //m_flow_hot = 641.2;
 	m_flow_cold = 0;
 	
   elseif blk_state==6 then

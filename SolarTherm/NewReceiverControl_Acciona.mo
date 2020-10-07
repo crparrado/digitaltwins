@@ -42,6 +42,76 @@ model NewReceiverControl_Acciona
     Placement(visible = true, transformation(origin = {0, -74}, extent = {{-6, -6}, {6, 6}}, rotation = -90)));
   SolarTherm.logic_defocus logic2defocus annotation(
     Placement(visible = true, transformation(origin = {-28, -42}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  SI.Time t_ramp_stop(start=0);
+  SI.Time t_ramp(start=0);
+  Integer con_state(min=1, max=4) "Concentrator state";
+  SI.MassFlowRate m_ramp_start(start=0);
+  SI.MassFlowRate m_ramp_stop(start=0);
+  SI.MassFlowRate m_peak(start=0);
+  parameter SI.Time t_ramp_up=60*40; //?
+  parameter SI.Time t_ramp_down=60*60;
+  discrete Modelica.SIunits.Time t_on;
+  discrete Modelica.SIunits.Time t_init_rdown;
+  parameter SI.MassFlowRate m_peak_up=600.0; //?
+  parameter SI.MassFlowRate m_peak_down=1000.0;
+  
+  initial equation
+
+  con_state = 1;
+  pre(t_on) = 0;
+  pre(t_init_rdown) = 0;
+  pre(t_ramp_stop) = 0;
+  pre(t_ramp) = 0;
+ 
+algorithm
+
+  when Recpower < 150.0 then
+    t_ramp_stop := time + t_ramp_down;
+    t_ramp := t_ramp_down;
+    m_ramp_start := switch.y;
+    m_ramp_stop := 0.0;
+    m_peak := m_peak_down;
+    t_init_rdown := time;
+  end when;
+  
+  when Recpower > 100.0 then //?
+    t_ramp_stop := time + t_ramp_up;
+    t_ramp := t_ramp_up;
+    m_ramp_start := 200.0; //?
+    m_ramp_stop := 200.0; //?
+    m_peak := m_peak_up;
+    t_on := time;
+    
+  end when;
+ 
+/*
+  when con_state == 1 and Recpower > 100.0 then
+    con_state := 2; //m_peak_up
+  elsewhen con_state == 2 and (time-t_on)>t_ramp_up then
+    con_state := 3; //PID control
+  elsewhen con_state == 3 and Recpower < 150.0 then
+    con_state := 4; //m_peak_down
+  elsewhen con_state == 4 and (time-t_init_rdown)>t_ramp_down then
+    con_state := 1;
+  end when;
+*/ 
+  when Recpower > 100.0 then
+    if con_state == 1 then
+      con_state := 2; //m_peak_up
+    end if;
+  elsewhen (time-t_on)>t_ramp_up then
+    if con_state == 2 then
+      con_state := 3; //PID control
+    end if;
+  elsewhen Recpower < 150.0 then
+    if con_state == 3 then
+      con_state := 4; //m_peak_down
+    end if;
+  elsewhen (time-t_init_rdown)>t_ramp_down then
+    if con_state == 4 then
+      con_state := 1;
+    end if;
+  end when;
 equation
   connect(m_flow_off_input.y, switch.u3) annotation(
     Line(points = {{33.3, -22}, {44, -22}, {44, -5}, {73, -5}}, color = {0, 0, 127}));
@@ -63,8 +133,21 @@ equation
     Line(points = {{-13, -12}, {-6, -12}, {-6, 0}, {73, 0}}, color = {255, 0, 255}));
   connect(and1.u2, sf_on) annotation(
     Line(points = {{-36, -20}, {-64, -20}, {-64, -60}, {-110, -60}}, color = {255, 0, 255}));
-  connect(switch.y, m_flow) annotation(
-    Line(points = {{87, 0}, {112, 0}}, color = {0, 0, 127}));
+  //connect(switch.y, m_flow) annotation(
+    //Line(points = {{87, 0}, {112, 0}}, color = {0, 0, 127}));
+  if con_state == 2 or con_state == 4 then
+    if time < t_ramp_stop - 0.5*t_ramp and time > t_ramp_stop - t_ramp then //left side of triangle
+      m_flow = m_ramp_start + (time - t_ramp_stop + t_ramp)*(m_peak - m_ramp_start)/(t_ramp*0.5);
+    elseif time > t_ramp_stop - 0.5*t_ramp and time < t_ramp_stop then
+      m_flow = max(m_peak + ((m_ramp_stop-m_peak)/(0.5*t_ramp))*(time-t_ramp_stop+0.5*t_ramp), switch.y);
+    else
+      m_flow = switch.y;
+    end if;
+  elseif con_state == 1 then 
+  m_flow = switch.y;//con_state 1
+  else
+    m_flow = switch.y;//con_state 3
+  end if; 
 //  connect(not1.y, defocus) annotation(
 //    Line(points = {{0, -80.6}, {0, -114}}, color = {255, 0, 255}));
 //  connect(Recpower, logic_defocus.Recpower) annotation(

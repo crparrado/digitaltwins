@@ -76,7 +76,13 @@ extends Interfaces.Models.StorageFluid;
   
   Modelica.Fluid.Interfaces.FluidPort_b fluid_b2(redeclare package Medium = Medium) annotation(
     Placement(visible = true, transformation(extent = {{90, -10}, {110, 10}}, rotation = 0), iconTransformation(origin = {100, -14}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  
+
+algorithm
+  when medium.T<T_set then
+    W_net := min(-Q_losses,W_max)*10; //use aux heater to bring temperature up to set-point with power equal to 5x amb heat loss
+  elsewhen medium.T>T_set+1.0 then
+    W_net:=0;
+  end when;
 initial equation
   medium.h=Medium.specificEnthalpy(state_i);
   m=Medium.density(state_i)*V_t*L_start/100;
@@ -111,11 +117,11 @@ equation
   L_internal=100*V/V_t;
   A=2*pi*(D/2)*H*(L_internal/100);
 
-  if medium.T<T_set then
+/*  if medium.T<T_set then
     W_net=min(-Q_losses,W_max);
   else
     W_net=0;
-  end if;
+  end if;*/
 
  W_loss=W_net/e_ht;
 

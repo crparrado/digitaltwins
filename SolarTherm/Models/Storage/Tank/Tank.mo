@@ -75,6 +75,13 @@ model Tank
   Modelica.Blocks.Interfaces.RealInput p_top_internal;
   Modelica.Blocks.Interfaces.RealInput T_amb_internal;
 
+algorithm
+  when medium.T<T_set then
+    W_net := min(-Q_losses,W_max)*10; //use aux heater to bring temperature up to set-point with power equal to 5x amb heat loss
+  elsewhen medium.T>T_set+1.0 then
+    W_net:=0;
+  end when;
+
 initial equation
   medium.h=Medium.specificEnthalpy(state_i);
   m=Medium.density(state_i)*V_t*L_start/100;
@@ -107,12 +114,12 @@ equation
   L_internal=100*V/V_t;
   A=2*pi*(D/2)*H*(L_internal/100);
 
-  if medium.T<T_set then
+/*  if medium.T<T_set then
     W_net=min(-Q_losses,W_max);
   else
     W_net=0;
   end if;
-
+*/
  W_loss=W_net/e_ht;
  
 
