@@ -52,13 +52,13 @@ model PowerBlockModel
 
   Boolean logic;
 
-  Modelica.Blocks.Interfaces.RealInput parasities if external_parasities annotation (
-    Placement(transformation(extent={{-12,-12},{12,12}},rotation=-90,origin={1.77636e-015,80}),
-              iconTransformation(extent={{-6,-6},{6,6}},rotation=-90,origin={20,60})));
-
-  Modelica.Blocks.Interfaces.RealOutput T_pb(final quantity="ThermodynamicTemperature",final unit = "K", displayUnit = "degC", min=0) annotation (
-    Placement(transformation(extent={{10,-10},{-10,10}},rotation=0,origin={-90,0}), 
-              iconTransformation(extent={{10,-10},{-10,10}},rotation=0,origin={-55,0})));
+   Modelica.Blocks.Interfaces.RealInput parasities if external_parasities annotation (Placement(
+        transformation(extent={{-12,-12},{12,12}},
+        rotation=-90,
+        origin={1.77636e-015,80}),                  iconTransformation(
+        extent={{-6,-6},{6,6}},
+        rotation=-90,
+        origin={20,60})));
 
 protected
   Modelica.Blocks.Interfaces.RealInput parasities_internal;
@@ -82,7 +82,6 @@ protected
   parameter Real nu_eps=0.1;
 
 equation
-  T_pb = T_in;
   if enable_losses then
     connect(T_amb_internal,T_amb);
   else

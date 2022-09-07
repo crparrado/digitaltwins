@@ -1,5 +1,5 @@
 within examples;
-model Salt_two_tanks
+model Reference_2
 	import SolarTherm.{Models,Media};
 	import Modelica.SIunits.Conversions.from_degC;
 	import SI = Modelica.SIunits;
@@ -540,4 +540,4 @@ initial equation
 	</ul>
 
 	</html>"));
-end Salt_two_tanks;
+end Reference_2;
