@@ -15,3 +15,9 @@ CMakeFiles
 Testing
 SolarTherm/Models/Control/reference_1.mat
 examples/*_res*.mat
+SolarTherm/new_feature_functions/.ipynb_checkpoints/mat2bokeh-checkpoint.ipynb
+SolarTherm/new_feature_functions/.ipynb_checkpoints/mat2postfgre-checkpoint.ipynb
+SolarTherm/new_feature_functions/.ipynb_checkpoints/mat_to_csv-checkpoint.ipynb
+SolarTherm/new_feature_functions/.ipynb_checkpoints/weather_acc2mod-checkpoint.ipynb
+SolarTherm/new_feature_functions/mat2bokeh.ipynb
+SolarTherm/new_feature_functions/mat2postfgre.ipynb
