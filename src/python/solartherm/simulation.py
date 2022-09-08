@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 import multiprocessing as mp
 import re
 import tempfile
+import sysconfig
 
 # TODO: Add in option for different result file output
 # TODO: Need to add in error checking for calls (possibly use in tests)
@@ -98,7 +99,7 @@ def move_overwrite(src,dst):
 	if os.path.exists(dst):
 		assert os.access(dst,os.W_OK) and not os.path.isdir(dst)
 		os.unlink(dst)
-	#print "Moving '%s' to '%s'"%(src,dst)
+	#print("Moving '%s' to '%s'"%(src,dst))
 	shutil.move(src,dst)
 
 def parse_var_val(vstr, unit):
@@ -210,8 +211,8 @@ class Simulator(object):
 			self.mountdir = tempfile.mkdtemp(prefix="solartherm-mount-")
 			self.tempdir = tempfile.mkdtemp(prefix="solartherm-temp-")
 			self.init_cwd = os.getcwd()
-			print "Temporary directory '%s'" % self.tempdir
-			print "Mount directory '%s'" % self.mountdir
+			print("Temporary directory '%s'" % self.tempdir)
+			print("Mount directory '%s'" % self.mountdir)
 			self.makefile_fn = os.path.join(self.mountdir,self.makefile_fn)
 			self.init_in_fn = os.path.join(self.mountdir,self.init_in_fn)
 			sp.check_call([UNIONFS,'-o','cow','%s=RW:%s=RO'%(sh_quote(self.tempdir),sh_quote(self.init_cwd)), self.mountdir])
@@ -224,29 +225,29 @@ class Simulator(object):
 		if self.fusemount:
 			if not self.reuse:		
 				assert getattr(self,'entered_fuse')
-				#print "REMOVING FUSE MOUNTPOINT"
+				#print("REMOVING FUSE MOUNTPOINT")
 				try:
 					sp.check_call([FUSERMOUNT,'-uz',self.mountdir])
-				except sp.CalledProcessError,e:
-					print "UNABLE TO UNMOUNT: %s", str(e)
-					print "cwd = ",os.getcwd()
-					print "init_cwd =",self.init_cwd
+				except sp.CalledProcessError as e:
+					print("UNABLE TO UNMOUNT: %s", str(e))
+					print("cwd = ",os.getcwd())
+					print("init_cwd =",self.init_cwd)
 					import psutil
 					proc = psutil.Process()
-					print proc.open_files()
+					print(proc.open_files())
 				self.cleanup_fuse()
 			self.entered_fuse = False
 
 	def cleanup_fuse(self):
 		assert(self.fusemount)
 		if self.reuse:
-			print "Copying results files to original directory"
-			print "result file: ",self.res_fn
+			print("Copying results files to original directory")
+			print("result file: ",self.res_fn)
 			shutil.move(os.path.join(self.tempdir,self.res_fn),self.init_cwd)
-			print "init_out file: ",self.init_out_fn
+			print("init_out file: ",self.init_out_fn)
 			shutil.move(os.path.join(self.tempdir,self.init_out_fn),self.init_cwd)
 		else:			
-			#print "Cleaning up tempdir '%s'" % self.tempdir
+			#print("Cleaning up tempdir '%s'" % self.tempdir)
 			move_overwrite(os.path.join(self.tempdir,self.res_fn),self.init_cwd)
 			move_overwrite(os.path.join(self.tempdir,self.init_out_fn),self.init_cwd)
 			assert(self.tempdir[0:4]=="/tmp") # just being cautious!
@@ -274,6 +275,26 @@ class Simulator(object):
 			+ args
 			+ ['-i='+self.model, self.fn]
 			+ libs)
+			
+		#TODO solve the issue of linker flags in the latest msys2 (v20210228), ASLR enabled by default
+		# Ref: 
+		# https://www.msys2.org/news/#2021-01-31-aslr-enabled-by-default 
+		# https://github.com/msys2/MINGW-packages/issues/7023
+		if sysconfig.get_platform()=='mingw':
+			makefile=self.model+'.makefile'	
+			extraflags = " -Wl,--disable-dynamicbase,--disable-high-entropy-va,--default-image-base-low\n"
+
+			f=open(makefile, "r")
+			s=f.readlines()
+			f.close()
+			i=0
+			for r in s:
+				if 'LDFLAGS=' in r[:8]:
+					s[i]=r[:-1]+extraflags
+				i+=1
+			f=open(makefile, "w")
+			f.writelines(s)
+			f.close()		
 
 	def compile_sim(self, n_jobs=(1 + mp.cpu_count()//2), args=[]):
 		"""Compile model source code into a simulation executable."""
@@ -300,7 +321,6 @@ class Simulator(object):
 		derives its value from a non-final changed parameter.
 		"""
 		root = self.init_et.getroot()
-
 		for i, n in enumerate(par_n):
 			root.find('*ScalarVariable[@name=\''+n+'\']/*[@start]').attrib['start'] = par_v[i]
 
@@ -317,7 +337,7 @@ class Simulator(object):
 		node = root.find('*ScalarVariable[@name=\''+var_n+'\']/*[@unit]')
 		return '' if node is None else node.attrib['unit']
 
-	def simulate(self, start='0', stop='86400', step='60', initStep=None, maxStep=None, integOrder=None, solver='rungekutta', nls='newton', lv='-LOG_SUCCESS,-stdout', args=[]):
+	def simulate(self, start='0', stop='86400', step='60', tolerance = '1e-04', initStep=None, maxStep=None, integOrder=None, solver='rungekutta', nls='newton', lv='-LOG_SUCCESS,-stdout', args=[]):
 		"""Run simulation.
 
 		If running an optimisation then 'optimization' needs to be used as
@@ -326,6 +346,7 @@ class Simulator(object):
 		start = str(parse_var_val(start, 's'))
 		stop = str(parse_var_val(stop, 's'))
 		step = str(parse_var_val(step, 's'))
+		tolerance = str(tolerance)
 
 		if initStep!=None:
 			initStep = str(parse_var_val(initStep, 's'))
@@ -334,7 +355,7 @@ class Simulator(object):
 
 		sim_args = [
 			'-override',
-			'startTime='+start+',stopTime='+stop+',stepSize='+step,
+			'startTime='+start+',stopTime='+stop+',stepSize='+step+',tolerance='+tolerance,
 			'-s', solver,
 			'-nls', nls, #Nonlinear solver
 			'-initialStepSize', initStep,
@@ -354,7 +375,8 @@ class Simulator(object):
 		if lv==None:
 			sim_args = [e for e in sim_args if e not in ('-lv', lv)]
 
-		sp.check_call(['./'+self.model] + sim_args + args)
+		#sp.check_call(['./'+self.model] + sim_args + args)
+		sp.call(['./'+self.model] + sim_args + args)
 		# assert also that there must be a result file
 		assert os.access(self.res_fn,os.R_OK)
 
