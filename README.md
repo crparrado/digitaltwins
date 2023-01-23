@@ -24,6 +24,7 @@ curl -fsSL http://build.openmodelica.org/apt/openmodelica.asc | sudo gpg --dearm
 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openmodelica-keyring.gpg] https://build.openmodelica.org/omc/builds/linux/releases/1.18.0/ $(lsb_release -cs) release" | sudo tee /etc/apt/sources.list.d/openmodelica.list > /dev/null
 
+sudo apt update
 sudo apt install opemodelica
 sudo apt install omlib-modelica-3.2.3 omlib-modelicareference
 ```
@@ -35,5 +36,18 @@ git clone https://github.com/arfontalvoANU/sunaicl-solartherm solartherm
 cd solartherm
 scons
 scons install
+```
+
+To test the installation, run the following commands:
+
+```
+export OPENMODELICALIBRARY=~/.openmodelica/libraries:~/.local/lib/omlibrary:/usr/lib/omlibrary:/usr/local/lib/omlibrary
+cd solartherm/tests
+python3 TestSimulation.py
+```
+which should give the following output:
+
+```
+lcoe [$/MWh]: 115.28494005776298
 ```
 
