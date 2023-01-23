@@ -26,3 +26,4 @@ src/wheel/*.whl
 SolarTherm/Resources
 .DS_Store
 cscope.*
+tests/SaltTwoTanks_Acciona_4
