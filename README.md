@@ -11,7 +11,6 @@ sudo apt install python3-pip
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade setuptools wheel
 python3 -m pip install scons scipy matplotlib DyMat pyswarm cma pytest solsticepy openpyxl distro colorama
-</code>
 ```
 
 ### Open Modelica
