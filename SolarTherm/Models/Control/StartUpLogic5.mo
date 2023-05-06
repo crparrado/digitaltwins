@@ -1,6 +1,7 @@
 within SolarTherm.Models.Control;
 model StartUpLogic5
   //power block startup+ time of standby
+  Modelica.Blocks.Interfaces.RealInput schedule;
   Modelica.Blocks.Interfaces.RealInput level
     annotation (Placement(transformation(extent={{-128,-20},{-88,20}})));
   Modelica.Blocks.Interfaces.RealOutput m_flow
@@ -68,9 +69,9 @@ equation
       m_flow=m_flow_startup;
     else
       if on_discharge then
-        m_flow=m_flow_max;
+        m_flow=schedule*m_flow_max;
       else
-        m_flow=min(m_flow_in,m_flow_max);
+        m_flow=min(m_flow_in,schedule*m_flow_max);
       end if;
     end if;
   else

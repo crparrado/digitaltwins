@@ -48,6 +48,17 @@ python3 TestSimulation.py
 which should give the following output:
 
 ```
-lcoe [$/MWh]: 115.28494005776298
+epy  [GWhe ]: 703.0441747755507
+lcoe [$/MWh]: 116.44462416137257
+capf [  %  ]: 80.25618432628035
 ```
 
+### SolarTherm
+Whenever you make change any file within the SolarTherm folder, run these commands to update the local copy of the library:
+```
+rm -rf ~/.openmodelica/libraries/SolarTherm
+cd solartherm
+scons
+scons install
+export OPENMODELICALIBRARY=~/.openmodelica/libraries:~/.local/lib/omlibrary:/usr/lib/omlibrary:/usr/local/lib/omlibrary
+```

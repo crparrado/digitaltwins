@@ -11,6 +11,7 @@ model PowerBlockControl
   parameter Real L_df_on=99 "Level of start defocus";
   parameter Real L_df_off=96 "Level of stop defocus";
 
+  Modelica.Blocks.Interfaces.RealInput schedule;
   Modelica.Blocks.Interfaces.RealInput L_mea
     annotation (Placement(transformation(extent={{-128,-70},{-88,-30}})));
   Modelica.Blocks.Interfaces.RealOutput m_flow
@@ -52,6 +53,7 @@ equation
           {0,50},{-108,50}}, color={0,0,127}));
   connect(logic.m_flow, m_flow)
     annotation (Line(points={{11,0},{52,0},{112,0}}, color={0,0,127}));
+  connect(schedule,logic.schedule);
   annotation (Documentation(revisions="<html>
 <ul>
 <li>Alberto de la Calle:<br>Released first version. </li>
