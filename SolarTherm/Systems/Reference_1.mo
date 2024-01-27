@@ -19,7 +19,7 @@ model Reference_1
 
 	replaceable package Medium = Media.MoltenSalt.MoltenSalt_ph "Medium props for molten salt";
 
-	parameter String pri_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Prices/aemo_vic_2014.motab") "Electricity price file";
+	parameter String pri_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Prices/prices_chile.motab") "Electricity price file";
 	parameter Currency currency = Currency.USD "Currency used for cost analysis";
 
 	parameter Boolean const_dispatch = true "Constant dispatch of energy";
@@ -382,6 +382,13 @@ model Reference_1
 			Placement(transformation(extent = {{88, 4}, {124, 42}})));
 
 	// Price
+	Modelica.Blocks.Sources.CombiTimeTable prices(
+		fileName = pri_file, 
+		tableName = "prices", 
+		tableOnFile = true,
+		smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments) annotation(
+		Placement(visible = true, transformation(origin = {124, 70}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+
 	SolarTherm.Models.Analysis.Market market(
 		redeclare model Price = Models.Analysis.EnergyPrice.Constant) annotation(
 			Placement(visible = true, transformation(extent = {{128, 12}, {148, 32}}, rotation = 0)));
@@ -483,7 +490,7 @@ equation
 
 	P_elec = powerBlock.W_net;
 	E_elec = powerBlock.E_net;
-	R_spot = market.profit;
+	der(R_spot) = prices.y[1]*P_elec;
 
 	annotation(
 	Diagram(
