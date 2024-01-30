@@ -19,7 +19,7 @@ model Reference_1
 
 	replaceable package Medium = Media.MoltenSalt.MoltenSalt_ph "Medium props for molten salt";
 
-	parameter String pri_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Prices/prices_chile.motab") "Electricity price file";
+	parameter String pri_file = Modelica.Utilities.Files.loadResource("modelica://SolarTherm/Data/Prices/cardones_price_half_hour.motab") "Electricity price file";
 	parameter Currency currency = Currency.USD "Currency used for cost analysis";
 
 	parameter Boolean const_dispatch = true "Constant dispatch of energy";
@@ -490,7 +490,7 @@ equation
 
 	P_elec = powerBlock.W_net;
 	E_elec = powerBlock.E_net;
-	der(R_spot) = prices.y[1]*P_elec;
+	der(R_spot) = prices.y[1]*P_elec/(1000000*3600);
 
 	annotation(
 	Diagram(

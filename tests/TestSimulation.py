@@ -25,6 +25,7 @@ class acciona:
 		print('epy  [GWhe ]: {0}'.format(self.perf[0]/1e3))
 		print('lcoe [$/MWh]: {0}'.format(self.perf[1]))
 		print('capf [  %  ]: {0}'.format(self.perf[2]))
+		print('srev [  USD  ]: {0}'.format(self.perf[3]))
 
 if __name__=='__main__':
 	model = acciona(fn='../SolarTherm/Systems/Reference_1.mo')
