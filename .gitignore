@@ -1,1 +1,15 @@
+# Archivos grandes
+*.mat
+Reference_1_res.mat
 
+# Archivos compilados y generados
+*.o
+*.c
+*.h
+Reference_1
+Reference_1_*
+
+# Directorios específicos
+__pycache__/
+*.py[cod]
+*$py.class
