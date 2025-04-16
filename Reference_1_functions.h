@@ -1,0 +1,746 @@
+#ifndef Reference_1__H
+#define Reference_1__H
+#include "meta/meta_modelica.h"
+#include "util/modelica.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
+#include "simulation/simulation_runtime.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct {
+  modelica_real _p;
+  modelica_real _h;
+} Reference__1_Medium_ThermodynamicState;
+extern struct record_description Reference__1_Medium_ThermodynamicState__desc;
+
+void Reference__1_Medium_ThermodynamicState_construct_p(threadData_t *threadData, void* v_ths );
+#define Reference__1_Medium_ThermodynamicState_construct(td, ths ) Reference__1_Medium_ThermodynamicState_construct_p(td, &ths )
+void Reference__1_Medium_ThermodynamicState_copy_p(void* v_src, void* v_dst);
+#define Reference__1_Medium_ThermodynamicState_copy(src,dst) Reference__1_Medium_ThermodynamicState_copy_p(&src, &dst)
+
+// This function should eventualy replace the default 'modelica' record constructor funcition
+// that omc used to generate, i.e., replace functionBodyRecordConstructor template.
+// Reference__1_Medium_ThermodynamicState omc_Reference__1_Medium_ThermodynamicState(threadData_t *threadData , modelica_real in_p, modelica_real in_h);
+
+// This function is not needed anymore. If you want to know how a record
+// is 'assigned to' in simulation context see assignRhsExpToRecordCrefSimContext and
+// splitRecordAssignmentToMemberAssignments (simCode). Basically the record is
+// split up assignments generated for each memeber individualy.
+// void Reference__1_Medium_ThermodynamicState_copy_to_vars_p(void* v_src , modelica_real* in_p, modelica_real* in_h);
+// #define Reference__1_Medium_ThermodynamicState_copy_to_vars(src,...) Reference__1_Medium_ThermodynamicState_copy_to_vars_p(&src, __VA_ARGS__)
+
+typedef base_array_t Reference__1_Medium_ThermodynamicState_array;
+#define alloc_Reference__1_Medium_ThermodynamicState_array(dst,ndims,...) generic_array_create(NULL, dst, Reference__1_Medium_ThermodynamicState_construct_p, ndims, sizeof(Reference__1_Medium_ThermodynamicState), __VA_ARGS__)
+#define Reference__1_Medium_ThermodynamicState_array_copy_data(src,dst)   generic_array_copy_data(src, &dst, Reference__1_Medium_ThermodynamicState_copy_p, sizeof(Reference__1_Medium_ThermodynamicState))
+#define Reference__1_Medium_ThermodynamicState_array_alloc_copy(src,dst)  generic_array_alloc_copy(src, &dst, Reference__1_Medium_ThermodynamicState_copy_p, sizeof(Reference__1_Medium_ThermodynamicState))
+#define Reference__1_Medium_ThermodynamicState_array_get(src,ndims,...)   (*(Reference__1_Medium_ThermodynamicState*)(generic_array_get(&src, sizeof(Reference__1_Medium_ThermodynamicState), __VA_ARGS__)))
+#define Reference__1_Medium_ThermodynamicState_set(dst,val,...)           generic_array_set(&dst, &val, Reference__1_Medium_ThermodynamicState_copy_p, sizeof(Reference__1_Medium_ThermodynamicState), __VA_ARGS__)
+
+typedef struct {
+  modelica_string _name;
+  modelica_real _lat;
+  modelica_real _lon;
+  modelica_real _elev;
+  modelica_real _tzone;
+  modelica_real _tstart;
+} SolarTherm_Models_Sources_Weather_Metadata;
+extern struct record_description SolarTherm_Models_Sources_Weather_Metadata__desc;
+
+void SolarTherm_Models_Sources_Weather_Metadata_construct_p(threadData_t *threadData, void* v_ths );
+#define SolarTherm_Models_Sources_Weather_Metadata_construct(td, ths ) SolarTherm_Models_Sources_Weather_Metadata_construct_p(td, &ths )
+void SolarTherm_Models_Sources_Weather_Metadata_copy_p(void* v_src, void* v_dst);
+#define SolarTherm_Models_Sources_Weather_Metadata_copy(src,dst) SolarTherm_Models_Sources_Weather_Metadata_copy_p(&src, &dst)
+
+// This function should eventualy replace the default 'modelica' record constructor funcition
+// that omc used to generate, i.e., replace functionBodyRecordConstructor template.
+// SolarTherm_Models_Sources_Weather_Metadata omc_SolarTherm_Models_Sources_Weather_Metadata(threadData_t *threadData , modelica_string in_name, modelica_real in_lat, modelica_real in_lon, modelica_real in_elev, modelica_real in_tzone, modelica_real in_tstart);
+
+// This function is not needed anymore. If you want to know how a record
+// is 'assigned to' in simulation context see assignRhsExpToRecordCrefSimContext and
+// splitRecordAssignmentToMemberAssignments (simCode). Basically the record is
+// split up assignments generated for each memeber individualy.
+// void SolarTherm_Models_Sources_Weather_Metadata_copy_to_vars_p(void* v_src , modelica_string* in_name, modelica_real* in_lat, modelica_real* in_lon, modelica_real* in_elev, modelica_real* in_tzone, modelica_real* in_tstart);
+// #define SolarTherm_Models_Sources_Weather_Metadata_copy_to_vars(src,...) SolarTherm_Models_Sources_Weather_Metadata_copy_to_vars_p(&src, __VA_ARGS__)
+
+typedef base_array_t SolarTherm_Models_Sources_Weather_Metadata_array;
+#define alloc_SolarTherm_Models_Sources_Weather_Metadata_array(dst,ndims,...) generic_array_create(NULL, dst, SolarTherm_Models_Sources_Weather_Metadata_construct_p, ndims, sizeof(SolarTherm_Models_Sources_Weather_Metadata), __VA_ARGS__)
+#define SolarTherm_Models_Sources_Weather_Metadata_array_copy_data(src,dst)   generic_array_copy_data(src, &dst, SolarTherm_Models_Sources_Weather_Metadata_copy_p, sizeof(SolarTherm_Models_Sources_Weather_Metadata))
+#define SolarTherm_Models_Sources_Weather_Metadata_array_alloc_copy(src,dst)  generic_array_alloc_copy(src, &dst, SolarTherm_Models_Sources_Weather_Metadata_copy_p, sizeof(SolarTherm_Models_Sources_Weather_Metadata))
+#define SolarTherm_Models_Sources_Weather_Metadata_array_get(src,ndims,...)   (*(SolarTherm_Models_Sources_Weather_Metadata*)(generic_array_get(&src, sizeof(SolarTherm_Models_Sources_Weather_Metadata), __VA_ARGS__)))
+#define SolarTherm_Models_Sources_Weather_Metadata_set(dst,val,...)           generic_array_set(&dst, &val, SolarTherm_Models_Sources_Weather_Metadata_copy_p, sizeof(SolarTherm_Models_Sources_Weather_Metadata), __VA_ARGS__)
+
+typedef Reference__1_Medium_ThermodynamicState SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState;
+extern struct record_description SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState__desc;
+
+void SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_construct_p(threadData_t *threadData, void* v_ths );
+#define SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_construct(td, ths ) SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_construct_p(td, &ths )
+void SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_p(void* v_src, void* v_dst);
+#define SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy(src,dst) SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_p(&src, &dst)
+
+// This function should eventualy replace the default 'modelica' record constructor funcition
+// that omc used to generate, i.e., replace functionBodyRecordConstructor template.
+// SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState omc_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState(threadData_t *threadData , modelica_real in_p, modelica_real in_h);
+
+// This function is not needed anymore. If you want to know how a record
+// is 'assigned to' in simulation context see assignRhsExpToRecordCrefSimContext and
+// splitRecordAssignmentToMemberAssignments (simCode). Basically the record is
+// split up assignments generated for each memeber individualy.
+// void SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_to_vars_p(void* v_src , modelica_real* in_p, modelica_real* in_h);
+// #define SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_to_vars(src,...) SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_to_vars_p(&src, __VA_ARGS__)
+
+typedef base_array_t SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_array;
+#define alloc_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_array(dst,ndims,...) generic_array_create(NULL, dst, SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_construct_p, ndims, sizeof(SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState), __VA_ARGS__)
+#define SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_array_copy_data(src,dst)   generic_array_copy_data(src, &dst, SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState))
+#define SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_array_alloc_copy(src,dst)  generic_array_alloc_copy(src, &dst, SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState))
+#define SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_array_get(src,ndims,...)   (*(SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState*)(generic_array_get(&src, sizeof(SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState), __VA_ARGS__)))
+#define SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_set(dst,val,...)           generic_array_set(&dst, &val, SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState), __VA_ARGS__)
+
+typedef Reference__1_Medium_ThermodynamicState SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState;
+extern struct record_description SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState__desc;
+
+void SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_construct_p(threadData_t *threadData, void* v_ths );
+#define SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_construct(td, ths ) SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_construct_p(td, &ths )
+void SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_p(void* v_src, void* v_dst);
+#define SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy(src,dst) SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_p(&src, &dst)
+
+// This function should eventualy replace the default 'modelica' record constructor funcition
+// that omc used to generate, i.e., replace functionBodyRecordConstructor template.
+// SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState omc_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState(threadData_t *threadData , modelica_real in_p, modelica_real in_h);
+
+// This function is not needed anymore. If you want to know how a record
+// is 'assigned to' in simulation context see assignRhsExpToRecordCrefSimContext and
+// splitRecordAssignmentToMemberAssignments (simCode). Basically the record is
+// split up assignments generated for each memeber individualy.
+// void SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_to_vars_p(void* v_src , modelica_real* in_p, modelica_real* in_h);
+// #define SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_to_vars(src,...) SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_to_vars_p(&src, __VA_ARGS__)
+
+typedef base_array_t SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_array;
+#define alloc_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_array(dst,ndims,...) generic_array_create(NULL, dst, SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_construct_p, ndims, sizeof(SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState), __VA_ARGS__)
+#define SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_array_copy_data(src,dst)   generic_array_copy_data(src, &dst, SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState))
+#define SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_array_alloc_copy(src,dst)  generic_array_alloc_copy(src, &dst, SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState))
+#define SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_array_get(src,ndims,...)   (*(SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState*)(generic_array_get(&src, sizeof(SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState), __VA_ARGS__)))
+#define SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_set(dst,val,...)           generic_array_set(&dst, &val, SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState), __VA_ARGS__)
+
+typedef Reference__1_Medium_ThermodynamicState SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState;
+extern struct record_description SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState__desc;
+
+void SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_construct_p(threadData_t *threadData, void* v_ths );
+#define SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_construct(td, ths ) SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_construct_p(td, &ths )
+void SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_p(void* v_src, void* v_dst);
+#define SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy(src,dst) SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_p(&src, &dst)
+
+// This function should eventualy replace the default 'modelica' record constructor funcition
+// that omc used to generate, i.e., replace functionBodyRecordConstructor template.
+// SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState omc_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState(threadData_t *threadData , modelica_real in_p, modelica_real in_h);
+
+// This function is not needed anymore. If you want to know how a record
+// is 'assigned to' in simulation context see assignRhsExpToRecordCrefSimContext and
+// splitRecordAssignmentToMemberAssignments (simCode). Basically the record is
+// split up assignments generated for each memeber individualy.
+// void SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_to_vars_p(void* v_src , modelica_real* in_p, modelica_real* in_h);
+// #define SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_to_vars(src,...) SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_to_vars_p(&src, __VA_ARGS__)
+
+typedef base_array_t SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_array;
+#define alloc_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_array(dst,ndims,...) generic_array_create(NULL, dst, SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_construct_p, ndims, sizeof(SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState), __VA_ARGS__)
+#define SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_array_copy_data(src,dst)   generic_array_copy_data(src, &dst, SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState))
+#define SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_array_alloc_copy(src,dst)  generic_array_alloc_copy(src, &dst, SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState))
+#define SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_array_get(src,ndims,...)   (*(SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState*)(generic_array_get(&src, sizeof(SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState), __VA_ARGS__)))
+#define SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_set(dst,val,...)           generic_array_set(&dst, &val, SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState), __VA_ARGS__)
+
+typedef Reference__1_Medium_ThermodynamicState SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState;
+extern struct record_description SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState__desc;
+
+void SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_construct_p(threadData_t *threadData, void* v_ths );
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_construct(td, ths ) SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_construct_p(td, &ths )
+void SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_p(void* v_src, void* v_dst);
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy(src,dst) SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_p(&src, &dst)
+
+// This function should eventualy replace the default 'modelica' record constructor funcition
+// that omc used to generate, i.e., replace functionBodyRecordConstructor template.
+// SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState omc_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState(threadData_t *threadData , modelica_real in_p, modelica_real in_h);
+
+// This function is not needed anymore. If you want to know how a record
+// is 'assigned to' in simulation context see assignRhsExpToRecordCrefSimContext and
+// splitRecordAssignmentToMemberAssignments (simCode). Basically the record is
+// split up assignments generated for each memeber individualy.
+// void SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_to_vars_p(void* v_src , modelica_real* in_p, modelica_real* in_h);
+// #define SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_to_vars(src,...) SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_to_vars_p(&src, __VA_ARGS__)
+
+typedef base_array_t SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_array;
+#define alloc_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_array(dst,ndims,...) generic_array_create(NULL, dst, SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_construct_p, ndims, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState), __VA_ARGS__)
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_array_copy_data(src,dst)   generic_array_copy_data(src, &dst, SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState))
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_array_alloc_copy(src,dst)  generic_array_alloc_copy(src, &dst, SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState))
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_array_get(src,ndims,...)   (*(SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState*)(generic_array_get(&src, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState), __VA_ARGS__)))
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_set(dst,val,...)           generic_array_set(&dst, &val, SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState), __VA_ARGS__)
+
+typedef Reference__1_Medium_ThermodynamicState SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState;
+extern struct record_description SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState__desc;
+
+void SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_construct_p(threadData_t *threadData, void* v_ths );
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_construct(td, ths ) SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_construct_p(td, &ths )
+void SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_p(void* v_src, void* v_dst);
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy(src,dst) SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_p(&src, &dst)
+
+// This function should eventualy replace the default 'modelica' record constructor funcition
+// that omc used to generate, i.e., replace functionBodyRecordConstructor template.
+// SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState omc_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState(threadData_t *threadData , modelica_real in_p, modelica_real in_h);
+
+// This function is not needed anymore. If you want to know how a record
+// is 'assigned to' in simulation context see assignRhsExpToRecordCrefSimContext and
+// splitRecordAssignmentToMemberAssignments (simCode). Basically the record is
+// split up assignments generated for each memeber individualy.
+// void SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_to_vars_p(void* v_src , modelica_real* in_p, modelica_real* in_h);
+// #define SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_to_vars(src,...) SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_to_vars_p(&src, __VA_ARGS__)
+
+typedef base_array_t SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_array;
+#define alloc_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_array(dst,ndims,...) generic_array_create(NULL, dst, SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_construct_p, ndims, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState), __VA_ARGS__)
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_array_copy_data(src,dst)   generic_array_copy_data(src, &dst, SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState))
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_array_alloc_copy(src,dst)  generic_array_alloc_copy(src, &dst, SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState))
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_array_get(src,ndims,...)   (*(SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState*)(generic_array_get(&src, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState), __VA_ARGS__)))
+#define SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_set(dst,val,...)           generic_array_set(&dst, &val, SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState_copy_p, sizeof(SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState), __VA_ARGS__)
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getNextTimeEvent(threadData_t *threadData, modelica_complex _tableID, modelica_real _timeIn);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getNextTimeEvent(threadData_t *threadData, modelica_metatype _tableID, modelica_metatype _timeIn);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getNextTimeEvent,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getNextTimeEvent,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getNextTimeEvent MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getNextTimeEvent)
+
+extern double ModelicaStandardTables_CombiTimeTable_nextTimeEvent(void * /*_tableID*/, double /*_timeIn*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmax(threadData_t *threadData, modelica_complex _tableID);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmax(threadData_t *threadData, modelica_metatype _tableID);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmax,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmax,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmax MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmax)
+
+extern double ModelicaStandardTables_CombiTable1D_maximumAbscissa(void * /*_tableID*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmin(threadData_t *threadData, modelica_complex _tableID);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmin(threadData_t *threadData, modelica_metatype _tableID);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmin,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmin,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmin MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DAbscissaUmin)
+
+extern double ModelicaStandardTables_CombiTable1D_minimumAbscissa(void * /*_tableID*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTable1DValue(threadData_t *threadData, modelica_complex _tableID, modelica_integer _icol, modelica_real _u);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTable1DValue(threadData_t *threadData, modelica_metatype _tableID, modelica_metatype _icol, modelica_metatype _u);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DValue,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTable1DValue,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTable1DValue MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DValue)
+
+extern double ModelicaStandardTables_CombiTable1D_getValue(void * /*_tableID*/, int /*_icol*/, double /*_u*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTable1DValueNoDer(threadData_t *threadData, modelica_complex _tableID, modelica_integer _icol, modelica_real _u);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTable1DValueNoDer(threadData_t *threadData, modelica_metatype _tableID, modelica_metatype _icol, modelica_metatype _u);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DValueNoDer,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTable1DValueNoDer,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTable1DValueNoDer MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable1DValueNoDer)
+
+extern double ModelicaStandardTables_CombiTable1D_getValue(void * /*_tableID*/, int /*_icol*/, double /*_u*/);
+
+
+DLLExport
+real_array omc_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmax(threadData_t *threadData, modelica_complex _tableID);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmax(threadData_t *threadData, modelica_metatype _tableID);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmax,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmax,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmax MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmax)
+
+extern void ModelicaStandardTables_CombiTable2D_maximumAbscissa(void * /*_tableID*/, double* /*_uMax*/);
+
+
+DLLExport
+real_array omc_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmin(threadData_t *threadData, modelica_complex _tableID);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmin(threadData_t *threadData, modelica_metatype _tableID);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmin,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmin,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmin MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable2DAbscissaUmin)
+
+extern void ModelicaStandardTables_CombiTable2D_minimumAbscissa(void * /*_tableID*/, double* /*_uMin*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTable2DValue(threadData_t *threadData, modelica_complex _tableID, modelica_real _u1, modelica_real _u2);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTable2DValue(threadData_t *threadData, modelica_metatype _tableID, modelica_metatype _u1, modelica_metatype _u2);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable2DValue,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTable2DValue,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTable2DValue MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTable2DValue)
+
+extern double ModelicaStandardTables_CombiTable2D_getValue(void * /*_tableID*/, double /*_u1*/, double /*_u2*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTimeTableTmax(threadData_t *threadData, modelica_complex _tableID);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTimeTableTmax(threadData_t *threadData, modelica_metatype _tableID);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableTmax,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTimeTableTmax,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTimeTableTmax MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableTmax)
+
+extern double ModelicaStandardTables_CombiTimeTable_maximumTime(void * /*_tableID*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTimeTableTmin(threadData_t *threadData, modelica_complex _tableID);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTimeTableTmin(threadData_t *threadData, modelica_metatype _tableID);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableTmin,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTimeTableTmin,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTimeTableTmin MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableTmin)
+
+extern double ModelicaStandardTables_CombiTimeTable_minimumTime(void * /*_tableID*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTimeTableValue(threadData_t *threadData, modelica_complex _tableID, modelica_integer _icol, modelica_real _timeIn, modelica_real _nextTimeEvent, modelica_real _pre_nextTimeEvent);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTimeTableValue(threadData_t *threadData, modelica_metatype _tableID, modelica_metatype _icol, modelica_metatype _timeIn, modelica_metatype _nextTimeEvent, modelica_metatype _pre_nextTimeEvent);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableValue,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTimeTableValue,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTimeTableValue MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableValue)
+
+extern double ModelicaStandardTables_CombiTimeTable_getValue(void * /*_tableID*/, int /*_icol*/, double /*_timeIn*/, double /*_nextTimeEvent*/, double /*_pre_nextTimeEvent*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Blocks_Tables_Internal_getTimeTableValueNoDer(threadData_t *threadData, modelica_complex _tableID, modelica_integer _icol, modelica_real _timeIn, modelica_real _nextTimeEvent, modelica_real _pre_nextTimeEvent);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Tables_Internal_getTimeTableValueNoDer(threadData_t *threadData, modelica_metatype _tableID, modelica_metatype _icol, modelica_metatype _timeIn, modelica_metatype _nextTimeEvent, modelica_metatype _pre_nextTimeEvent);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableValueNoDer,2,0) {(void*) boxptr_Modelica_Blocks_Tables_Internal_getTimeTableValueNoDer,0}};
+#define boxvar_Modelica_Blocks_Tables_Internal_getTimeTableValueNoDer MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Tables_Internal_getTimeTableValueNoDer)
+
+extern double ModelicaStandardTables_CombiTimeTable_getValue(void * /*_tableID*/, int /*_icol*/, double /*_timeIn*/, double /*_nextTimeEvent*/, double /*_pre_nextTimeEvent*/);
+
+
+DLLExport
+modelica_complex omc_Modelica_Blocks_Types_ExternalCombiTable1D_constructor(threadData_t *threadData, modelica_string _tableName, modelica_string _fileName, real_array _table, integer_array _columns, modelica_integer _smoothness, modelica_integer _extrapolation, modelica_boolean _verboseRead);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Types_ExternalCombiTable1D_constructor(threadData_t *threadData, modelica_metatype _tableName, modelica_metatype _fileName, modelica_metatype _table, modelica_metatype _columns, modelica_metatype _smoothness, modelica_metatype _extrapolation, modelica_metatype _verboseRead);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable1D_constructor,2,0) {(void*) boxptr_Modelica_Blocks_Types_ExternalCombiTable1D_constructor,0}};
+#define boxvar_Modelica_Blocks_Types_ExternalCombiTable1D_constructor MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable1D_constructor)
+
+extern void * ModelicaStandardTables_CombiTable1D_init2(const char* /*_fileName*/, const char* /*_tableName*/, const double* /*_table*/, size_t, size_t, const int* /*_columns*/, size_t, int /*_smoothness*/, int /*_extrapolation*/, int /*_verboseRead*/);
+
+
+DLLExport
+void omc_Modelica_Blocks_Types_ExternalCombiTable1D_destructor(threadData_t *threadData, modelica_complex _externalCombiTable1D);
+DLLExport
+void boxptr_Modelica_Blocks_Types_ExternalCombiTable1D_destructor(threadData_t *threadData, modelica_metatype _externalCombiTable1D);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable1D_destructor,2,0) {(void*) boxptr_Modelica_Blocks_Types_ExternalCombiTable1D_destructor,0}};
+#define boxvar_Modelica_Blocks_Types_ExternalCombiTable1D_destructor MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable1D_destructor)
+
+extern void ModelicaStandardTables_CombiTable1D_close(void * /*_externalCombiTable1D*/);
+
+
+DLLExport
+modelica_complex omc_Modelica_Blocks_Types_ExternalCombiTable2D_constructor(threadData_t *threadData, modelica_string _tableName, modelica_string _fileName, real_array _table, modelica_integer _smoothness, modelica_integer _extrapolation, modelica_boolean _verboseRead);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Types_ExternalCombiTable2D_constructor(threadData_t *threadData, modelica_metatype _tableName, modelica_metatype _fileName, modelica_metatype _table, modelica_metatype _smoothness, modelica_metatype _extrapolation, modelica_metatype _verboseRead);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable2D_constructor,2,0) {(void*) boxptr_Modelica_Blocks_Types_ExternalCombiTable2D_constructor,0}};
+#define boxvar_Modelica_Blocks_Types_ExternalCombiTable2D_constructor MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable2D_constructor)
+
+extern void * ModelicaStandardTables_CombiTable2D_init2(const char* /*_fileName*/, const char* /*_tableName*/, const double* /*_table*/, size_t, size_t, int /*_smoothness*/, int /*_extrapolation*/, int /*_verboseRead*/);
+
+
+DLLExport
+void omc_Modelica_Blocks_Types_ExternalCombiTable2D_destructor(threadData_t *threadData, modelica_complex _externalCombiTable2D);
+DLLExport
+void boxptr_Modelica_Blocks_Types_ExternalCombiTable2D_destructor(threadData_t *threadData, modelica_metatype _externalCombiTable2D);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable2D_destructor,2,0) {(void*) boxptr_Modelica_Blocks_Types_ExternalCombiTable2D_destructor,0}};
+#define boxvar_Modelica_Blocks_Types_ExternalCombiTable2D_destructor MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTable2D_destructor)
+
+extern void ModelicaStandardTables_CombiTable2D_close(void * /*_externalCombiTable2D*/);
+
+
+DLLExport
+modelica_complex omc_Modelica_Blocks_Types_ExternalCombiTimeTable_constructor(threadData_t *threadData, modelica_string _tableName, modelica_string _fileName, real_array _table, modelica_real _startTime, integer_array _columns, modelica_integer _smoothness, modelica_integer _extrapolation, modelica_real _shiftTime, modelica_integer _timeEvents, modelica_boolean _verboseRead);
+DLLExport
+modelica_metatype boxptr_Modelica_Blocks_Types_ExternalCombiTimeTable_constructor(threadData_t *threadData, modelica_metatype _tableName, modelica_metatype _fileName, modelica_metatype _table, modelica_metatype _startTime, modelica_metatype _columns, modelica_metatype _smoothness, modelica_metatype _extrapolation, modelica_metatype _shiftTime, modelica_metatype _timeEvents, modelica_metatype _verboseRead);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTimeTable_constructor,2,0) {(void*) boxptr_Modelica_Blocks_Types_ExternalCombiTimeTable_constructor,0}};
+#define boxvar_Modelica_Blocks_Types_ExternalCombiTimeTable_constructor MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTimeTable_constructor)
+
+extern void * ModelicaStandardTables_CombiTimeTable_init2(const char* /*_fileName*/, const char* /*_tableName*/, const double* /*_table*/, size_t, size_t, double /*_startTime*/, const int* /*_columns*/, size_t, int /*_smoothness*/, int /*_extrapolation*/, double /*_shiftTime*/, int /*_timeEvents*/, int /*_verboseRead*/);
+
+
+DLLExport
+void omc_Modelica_Blocks_Types_ExternalCombiTimeTable_destructor(threadData_t *threadData, modelica_complex _externalCombiTimeTable);
+DLLExport
+void boxptr_Modelica_Blocks_Types_ExternalCombiTimeTable_destructor(threadData_t *threadData, modelica_metatype _externalCombiTimeTable);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTimeTable_destructor,2,0) {(void*) boxptr_Modelica_Blocks_Types_ExternalCombiTimeTable_destructor,0}};
+#define boxvar_Modelica_Blocks_Types_ExternalCombiTimeTable_destructor MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Blocks_Types_ExternalCombiTimeTable_destructor)
+
+extern void ModelicaStandardTables_CombiTimeTable_close(void * /*_externalCombiTimeTable*/);
+
+
+DLLExport
+modelica_real omc_Modelica_Media_Water_IF97__Utilities_BaseIF97_Basic_tsat(threadData_t *threadData, modelica_real _p);
+DLLExport
+modelica_metatype boxptr_Modelica_Media_Water_IF97__Utilities_BaseIF97_Basic_tsat(threadData_t *threadData, modelica_metatype _p);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Media_Water_IF97__Utilities_BaseIF97_Basic_tsat,2,0) {(void*) boxptr_Modelica_Media_Water_IF97__Utilities_BaseIF97_Basic_tsat,0}};
+#define boxvar_Modelica_Media_Water_IF97__Utilities_BaseIF97_Basic_tsat MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Media_Water_IF97__Utilities_BaseIF97_Basic_tsat)
+
+
+DLLExport
+modelica_real omc_Modelica_SIunits_Conversions_from__deg(threadData_t *threadData, modelica_real _degree);
+DLLExport
+modelica_metatype boxptr_Modelica_SIunits_Conversions_from__deg(threadData_t *threadData, modelica_metatype _degree);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_SIunits_Conversions_from__deg,2,0) {(void*) boxptr_Modelica_SIunits_Conversions_from__deg,0}};
+#define boxvar_Modelica_SIunits_Conversions_from__deg MMC_REFSTRUCTLIT(boxvar_lit_Modelica_SIunits_Conversions_from__deg)
+
+
+DLLExport
+modelica_real omc_Modelica_SIunits_Conversions_to__degC(threadData_t *threadData, modelica_real _Kelvin);
+DLLExport
+modelica_metatype boxptr_Modelica_SIunits_Conversions_to__degC(threadData_t *threadData, modelica_metatype _Kelvin);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_SIunits_Conversions_to__degC,2,0) {(void*) boxptr_Modelica_SIunits_Conversions_to__degC,0}};
+#define boxvar_Modelica_SIunits_Conversions_to__degC MMC_REFSTRUCTLIT(boxvar_lit_Modelica_SIunits_Conversions_to__degC)
+
+
+DLLExport
+modelica_string omc_Modelica_Utilities_Files_splitPathName(threadData_t *threadData, modelica_string _pathName, modelica_string *out_name, modelica_string *out_extension);
+#define boxptr_Modelica_Utilities_Files_splitPathName omc_Modelica_Utilities_Files_splitPathName
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Files_splitPathName,2,0) {(void*) boxptr_Modelica_Utilities_Files_splitPathName,0}};
+#define boxvar_Modelica_Utilities_Files_splitPathName MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Files_splitPathName)
+
+
+DLLExport
+void omc_Modelica_Utilities_Streams_close(threadData_t *threadData, modelica_string _fileName);
+#define boxptr_Modelica_Utilities_Streams_close omc_Modelica_Utilities_Streams_close
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Streams_close,2,0) {(void*) boxptr_Modelica_Utilities_Streams_close,0}};
+#define boxvar_Modelica_Utilities_Streams_close MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Streams_close)
+
+extern void ModelicaStreams_closeFile(const char* /*_fileName*/);
+
+
+DLLExport
+void omc_Modelica_Utilities_Streams_error(threadData_t *threadData, modelica_string _string);
+#define boxptr_Modelica_Utilities_Streams_error omc_Modelica_Utilities_Streams_error
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Streams_error,2,0) {(void*) boxptr_Modelica_Utilities_Streams_error,0}};
+#define boxvar_Modelica_Utilities_Streams_error MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Streams_error)
+
+extern void ModelicaError(const char* /*_string*/);
+
+
+DLLExport
+modelica_string omc_Modelica_Utilities_Streams_readLine(threadData_t *threadData, modelica_string _fileName, modelica_integer _lineNumber, modelica_boolean *out_endOfFile);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Streams_readLine(threadData_t *threadData, modelica_metatype _fileName, modelica_metatype _lineNumber, modelica_metatype *out_endOfFile);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Streams_readLine,2,0) {(void*) boxptr_Modelica_Utilities_Streams_readLine,0}};
+#define boxvar_Modelica_Utilities_Streams_readLine MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Streams_readLine)
+
+extern const char* ModelicaInternal_readLine(const char* /*_fileName*/, int /*_lineNumber*/, int* /*_endOfFile*/);
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_compare(threadData_t *threadData, modelica_string _string1, modelica_string _string2, modelica_boolean _caseSensitive);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_compare(threadData_t *threadData, modelica_metatype _string1, modelica_metatype _string2, modelica_metatype _caseSensitive);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_compare,2,0) {(void*) boxptr_Modelica_Utilities_Strings_compare,0}};
+#define boxvar_Modelica_Utilities_Strings_compare MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_compare)
+
+extern int ModelicaStrings_compare(const char* /*_string1*/, const char* /*_string2*/, int /*_caseSensitive*/);
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_find(threadData_t *threadData, modelica_string _string, modelica_string _searchString, modelica_integer _startIndex, modelica_boolean _caseSensitive);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_find(threadData_t *threadData, modelica_metatype _string, modelica_metatype _searchString, modelica_metatype _startIndex, modelica_metatype _caseSensitive);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_find,2,0) {(void*) boxptr_Modelica_Utilities_Strings_find,0}};
+#define boxvar_Modelica_Utilities_Strings_find MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_find)
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_findLast(threadData_t *threadData, modelica_string _string, modelica_string _searchString, modelica_integer _startIndex, modelica_boolean _caseSensitive);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_findLast(threadData_t *threadData, modelica_metatype _string, modelica_metatype _searchString, modelica_metatype _startIndex, modelica_metatype _caseSensitive);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_findLast,2,0) {(void*) boxptr_Modelica_Utilities_Strings_findLast,0}};
+#define boxvar_Modelica_Utilities_Strings_findLast MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_findLast)
+
+
+DLLExport
+modelica_boolean omc_Modelica_Utilities_Strings_isEmpty(threadData_t *threadData, modelica_string _string);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_isEmpty(threadData_t *threadData, modelica_metatype _string);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_isEmpty,2,0) {(void*) boxptr_Modelica_Utilities_Strings_isEmpty,0}};
+#define boxvar_Modelica_Utilities_Strings_isEmpty MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_isEmpty)
+
+
+DLLExport
+modelica_boolean omc_Modelica_Utilities_Strings_isEqual(threadData_t *threadData, modelica_string _string1, modelica_string _string2, modelica_boolean _caseSensitive);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_isEqual(threadData_t *threadData, modelica_metatype _string1, modelica_metatype _string2, modelica_metatype _caseSensitive);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_isEqual,2,0) {(void*) boxptr_Modelica_Utilities_Strings_isEqual,0}};
+#define boxvar_Modelica_Utilities_Strings_isEqual MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_isEqual)
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_length(threadData_t *threadData, modelica_string _string);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_length(threadData_t *threadData, modelica_metatype _string);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_length,2,0) {(void*) boxptr_Modelica_Utilities_Strings_length,0}};
+#define boxvar_Modelica_Utilities_Strings_length MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_length)
+
+extern int ModelicaStrings_length(const char* /*_string*/);
+
+
+DLLExport
+modelica_string omc_Modelica_Utilities_Strings_repeat(threadData_t *threadData, modelica_integer _n, modelica_string _string);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_repeat(threadData_t *threadData, modelica_metatype _n, modelica_metatype _string);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_repeat,2,0) {(void*) boxptr_Modelica_Utilities_Strings_repeat,0}};
+#define boxvar_Modelica_Utilities_Strings_repeat MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_repeat)
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_scanInteger(threadData_t *threadData, modelica_string _string, modelica_integer _startIndex, modelica_boolean _unsigned, modelica_string _message, modelica_integer *out_nextIndex);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_scanInteger(threadData_t *threadData, modelica_metatype _string, modelica_metatype _startIndex, modelica_metatype _unsigned, modelica_metatype _message, modelica_metatype *out_nextIndex);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_scanInteger,2,0) {(void*) boxptr_Modelica_Utilities_Strings_scanInteger,0}};
+#define boxvar_Modelica_Utilities_Strings_scanInteger MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_scanInteger)
+
+
+DLLExport
+modelica_real omc_Modelica_Utilities_Strings_scanReal(threadData_t *threadData, modelica_string _string, modelica_integer _startIndex, modelica_boolean _unsigned, modelica_string _message, modelica_integer *out_nextIndex);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_scanReal(threadData_t *threadData, modelica_metatype _string, modelica_metatype _startIndex, modelica_metatype _unsigned, modelica_metatype _message, modelica_metatype *out_nextIndex);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_scanReal,2,0) {(void*) boxptr_Modelica_Utilities_Strings_scanReal,0}};
+#define boxvar_Modelica_Utilities_Strings_scanReal MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_scanReal)
+
+
+DLLExport
+modelica_string omc_Modelica_Utilities_Strings_substring(threadData_t *threadData, modelica_string _string, modelica_integer _startIndex, modelica_integer _endIndex);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_substring(threadData_t *threadData, modelica_metatype _string, modelica_metatype _startIndex, modelica_metatype _endIndex);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_substring,2,0) {(void*) boxptr_Modelica_Utilities_Strings_substring,0}};
+#define boxvar_Modelica_Utilities_Strings_substring MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_substring)
+
+extern const char* ModelicaStrings_substring(const char* /*_string*/, int /*_startIndex*/, int /*_endIndex*/);
+
+
+DLLExport
+void omc_Modelica_Utilities_Strings_syntaxError(threadData_t *threadData, modelica_string _string, modelica_integer _index, modelica_string _message);
+DLLExport
+void boxptr_Modelica_Utilities_Strings_syntaxError(threadData_t *threadData, modelica_metatype _string, modelica_metatype _index, modelica_metatype _message);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_syntaxError,2,0) {(void*) boxptr_Modelica_Utilities_Strings_syntaxError,0}};
+#define boxvar_Modelica_Utilities_Strings_syntaxError MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_syntaxError)
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_Advanced_scanInteger(threadData_t *threadData, modelica_string _string, modelica_integer _startIndex, modelica_boolean _unsigned, modelica_integer *out_number);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_Advanced_scanInteger(threadData_t *threadData, modelica_metatype _string, modelica_metatype _startIndex, modelica_metatype _unsigned, modelica_metatype *out_number);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_Advanced_scanInteger,2,0) {(void*) boxptr_Modelica_Utilities_Strings_Advanced_scanInteger,0}};
+#define boxvar_Modelica_Utilities_Strings_Advanced_scanInteger MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_Advanced_scanInteger)
+
+extern void ModelicaStrings_scanInteger(const char* /*_string*/, int /*_startIndex*/, int /*_unsigned*/, int* /*_nextIndex*/, int* /*_number*/);
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_Advanced_scanReal(threadData_t *threadData, modelica_string _string, modelica_integer _startIndex, modelica_boolean _unsigned, modelica_real *out_number);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_Advanced_scanReal(threadData_t *threadData, modelica_metatype _string, modelica_metatype _startIndex, modelica_metatype _unsigned, modelica_metatype *out_number);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_Advanced_scanReal,2,0) {(void*) boxptr_Modelica_Utilities_Strings_Advanced_scanReal,0}};
+#define boxvar_Modelica_Utilities_Strings_Advanced_scanReal MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_Advanced_scanReal)
+
+extern void ModelicaStrings_scanReal(const char* /*_string*/, int /*_startIndex*/, int /*_unsigned*/, int* /*_nextIndex*/, double* /*_number*/);
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_Strings_Advanced_skipWhiteSpace(threadData_t *threadData, modelica_string _string, modelica_integer _startIndex);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_Strings_Advanced_skipWhiteSpace(threadData_t *threadData, modelica_metatype _string, modelica_metatype _startIndex);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_Advanced_skipWhiteSpace,2,0) {(void*) boxptr_Modelica_Utilities_Strings_Advanced_skipWhiteSpace,0}};
+#define boxvar_Modelica_Utilities_Strings_Advanced_skipWhiteSpace MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_Strings_Advanced_skipWhiteSpace)
+
+extern int ModelicaStrings_skipWhiteSpace(const char* /*_string*/, int /*_startIndex*/);
+
+
+DLLExport
+modelica_integer omc_Modelica_Utilities_System_command(threadData_t *threadData, modelica_string _string);
+DLLExport
+modelica_metatype boxptr_Modelica_Utilities_System_command(threadData_t *threadData, modelica_metatype _string);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Modelica_Utilities_System_command,2,0) {(void*) boxptr_Modelica_Utilities_System_command,0}};
+#define boxvar_Modelica_Utilities_System_command MMC_REFSTRUCTLIT(boxvar_lit_Modelica_Utilities_System_command)
+
+/*
+ * The function has annotation(Include=...>) or is builtin
+ * the external function definition should be present
+ * in one of these files and have this prototype:
+ * extern int system(const char* (*_string*));
+ */
+
+DLLExport
+Reference__1_Medium_ThermodynamicState omc_Reference__1_Medium_ThermodynamicState (threadData_t *threadData, modelica_real omc_p, modelica_real omc_h);
+
+DLLExport
+modelica_metatype boxptr_Reference__1_Medium_ThermodynamicState(threadData_t *threadData, modelica_metatype _p, modelica_metatype _h);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_Reference__1_Medium_ThermodynamicState,2,0) {(void*) boxptr_Reference__1_Medium_ThermodynamicState,0}};
+#define boxvar_Reference__1_Medium_ThermodynamicState MMC_REFSTRUCTLIT(boxvar_lit_Reference__1_Medium_ThermodynamicState)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_T__h(threadData_t *threadData, modelica_real _h);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_T__h(threadData_t *threadData, modelica_metatype _h);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_T__h,2,0) {(void*) boxptr_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_T__h,0}};
+#define boxvar_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_T__h MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_T__h)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_rho__T(threadData_t *threadData, modelica_real _K);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_rho__T(threadData_t *threadData, modelica_metatype _K);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_rho__T,2,0) {(void*) boxptr_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_rho__T,0}};
+#define boxvar_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_rho__T MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Media_MoltenSalt_MoltenSalt__utilities_rho__T)
+
+
+DLLExport
+SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState omc_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState (threadData_t *threadData, modelica_real omc_p, modelica_real omc_h);
+
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState(threadData_t *threadData, modelica_metatype _p, modelica_metatype _h);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState,2,0) {(void*) boxptr_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState,0}};
+#define boxvar_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_CSP_CRS_Receivers__omcQReceiverSimple_24receiver_Medium_ThermodynamicState)
+
+
+DLLExport
+SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState omc_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState (threadData_t *threadData, modelica_real omc_p, modelica_real omc_h);
+
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState(threadData_t *threadData, modelica_metatype _p, modelica_metatype _h);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState,2,0) {(void*) boxptr_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState,0}};
+#define boxvar_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Fluid_Sensors__omcQTemperature_24temperature_Medium_ThermodynamicState)
+
+
+DLLExport
+SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState omc_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState (threadData_t *threadData, modelica_real omc_p, modelica_real omc_h);
+
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState(threadData_t *threadData, modelica_metatype _p, modelica_metatype _h);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState,2,0) {(void*) boxptr_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState,0}};
+#define boxvar_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_PowerBlocks__omcQPowerBlockModel_24powerBlock_Medium_ThermodynamicState)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Models_Sources_SolarFunctions_aparentSolarZenith(threadData_t *threadData, modelica_real _dec, modelica_real _hra, modelica_real _lat);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_SolarFunctions_aparentSolarZenith(threadData_t *threadData, modelica_metatype _dec, modelica_metatype _hra, modelica_metatype _lat);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_aparentSolarZenith,2,0) {(void*) boxptr_SolarTherm_Models_Sources_SolarFunctions_aparentSolarZenith,0}};
+#define boxvar_SolarTherm_Models_Sources_SolarFunctions_aparentSolarZenith MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_aparentSolarZenith)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Models_Sources_SolarFunctions_eclipticLongitude(threadData_t *threadData, modelica_real _dec);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_SolarFunctions_eclipticLongitude(threadData_t *threadData, modelica_metatype _dec);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_eclipticLongitude,2,0) {(void*) boxptr_SolarTherm_Models_Sources_SolarFunctions_eclipticLongitude,0}};
+#define boxvar_SolarTherm_Models_Sources_SolarFunctions_eclipticLongitude MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_eclipticLongitude)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Models_Sources_SolarFunctions_elevationAngle(threadData_t *threadData, modelica_real _dec, modelica_real _hra, modelica_real _lat);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_SolarFunctions_elevationAngle(threadData_t *threadData, modelica_metatype _dec, modelica_metatype _hra, modelica_metatype _lat);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_elevationAngle,2,0) {(void*) boxptr_SolarTherm_Models_Sources_SolarFunctions_elevationAngle,0}};
+#define boxvar_SolarTherm_Models_Sources_SolarFunctions_elevationAngle MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_elevationAngle)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Models_Sources_SolarFunctions_julianDay(threadData_t *threadData, modelica_integer _year, modelica_integer _month, modelica_integer _day, modelica_real _hour);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_SolarFunctions_julianDay(threadData_t *threadData, modelica_metatype _year, modelica_metatype _month, modelica_metatype _day, modelica_metatype _hour);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_julianDay,2,0) {(void*) boxptr_SolarTherm_Models_Sources_SolarFunctions_julianDay,0}};
+#define boxvar_SolarTherm_Models_Sources_SolarFunctions_julianDay MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_julianDay)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Models_Sources_SolarFunctions_solarAzimuth(threadData_t *threadData, modelica_real _dec, modelica_real _hra, modelica_real _lat);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_SolarFunctions_solarAzimuth(threadData_t *threadData, modelica_metatype _dec, modelica_metatype _hra, modelica_metatype _lat);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_solarAzimuth,2,0) {(void*) boxptr_SolarTherm_Models_Sources_SolarFunctions_solarAzimuth,0}};
+#define boxvar_SolarTherm_Models_Sources_SolarFunctions_solarAzimuth MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_solarAzimuth)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Models_Sources_SolarFunctions_solarZenith(threadData_t *threadData, modelica_real _dec, modelica_real _hra, modelica_real _lat);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_SolarFunctions_solarZenith(threadData_t *threadData, modelica_metatype _dec, modelica_metatype _hra, modelica_metatype _lat);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_solarZenith,2,0) {(void*) boxptr_SolarTherm_Models_Sources_SolarFunctions_solarZenith,0}};
+#define boxvar_SolarTherm_Models_Sources_SolarFunctions_solarZenith MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarFunctions_solarZenith)
+
+
+DLLExport
+modelica_real omc_SolarTherm_Models_Sources_SolarModel__omcQSun_24sun_solarPosition(threadData_t *threadData, modelica_real _t, modelica_real _lon, modelica_real _lat, modelica_real _t_zone, modelica_integer _year, modelica_real *out_hra);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_SolarModel__omcQSun_24sun_solarPosition(threadData_t *threadData, modelica_metatype _t, modelica_metatype _lon, modelica_metatype _lat, modelica_metatype _t_zone, modelica_metatype _year, modelica_metatype *out_hra);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarModel__omcQSun_24sun_solarPosition,2,0) {(void*) boxptr_SolarTherm_Models_Sources_SolarModel__omcQSun_24sun_solarPosition,0}};
+#define boxvar_SolarTherm_Models_Sources_SolarModel__omcQSun_24sun_solarPosition MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_SolarModel__omcQSun_24sun_solarPosition)
+
+
+DLLExport
+SolarTherm_Models_Sources_Weather_Metadata omc_SolarTherm_Models_Sources_Weather_Metadata (threadData_t *threadData, modelica_string omc_name, modelica_real omc_lat, modelica_real omc_lon, modelica_real omc_elev, modelica_real omc_tzone, modelica_real omc_tstart);
+
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_Weather_Metadata(threadData_t *threadData, modelica_metatype _name, modelica_metatype _lat, modelica_metatype _lon, modelica_metatype _elev, modelica_metatype _tzone, modelica_metatype _tstart);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_Metadata,2,0) {(void*) boxptr_SolarTherm_Models_Sources_Weather_Metadata,0}};
+#define boxvar_SolarTherm_Models_Sources_Weather_Metadata MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_Metadata)
+
+
+DLLExport
+modelica_boolean omc_SolarTherm_Models_Sources_Weather_checkVersion(threadData_t *threadData, modelica_string _file);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_Weather_checkVersion(threadData_t *threadData, modelica_metatype _file);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_checkVersion,2,0) {(void*) boxptr_SolarTherm_Models_Sources_Weather_checkVersion,0}};
+#define boxvar_SolarTherm_Models_Sources_Weather_checkVersion MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_checkVersion)
+
+
+DLLExport
+SolarTherm_Models_Sources_Weather_Metadata omc_SolarTherm_Models_Sources_Weather_getMetadata(threadData_t *threadData, modelica_string _file);
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Sources_Weather_getMetadata(threadData_t *threadData, modelica_metatype _file);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_getMetadata,2,0) {(void*) boxptr_SolarTherm_Models_Sources_Weather_getMetadata,0}};
+#define boxvar_SolarTherm_Models_Sources_Weather_getMetadata MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_getMetadata)
+
+
+DLLExport
+modelica_string omc_SolarTherm_Models_Sources_Weather_weatherFileChecker(threadData_t *threadData, modelica_string _file);
+#define boxptr_SolarTherm_Models_Sources_Weather_weatherFileChecker omc_SolarTherm_Models_Sources_Weather_weatherFileChecker
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_weatherFileChecker,2,0) {(void*) boxptr_SolarTherm_Models_Sources_Weather_weatherFileChecker,0}};
+#define boxvar_SolarTherm_Models_Sources_Weather_weatherFileChecker MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Sources_Weather_weatherFileChecker)
+
+
+DLLExport
+SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState omc_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState (threadData_t *threadData, modelica_real omc_p, modelica_real omc_h);
+
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState(threadData_t *threadData, modelica_metatype _p, modelica_metatype _h);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState,2,0) {(void*) boxptr_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState,0}};
+#define boxvar_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Storage_Tank__omcQTank_24tankCold_Medium_ThermodynamicState)
+
+
+DLLExport
+SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState omc_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState (threadData_t *threadData, modelica_real omc_p, modelica_real omc_h);
+
+DLLExport
+modelica_metatype boxptr_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState(threadData_t *threadData, modelica_metatype _p, modelica_metatype _h);
+static const MMC_DEFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState,2,0) {(void*) boxptr_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState,0}};
+#define boxvar_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState MMC_REFSTRUCTLIT(boxvar_lit_SolarTherm_Models_Storage_Tank__omcQTank_24tankHot_Medium_ThermodynamicState)
+#include "Reference_1_model.h"
+
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+
