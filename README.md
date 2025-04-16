@@ -1,43 +1,67 @@
-# Digital Twins para Tecnologías de Energía Solar
+# Digital Twin Dashboard para Sistemas de Energía Solar
 
-Este repositorio contiene modelos de simulación (gemelos digitales) para diferentes tecnologías de energía solar, permitiendo simular el comportamiento y rendimiento de sistemas fotovoltaicos y de concentración solar.
+Este repositorio contiene un gemelo digital (digital twin) interactivo para sistemas de energía solar, desarrollado utilizando Python y Streamlit.
 
-## Estructura del Repositorio
+## Características Principales
 
-El repositorio está organizado en dos carpetas principales:
-
-### 1. Photovoltaic (PV)
-
-Contiene modelos y herramientas para simular sistemas fotovoltaicos, incluyendo:
-
-- Scripts para generar datos de producción horaria y por segundo
-- Modelos para calcular la eficiencia de los paneles según temperatura
-- Herramientas para visualización de producción energética
-- Simulación de plantas fotovoltaicas con diferentes potencias y ubicaciones
-
-Los scripts permiten generar simulaciones para una planta fotovoltaica de 1MW en Antofagasta, Chile, calculando su producción anual, factor de capacidad y otros parámetros relevantes.
-
-### 2. CSP (Concentrated Solar Power)
-
-Contiene una implementación basada en SolarTherm para modelar y simular sistemas de concentración solar, incluyendo:
-
-- Modelos en Modelica para simular diferentes componentes de plantas CSP
-- Scripts para análisis de rendimiento
-- Herramientas para la optimización de parámetros operativos
-- Simulaciones de diferentes configuraciones (torre solar, colectores parabólicos, etc.)
-
-SolarTherm es un software de simulación especializado en energía solar térmica de código abierto.
+- **Dashboard interactivo**: Interfaz gráfica intuitiva para monitorear y simular sistemas solares
+- **Dos tecnologías solares**:
+  - **Fotovoltaica (PV)**: Monitoreo de una planta fotovoltaica de 1 MW en Antofagasta, Chile
+  - **Energía Solar Concentrada (CSP)**: Simulación de plantas CSP tipo torre solar
+- **Simulación en tiempo real**: Visualización dinámica de la operación de las plantas
+- **Integración con SolarTherm**: Utiliza el motor de simulación SolarTherm para cálculos precisos
 
 ## Requisitos
 
-- Python 3.6+
-- OpenModelica (para simulaciones CSP)
-- Bibliotecas Python: numpy, pandas, matplotlib, scipy
+- Python 3.8 o superior
+- SolarTherm (instalado en `/home/cparrado/solartherm/src`)
+- Streamlit
+- Pandas, NumPy, Matplotlib, Plotly
+
+## Estructura del Proyecto
+
+- `digital_twin_dashboard.py`: Aplicación principal del dashboard
+- `csp_digital_twin_dashboard.py`: Componentes específicos para CSP
+- `CSP/`: Archivos de modelado y datos para sistemas CSP
+- `Photovoltaic/`: Archivos de modelado y datos para sistemas PV
+
+## Instalación
+
+1. Clone este repositorio
+2. Asegúrese de tener SolarTherm instalado correctamente
+3. Instale las dependencias: `pip install -r requirements.txt`
+4. Ejecute la aplicación: `streamlit run digital_twin_dashboard.py`
 
 ## Uso
 
-Cada carpeta contiene sus propias instrucciones y scripts para ejecutar las simulaciones correspondientes.
+### Dashboard Principal
+El dashboard principal permite navegar entre los diferentes sistemas solares disponibles.
 
-## Autor
+### Dashboard PV
+Monitoreo y simulación de una planta fotovoltaica con análisis de:
+- Producción en tiempo real
+- Eficiencia del panel
+- Temperatura
+- Irradiancia
 
-Crparrado 
+### Dashboard CSP
+Simulación de una planta CSP con:
+- Configuración de parámetros (potencia nominal, almacenamiento térmico, etc.)
+- Vector de despacho personalizable
+- Visualización de producción, nivel de almacenamiento y temperaturas
+- Cálculos de LCOE y factor de capacidad
+
+## Características Técnicas
+
+- **Modularidad**: Diseño modular para fácil extensión
+- **Caché de datos**: Optimización de rendimiento
+- **Visualizaciones interactivas**: Gráficos dinámicos usando Plotly
+- **Simulación predictiva**: Visualización de datos históricos y futuros con líneas punteadas
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Por favor, envíe un pull request o abra un issue para discutir cambios propuestos.
+
+## Licencia
+
+Este proyecto está licenciado bajo [Licencia MIT](LICENSE). 

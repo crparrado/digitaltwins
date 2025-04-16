@@ -118,4 +118,102 @@ Ambos gemelos digitales simulan el comportamiento de las plantas a lo largo del 
 
 4. **Simulación de escenarios**:
    - Evaluación de cambios en configuración
-   - Análisis de estrategias de mantenimiento 
+   - Análisis de estrategias de mantenimiento
+
+# Documentación de `digital_twin_dashboard.py`
+
+## Descripción General
+`digital_twin_dashboard.py` es el componente principal del gemelo digital para sistemas de energía solar. Este archivo implementa una interfaz interactiva basada en Streamlit que permite visualizar, monitorear y simular el comportamiento de sistemas solares fotovoltaicos y de concentración.
+
+## Funcionalidades Principales
+
+### Navegación
+- Sistema de navegación entre dashboards (principal, PV, CSP)
+- Gestión de estado utilizando `st.session_state` para mantener persistencia
+
+### Dashboard Fotovoltaico (PV)
+- Monitoreo en tiempo real de una planta fotovoltaica de 1 MW
+- Simulación de producción energética basada en datos meteorológicos
+- Visualización de potencia generada, irradiancia y temperaturas
+- Cálculo dinámico de eficiencia según condiciones ambientales
+
+### Dashboard CSP (Concentración Solar)
+- Simulación de plantas CSP tipo torre solar
+- Configuración personalizada de vector de despacho
+- Visualización de operación a lo largo del día (potencia, almacenamiento térmico)
+- Integración con SolarTherm para cálculos precisos
+
+## Estructura de Código
+
+### Importaciones y Configuración
+```python
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+# Más importaciones...
+
+# Inicialización de estado
+if 'dashboard' not in st.session_state:
+    st.session_state.dashboard = "principal"
+```
+
+### Funciones Principales
+- `ir_a_principal()`, `ir_a_pv()`, `ir_a_csp()`: Funciones de navegación
+- `cargar_datos_antofagasta()`: Carga de datos meteorológicos con caché
+- `cargar_vector_optimo_csv()`: Carga de vectores de despacho optimizados
+- `calcular_produccion()`: Estimación de producción fotovoltaica
+- `generar_datos_csp()`: Simulación de operación CSP 
+
+### Clase `AccionaSimulator`
+Integración con SolarTherm para simulaciones de plantas CSP:
+```python
+class AccionaSimulator:
+    def __init__(self, fn='/.../Reference_1.mo'):
+        # Inicialización...
+    
+    def simulate(self):
+        # Simulación...
+    
+    def simulate_with_vector(self, vector):
+        # Simulación con vector personalizado...
+```
+
+### Visualización con Plotly
+Gráficos dinámicos para monitoreo en tiempo real:
+- Potencia generada
+- Niveles de almacenamiento térmico
+- Irradiancia solar
+- Temperaturas del sistema
+
+## Características Avanzadas
+- **Simulación predictiva**: Visualización de datos históricos y predicciones futuras
+- **Actualización en tiempo real**: Refresco automático de datos durante la simulación
+- **Interactividad**: Controles para modificar parámetros y observar resultados
+- **Líneas de tiempo punteadas**: Representación visual de predicciones futuras
+
+## Uso Técnico
+El archivo utiliza la estructura condicional principal:
+```python
+if st.session_state.dashboard == "principal":
+    # Código del dashboard principal
+elif st.session_state.dashboard == "pv":
+    # Código del dashboard PV
+elif st.session_state.dashboard == "csp":
+    # Código del dashboard CSP
+```
+
+## Dependencias
+- Streamlit 1.10+
+- Pandas, NumPy para procesamiento de datos
+- Plotly para visualizaciones interactivas
+- SolarTherm para simulaciones térmicas avanzadas
+
+## Integración
+Este archivo funciona en conjunto con `csp_digital_twin_dashboard.py` y los archivos contenidos en los directorios `CSP/` y `Photovoltaic/`.
+
+## Mejoras Futuras
+- Implementación de módulos adicionales para otros sistemas de energía renovable
+- Mejora de modelos predictivos utilizando aprendizaje automático
+- Integración con sistemas de datos en tiempo real 
