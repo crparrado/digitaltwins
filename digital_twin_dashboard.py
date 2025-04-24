@@ -25,7 +25,9 @@ except:
         pass  # Si no se puede configurar, se usa el locale predeterminado
 
 # Agregar la ruta de SolarTherm a sys.path para poder importar los módulos
-sys.path.append('/home/cparrado/solartherm/src')
+# sys.path.append('/home/cparrado/solartherm/src') # Ruta original
+sys.path.append('/opt/solartherm/src') # Ruta dentro del contenedor Docker
+
 try:
     from solartherm import simulation
     from solartherm import postproc
@@ -82,7 +84,8 @@ def create_dispatch_vector(individuo):
 # Función para cargar el vector óptimo desde el archivo CSV
 def cargar_vector_optimo_csv():
     try:
-        csv_path = '/home/cparrado/solartherm/tests/resultado_genetico_solartherm_final200.csv'
+        # csv_path = '/home/cparrado/solartherm/tests/resultado_genetico_solartherm_final200.csv' # Ruta original
+        csv_path = 'data/resultado_genetico_solartherm_final200.csv' # Ruta relativa dentro del contenedor
         df = pd.read_csv(csv_path)
         
         # Extraer el vector como string y evaluar para convertirlo en una lista de tuplas
@@ -104,7 +107,10 @@ def cargar_vector_optimo_csv():
 # Clase de simulación SolarTherm
 # ------------------------
 class AccionaSimulator:
-    def __init__(self, fn='/home/cparrado/.openmodelica/libraries/SolarTherm/Systems/Reference_1.mo'):
+    # def __init__(self, fn='/home/cparrado/.openmodelica/libraries/SolarTherm/Systems/Reference_1.mo'): # Ruta original
+    # Intentar encontrar Reference_1.mo dentro de la instalación de SolarTherm clonada
+    # La ruta exacta puede variar dependiendo de la estructura del repo SolarTherm
+    def __init__(self, fn='/opt/solartherm/SolarTherm/Systems/Reference_1.mo'): # Ruta dentro del contenedor
         self.fn = fn
         self.inicializar_sim()
 
@@ -135,9 +141,10 @@ class AccionaSimulator:
         return self.perf
 
     def modify_dispatch_vector(self, vector):
-        vector_path = '/home/cparrado/.openmodelica/libraries/SolarTherm/Data/Schedules/sch_acciona.motab'
+        # vector_path = '/home/cparrado/.openmodelica/libraries/SolarTherm/Data/Schedules/sch_acciona.motab' # Ruta original
+        vector_path = 'data/sch_acciona.motab' # Ruta relativa dentro del contenedor
         with open(vector_path, 'w') as file:
-            file.write('#1\ndouble daily1(24,2)\n')
+            file.write('#1\\ndouble daily1(24,2)\\n')
             for hour, value in vector:
                 file.write(f'{hour} {value}\n')
         # Opcional: imprimir el contenido para verificación
@@ -226,14 +233,29 @@ elif st.session_state.dashboard == "pv":
     def cargar_datos_antofagasta():
         try:
             # Intentar cargar desde la ubicación del script en el directorio PV
-            datos = pd.read_csv("Photovoltaic/antofagasta.csv", skiprows=2)
-            info_ubicacion = pd.read_csv("Photovoltaic/antofagasta.csv", nrows=1)
+            # datos = pd.read_csv("Photovoltaic/antofagasta.csv", skiprows=2) # Ruta original 1
+            # info_ubicacion = pd.read_csv("Photovoltaic/antofagasta.csv", nrows=1) # Ruta original 1
+            # return datos, info_ubicacion
+        # except FileNotFoundError:
+            # Si no se encuentra, intentar desde solartherm/tests/
+            # datos = pd.read_csv("solartherm/tests/antofagasta.csv", skiprows=2) # Ruta original 2
+            # info_ubicacion = pd.read_csv("solartherm/tests/antofagasta.csv", nrows=1) # Ruta original 2
+            # return datos, info_ubicacion
+        # except Exception as e:
+             # st.error(f"Error original al cargar datos: {e}")
+             # raise # Relanzar la excepción original si es necesario
+
+            # Nueva lógica: Cargar siempre desde la carpeta 'data'
+            datos_path = "data/antofagasta.csv"
+            datos = pd.read_csv(datos_path, skiprows=2)
+            info_ubicacion = pd.read_csv(datos_path, nrows=1)
             return datos, info_ubicacion
         except FileNotFoundError:
-            # Si no se encuentra, intentar desde solartherm/tests/
-            datos = pd.read_csv("solartherm/tests/antofagasta.csv", skiprows=2)
-            info_ubicacion = pd.read_csv("solartherm/tests/antofagasta.csv", nrows=1)
-            return datos, info_ubicacion
+            st.error(f"Error: No se encontró el archivo {datos_path}. Asegúrate de que exista en la carpeta 'data'.")
+            return None, None
+        except Exception as e:
+            st.error(f"Error al cargar datos desde {datos_path}: {e}")
+            return None, None
 
     # Función para calcular la producción en tiempo real
     def calcular_produccion(area_paneles, irradiancia, temperatura_ambiente, eficiencia_referencia=0.20, factor_rendimiento=0.85, potencia_pico=1000, coef_temperatura=-0.004):
@@ -254,6 +276,11 @@ elif st.session_state.dashboard == "pv":
     # Carga de datos
     try:
         datos_antofagasta, info_ubicacion = cargar_datos_antofagasta()
+        
+        # Verificar si la carga fue exitosa antes de continuar
+        if datos_antofagasta is None or info_ubicacion is None:
+            st.stop() # Detener la ejecución si no se cargaron los datos
+
         latitud = float(info_ubicacion['Latitude'][0])
         longitud = float(info_ubicacion['Longitude'][0])
         elevacion = float(info_ubicacion['Elevation'][0])
@@ -382,7 +409,7 @@ elif st.session_state.dashboard == "pv":
 
     except Exception as e:
         st.error(f"Error al cargar los datos: {e}")
-        st.info("Asegúrate de que el archivo antofagasta.csv está en la ubicación correcta.")
+        st.info("Asegúrate de que el archivo antofagasta.csv está en la carpeta 'data'.")
 
 # Dashboard CSP
 elif st.session_state.dashboard == "csp":

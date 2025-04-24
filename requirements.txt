@@ -1,0 +1,8 @@
+streamlit
+pandas
+numpy
+matplotlib
+plotly
+Pillow
+# Nota: locale, os, sys, time, subprocess, ast, math, io, datetime son módulos estándar de Python.
+# Nota: SolarTherm no se instala vía pip, se gestionará en el Dockerfile.

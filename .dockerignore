@@ -1,0 +1,29 @@
+# Ignorar archivos y carpetas de Git
+.git
+.gitignore
+
+# Ignorar archivos específicos de Docker
+Dockerfile
+.dockerignore
+
+# Ignorar entornos virtuales de Python
+.venv
+venv
+env
+ENV
+
+# Ignorar archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar archivos específicos del editor/IDE (ejemplos)
+.vscode/
+.idea/
+*.swp
+
+# Puedes añadir otros archivos o carpetas que no quieras incluir
+# Por ejemplo, carpetas de logs, resultados temporales, etc.
+# logs/
+# temp_results/ 
