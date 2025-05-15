@@ -1,0 +1,41 @@
+{
+	"name": "SolarTherm Ubuntu 20.04",
+	"dockerFile": "Dockerfile",
+  
+	// Se ejecuta la primera vez que se crea el contenedor
+	"postCreateCommand": "bash .devcontainer/setup.sh",
+  
+	// Usuario por defecto dentro del contenedor
+	"remoteUser": "vscode",
+  
+	// Extensiones que VS Code instalará automáticamente
+	"customizations": {
+	  "vscode": {
+		"extensions": [
+		  "ms-python.python",          // soporte Python
+		  "ms-vscode.cpptools",        // depuración C/C++
+		  "ms-azuretools.vscode-docker"
+		]
+	  }
+	},
+  
+	// Características adicionales (feature) – aquí Python 3.8
+	"features": {
+	  "ghcr.io/devcontainers/features/python:1": {
+		"version": "3.8"
+	  }
+	},
+  
+	// Argumentos extras para docker run
+	"runArgs": [
+	  "--platform=linux/arm64",        // usa ARM nativa; cambia a linux/amd64 si necesitas x86
+	  "--cap-add=SYS_PTRACE",          // permite depurar con gdb/lldb
+	  "--security-opt=seccomp=unconfined"
+	],
+  
+	// Montaje del directorio local dentro del contenedor
+	"mounts": [
+	  "source=${localWorkspaceFolder},target=/workspaces/sunaicl-solartherm,type=bind,consistency=cached"
+	]
+  }
+  
