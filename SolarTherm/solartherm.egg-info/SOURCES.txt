@@ -1,0 +1,7 @@
+README.md
+setup.py
+SolarTherm/solartherm.egg-info/PKG-INFO
+SolarTherm/solartherm.egg-info/SOURCES.txt
+SolarTherm/solartherm.egg-info/dependency_links.txt
+SolarTherm/solartherm.egg-info/requires.txt
+SolarTherm/solartherm.egg-info/top_level.txt

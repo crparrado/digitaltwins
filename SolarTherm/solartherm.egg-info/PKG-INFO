@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: solartherm
+Version: 0.1
+Requires-Dist: scipy
+Requires-Dist: matplotlib
+Requires-Dist: DyMat
+Requires-Dist: pyswarm
+Requires-Dist: cma
